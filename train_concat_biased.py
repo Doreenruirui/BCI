@@ -19,6 +19,7 @@ from __future__ import print_function
 
 import math
 import os
+import random
 import sys
 import time
 import random
@@ -29,20 +30,20 @@ import numpy as np
 from six.moves import xrange
 import tensorflow as tf
 
-import model_concat
+import model_concat as nlc_model
 from flag import FLAGS
-from data_generation import pair_iter_distributed as pair_iter, id2char
+from data_generation import pair_iter_distributed as pair_iter
+from data_generation import id2char
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
 
-def create_model(session, vocab_size_char, vocab_size_word):
-    model = model_concat.Model(FLAGS.size, FLAGS.num_wit, FLAGS.num_layers,
-                        FLAGS.max_gradient_norm, FLAGS.learning_rate,
-                        FLAGS.learning_rate_decay_factor, forward_only=False,
-                        optimizer=FLAGS.optimizer)
-    model.build_model(vocab_size_char, model=FLAGS.model, flag_bidirect=FLAGS.flag_bidirect)
+def create_model(session, vocab_size, forward_only):
+    model = nlc_model.NLCModel(
+        vocab_size, FLAGS.size, FLAGS.num_wit, FLAGS.num_layers, FLAGS.max_gradient_norm, FLAGS.batch_size,
+        FLAGS.learning_rate, FLAGS.learning_rate_decay_factor, FLAGS.dropout,
+        forward_only=forward_only, optimizer=FLAGS.optimizer)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     num_epoch = 0
     if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
@@ -57,17 +58,18 @@ def create_model(session, vocab_size_char, vocab_size_word):
     return model, num_epoch
 
 
-def validate(model, sess, x_dev, flag_seq2seq):
+def validate(model, sess, x_dev):
     valid_costs, valid_lengths = [], []
-    for source_tokens, source_mask, target_tokens in pair_iter(x_dev, FLAGS.num_wit, flag_seq2seq=flag_seq2seq,
-                                                                       batch_size=FLAGS.batch_size,
-                                                                       prob_high=FLAGS.prob_high,
-                                                                       prob_noncand=FLAGS.prob_noncand,
-                                                                       prior=FLAGS.prior,
-                                                                       sort_and_shuffle=False):
-        cost = model.test(sess, source_tokens, source_mask, target_tokens)
+    for source_probs, source_mask, target_tokens in pair_iter(x_dev,
+                                                              FLAGS.num_wit,
+                                                              batch_size=FLAGS.batch_size,
+                                                              prior=FLAGS.prior,
+                                                              prob_high=FLAGS.prob_high,
+                                                              prob_noncand=FLAGS.prob_noncand,
+                                                              sort_and_shuffle=False):
+        cost = model.test(sess, source_probs, source_mask, target_tokens)
         valid_costs.append(cost * source_mask.shape[1])
-        valid_lengths.append(np.sum(source_mask[1:, :]))
+        valid_lengths.append(np.sum(source_mask))
     valid_cost = sum(valid_costs) / float(sum(valid_lengths))
     return valid_cost
 
@@ -76,24 +78,22 @@ def train():
     """Train a translation model using NLC data."""
     # Prepare NLC data.
     logging.info("Get NLC data in %s" % FLAGS.data_dir)
-    x_train = pjoin(FLAGS.data_dir, 'train.ids')
-    x_dev = pjoin(FLAGS.data_dir, FLAGS.dev + '.ids')
+    x_train = pjoin(FLAGS.data_dir, 'train.ids.x')
+    x_dev = pjoin(FLAGS.data_dir, FLAGS.dev + '.ids.x')
     vocab_size = len(id2char)
     logging.info("Vocabulary size: %d" % vocab_size)
     if not os.path.exists(FLAGS.train_dir):
         os.makedirs(FLAGS.train_dir)
-    if FLAGS.model == 'seq2seq':
-        flag_seq2seq = 1
-    else:
-        flag_seq2seq = 0
     file_handler = logging.FileHandler("{0}/log.txt".format(FLAGS.train_dir))
     logging.getLogger().addHandler(file_handler)
+
     with open(os.path.join(FLAGS.train_dir, "flags.json"), 'w') as fout:
         json.dump(FLAGS.__flags, fout)
-
     with tf.Session() as sess:
         logging.info("Creating %d layers of %d units." % (FLAGS.num_layers, FLAGS.size))
         model, epoch = create_model(sess, vocab_size, False)
+
+        # logging.info('Initial validation cost: %f' % validate(model, sess, x_dev))
 
         if False:
             tic = time.time()
@@ -116,16 +116,17 @@ def train():
 
             ## Train
             epoch_tic = time.time()
-            for source_tokens, source_mask, target_tokens in pair_iter(x_train, FLAGS.num_wit,
-                                                                       flag_seq2seq=flag_seq2seq,
-                                                                       batch_size=FLAGS.batch_size,
-                                                                       prob_high=FLAGS.prob_high,
-                                                                       prob_noncand=FLAGS.prob_noncand,
-                                                                       prior=FLAGS.prior):
+            for source_probs, source_mask, target_tokens in pair_iter(x_train,
+                                                                      FLAGS.num_wit,
+                                                                      batch_size=FLAGS.batch_size,
+                                                                      prior=FLAGS.prior,
+                                                                      prob_high=FLAGS.prob_high,
+                                                                      prob_noncand=FLAGS.prob_noncand,
+                                                                      sort_and_shuffle=True):
                 # Get a batch and make a step.
                 tic = time.time()
 
-                grad_norm, cost, param_norm = model.train(sess, source_tokens, source_mask, target_tokens, FLAGS.keep_prob)
+                grad_norm, cost, param_norm = model.train(sess, source_probs, source_mask, target_tokens)
 
                 toc = time.time()
                 iter_time = toc - tic
@@ -158,7 +159,7 @@ def train():
             checkpoint_path = os.path.join(FLAGS.train_dir, "best.ckpt")
 
             ## Validate
-            valid_cost = validate(model, sess, x_dev, flag_seq2seq)
+            valid_cost = validate(model, sess, x_dev)
 
             logging.info("Epoch %d Validation cost: %f time: %f" % (epoch, valid_cost, epoch_toc - epoch_tic))
 

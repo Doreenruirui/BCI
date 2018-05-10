@@ -26,7 +26,6 @@ from six.moves import xrange
 import tensorflow as tf
 
 import model_concat
-
 from flag import FLAGS
 from data_generation import id2char, char2id, get_confusion_concat_distributed, load_vocabulary
 from evaluate import batch_mrr, batch_recall_at_k
@@ -43,7 +42,7 @@ def create_model(session,  vocab_size_char, vocab_size_word):
                         FLAGS.max_gradient_norm, FLAGS.learning_rate,
                         FLAGS.learning_rate_decay_factor, forward_only=True,
                         optimizer=FLAGS.optimizer, num_pred=FLAGS.num_cand)
-    model.build_model(vocab_size_char, model=FLAGS.model, flag_bidirect=True)
+    model.build_model(vocab_size_char, model=FLAGS.model, flag_bidirect=False)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     num_epoch = 0
     if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
@@ -69,8 +68,6 @@ def get_mask(len_input, max_len):
     # mask = np.zeros((num_line, max_len))
     mask = map(lambda ele: [1] * min(ele, max_len) + [0] * (max_len - min(ele, max_len)), len_input)
     return np.asarray(mask).T
-
-
 
 def decode():
     global word2id, id2word
@@ -104,11 +101,14 @@ def decode():
     data = data[:,FLAGS.start:FLAGS.end,:]
     data = data[:, sorted_index, :]
     num_chunk = int(np.ceil(num_line * 1. / FLAGS.batch_size))
+    # f_mrr =  open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'mrr.%d_%d' % (FLAGS.start, FLAGS.end)), 'w')
+    # f_recall = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'recall.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
     f_mrr = []
     f_recall = []
     for pred_id in range(4):
         f_mrr.append(open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'mrr%d.%d_%d' % (pred_id, FLAGS.start, FLAGS.end)), 'w'))
         f_recall.append(open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'recall%d.%d_%d') % (pred_id, FLAGS.start, FLAGS.end), 'w'))
+
     f_perplex = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'perplex.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
 
     def decode_batch(batch_size, s, e):
@@ -118,21 +118,25 @@ def decode():
         tgt_toks = map(lambda line: [char2id['<sos>']] + line + [char2id['<pad>']] * (cur_max_len - len(line)), line_x[s:e])
         tgt_toks = np.asarray(tgt_toks).T
         batch_size = min(batch_size, e - s)
-
         cur_recall = np.zeros((4, batch_size, cur_max_len))
         cur_mrr = np.zeros((4, batch_size, cur_max_len))
         cur_perplex = np.zeros((batch_size, cur_max_len))
-
+        src_mask = get_mask(cur_chunk_len, cur_max_len + 1)
+        encoder_out = model.encode(sess, src_probs, src_mask)
         for k in range(cur_max_len):
             print(i, k, cur_max_len)
             cur_mask = get_mask(cur_chunk_len, k + 1)
-            outputs, prediction, perplex, top_seqs = model.decode_beam(sess, src_probs[:k+1,:,:], tgt_toks[:k+2,:], cur_mask, FLAGS.beam_size)
+            outputs, prediction, perplex, top_seqs = model.decode(sess, encoder_out[:k+1,:,:], cur_mask, tgt_toks[:k+2,:], FLAGS.beam_size)
+            # cur_pred = top_seqs[:, :, k+1]
             cur_truth = tgt_toks[k + 1, :]
             for pred_id in range(4):
                 cur_pred = top_seqs[pred_id][:, :, k+1]
                 cur_mrr[pred_id, :, k] = batch_mrr(cur_pred, cur_truth, FLAGS.num_cand)
                 cur_recall[pred_id, :, k] = batch_recall_at_k(cur_pred, cur_truth, FLAGS.num_cand)
             cur_perplex[:, k] = perplex[:, k + 1]
+        # f_mrr.write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_mrr, cur_chunk_len)) + '\n')
+        # f_recall.write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_recall, cur_chunk_len)) + '\n')
+        # f_perplex.write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_perplex, cur_chunk_len)) + '\n')
         for pred_id in range(4):
             f_mrr[pred_id].write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_mrr[pred_id], cur_chunk_len)) + '\n')
             f_recall[pred_id].write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_recall[pred_id], cur_chunk_len)) + '\n')
@@ -155,10 +159,13 @@ def decode():
                     decode_batch(chunk_size, cur_start, cur_end)
             else:
                 decode_batch(FLAGS.batch_size, start, end)
-        for pred_id in range(4):
-            f_mrr[pred_id].close()
-            f_recall[pred_id].close()
-        f_perplex.close()
+        # f_mrr.close()
+        # f_recall.close()
+        # f_perplex.close()
+    for pred_id in range(4):
+        f_mrr[pred_id].close()
+        f_recall[pred_id].close()
+    f_perplex.close()
 
 
 

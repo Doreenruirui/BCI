@@ -104,7 +104,7 @@ def reprocess_file(path_data, file_data, max_num_words):
 
 
 
-reprocess_file(sys.argv[1], sys.argv[2], 20)
+#reprocess_file(sys.argv[1], sys.argv[2], 20)
 vocabulary(sys.argv[1], sys.argv[2], 50000)
 tokenize(sys.argv[1], sys.argv[2])
 word_tokenize(sys.argv[1], sys.argv[2])

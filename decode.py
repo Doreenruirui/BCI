@@ -41,7 +41,7 @@ def create_model(session,  vocab_size_char, vocab_size_word):
                         FLAGS.max_gradient_norm, FLAGS.learning_rate,
                         FLAGS.learning_rate_decay_factor, forward_only=True,
                         optimizer=FLAGS.optimizer, num_pred=FLAGS.num_cand)
-    model.build_model(vocab_size_char, model=FLAGS.model)
+    model.build_model(vocab_size_char, model=FLAGS.model, flag_bidirect=False)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     num_epoch = 0
     if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
@@ -98,9 +98,30 @@ def decode():
     data = data[:,FLAGS.start:FLAGS.end,:]
     data = data[:, sorted_index, :]
     num_chunk = int(np.ceil(num_line * 1. / FLAGS.batch_size))
-    f_mrr =  open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'mrr.%d_%d' % (FLAGS.start, FLAGS.end)), 'w')
-    f_recall = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'recall.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
+    f_mrr = []
+    f_recall = []
+    for pred_id in range(4):
+        f_mrr.append(open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'mrr%d.%d_%d' % (pred_id, FLAGS.start, FLAGS.end)), 'w'))
+        f_recall.append(open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'recall%d.%d_%d') % (pred_id, FLAGS.start, FLAGS.end), 'w'))
     f_perplex = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'perplex.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
+
+    def decode_batch(batch_size, s, e):
+        cur_chunk_len = len_x[s:e]
+        cur_max_len = max(cur_chunk_len)
+        src_probs = data[:cur_max_len, s:e, :]
+        tgt_toks = map(lambda line: [char2id['<sos>']] + line + [char2id['<pad>']] * (cur_max_len - len(line)), line_x[s:e])
+        tgt_toks = np.asarray(tgt_toks).T
+        cur_mask = np.ones_like(tgt_toks) * (tgt_toks > 0)
+        outputs, prediction, perplex, top_seqs = model.decode_beam(sess, src_probs, tgt_toks, cur_mask, FLAGS.beam_size)
+        truth = tgt_toks[1:,:]
+        for pred_id in range(4):
+            cur_mrr = batch_mrr(top_seqs[pred_id][:, :, 1:], truth, 10)
+            cur_recall= batch_recall_at_k(top_seqs[pred_id][:, :, 1:], truth, 10)
+            f_mrr[pred_id].write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_mrr, cur_chunk_len)) + '\n')
+            f_recall[pred_id].write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_recall, cur_chunk_len)) + '\n')
+        cur_perplex = perplex[:,1:]
+        f_perplex.write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_perplex, cur_chunk_len)) + '\n')
+
     with tf.Session() as sess:
         model, epoch = create_model(sess, vocab_size_char, vocab_size_word)
         print('epoch', epoch)
@@ -109,20 +130,18 @@ def decode():
             end = min(num_line, (i + 1) * FLAGS.batch_size)
             cur_len = len_x[start:end]
             max_len = max(cur_len)
-            src_probs = data[:max_len, start:end, :]
-            tgt_toks = map(lambda line: [char2id['<sos>']] + line + [char2id['<pad>']] * (max_len - len(line)), line_x[start:end])
-            tgt_toks = np.asarray(tgt_toks).T
-            print(i)
-            cur_mask = np.ones_like(tgt_toks) * (tgt_toks > 0)
-            outputs, prediction, top_seqs, perplex = model.decode_beam(sess, src_probs, tgt_toks, cur_mask, FLAGS.beam_size)
-            cur_mrr = batch_mrr(top_seqs[:, :, 1:], tgt_toks[1:,:])
-            cur_recall= batch_recall_at_k(top_seqs[:, :, 1:], tgt_toks[1:,:], 10)
-            cur_perplex = perplex[:,1:]
-            f_mrr.write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_mrr, cur_len)) + '\n')
-            f_recall.write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_recall, cur_len)) + '\n')
-            f_perplex.write('\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_perplex, cur_len)) + '\n')
-        f_mrr.close()
-        f_recall.close()
+            if max_len > 125:
+                chunk_size = 1
+                cur_num_chunk = int(FLAGS.batch_size / chunk_size)
+                for j in range(cur_num_chunk):
+                    cur_start = i * FLAGS.batch_size + j * chunk_size
+                    cur_end = min(num_line, cur_start + chunk_size)
+                    decode_batch(chunk_size, cur_start, cur_end)
+            else:
+                decode_batch(FLAGS.batch_size, start, end)
+        for pred_id in range(4):
+            f_mrr[pred_id].close()
+            f_recall[pred_id].close()
         f_perplex.close()
 
 
