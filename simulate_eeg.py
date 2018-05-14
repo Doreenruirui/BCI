@@ -1,78 +1,100 @@
 from __future__ import division
 import numpy as np
 from random import shuffle, randint
+import string
 import math
 from bitweight import *
 
+eeg = None
+id2char = [b'<pad>', b'<sos>', b'<eos>', b' '] + list(string.ascii_lowercase)
+char2id = {k: v for v, k in enumerate(id2char)}
 
-def eegs(path):
+
+def load_eegs(path='EEGEvidence.txt-high', nbest=3):
     """
     load EEG simulations from txt file
     """
+    global eeg
     sample = 0
-    num_sym = 0
-    eeg_dict = {}
+    eeg = []
     a_sample = []
     for line in open(path).readlines():
         line = line.split()
         if line:
             a_sample.append(float(line[0]))
-            num_sym += 1
         else:
-            num_sym = 0
             a_sample = np.array(a_sample)
-            # assuming it's log likelihood and not negative ll
-            transformed_dist = [BitWeight(math.e**(prob)) for prob in a_sample]
-            total = sum(transformed_dist, BitWeight(1e6))
+            sorted_list = [a_sample[0]] + sorted(a_sample[1:], reverse=True)
+            transformed_dist = [BitWeight(math.e ** (ele)) for ele in sorted_list[:nbest]]
+            total = sum(transformed_dist, BitWeight(0))
             normalized_dist = [
                 (prob / total).real() for prob in transformed_dist]
-            eeg_dict[sample] = [-math.log(prob) for prob in normalized_dist]
-            sample += 1
+            eeg.append(normalized_dist)
             a_sample = []
-    return eeg_dict
 
 
-def generate_eeg(eeg, ch, nbest=3):
+def generate_clean(ch):
+    prob_vec = np.zeros(len(id2char))
+    prob_vec[ch] = 1.0
+    return prob_vec
+
+
+def generate_eeg(ch, nbest=3):
     """
     generate according to target and non-target
     symbols a simulated EEG distribution
     """
     # generate a tuple with all symbols (currently does not include "<")
-    syms = syms_set[:]
-    idx = syms.index(ch)
-    del syms[idx]
-    shuffle(syms)
+    global eeg
+    if ch == 1:
+        prob_vec = np.zeros(len(id2char))
+        prob_vec[ch] = 1.0
+        return prob_vec
+    elif ch == 0:
+        return np.zeros(len(id2char))
+    index = np.arange(len(id2char)).tolist()
+    del index[ch]
+    index = index[3:]
+    shuffle(index)
     sample_id = randint(0, 999)
     sample = eeg[sample_id]
-    dist = []
-    dist.append((ch, sample[0]))
-    for i in xrange(len(syms)):
-        dist.append((syms[i], sample[i + 1]))
-    #dist = sorted(dist, key=lambda symbol: symbol[1])
-    # includes the target
-    dist = [dist[0]] + sorted(dist[1:], key=lambda symbol: symbol[1])
-    return dist[:nbest]
+    res = np.zeros(len(id2char))
+    res[ch] = sample[0]
+    for i in range(nbest - 1):
+        res[index[i]] = sample[i + 1]
+    return res
 
 
-def simulate_eeg(sym, eeg_path=""):
-    """
-    generate non deterministic EEG history
-    """
-    if not eeg_path:
-        raise ValueError('An path to EEG simulated samples is missing')
-
-    eeg_smaples = eegs(eeg_path)
-    if sym in syms_set or sym == ' ':
-        if sym == ' ':
-            sym = '#'
-        return generate_eeg(eeg_smaples, sym)
+def generate_direchlet(ch, num_cand, prior=1, prob_high=0.7, prob_noncand=0.1):
+    if ch == 1:
+        prob_vec = np.zeros(len(id2char))
+        prob_vec[ch] = 1.0
+        return prob_vec
+    elif ch == 0:
+        return np.zeros(len(id2char))
+    index = np.arange(len(id2char)).tolist()
+    del index[ch]
+    index = index[3:]
+    shuffle(index)
+    prior_vec = np.ones(num_cand)
+    prior_vec[num_cand - 1] = prior
+    prob = np.random.dirichlet(prior_vec, size=1)[0, :] * (1. - prob_noncand)
+    flag_high = np.random.binomial(1, prob_high)
+    max_id = np.argmax(prob)
+    max_v = prob[max_id]
+    prob_new = prob.tolist()
+    del prob_new[max_id]
+    if not flag_high:
+        shuffle(prob_new)
+        prob_tgt = prob_new[0]
+        prob_cand = prob_new[1:].append(max_v)
     else:
-        raise ValueError('An invalid symbol')
+        prob_tgt = max_v
+        prob_cand = prob_new
+    prob_vec = np.ones(len(id2char)) * (prob_noncand * 1. / (len(id2char) - num_cand))
+    prob_vec[ch] = prob_tgt
+    for ind, item in enumerate(index):
+        prob_vec[item] = prob_cand[ind]
+    return prob_vec
 
 
-syms_set = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
-        "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "#"]
-path = 'EEGEvidence.txt-high'
-sentence = "i went to ohsu"
-for sym in sentence:
-    print simulate_eeg(sym, path)

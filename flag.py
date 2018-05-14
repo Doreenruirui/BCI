@@ -42,5 +42,7 @@ tf.app.flags.DEFINE_float("prob_noncand", 0.0, "The probability where noncandida
 tf.app.flags.DEFINE_float("prior", 2.0, "The prior for dirichlet distrubution probability")
 tf.app.flags.DEFINE_boolean("flag_word", False, "Whether to predict word or not")
 tf.app.flags.DEFINE_boolean("flag_bidirect", False, "Whether to use birectional lstm")
+tf.app.flags.DEFINE_boolean("flag_eeg", False, "whetehr to use eeg to generate the data")
+tf.app.flags.DEFINE_boolean("flag_clean", False, "whetehr to generate the clean data")
 
 FLAGS = tf.app.flags.FLAGS

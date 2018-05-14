@@ -59,12 +59,15 @@ def create_model(session, vocab_size_char, vocab_size_word):
 
 def validate(model, sess, x_dev, flag_seq2seq):
     valid_costs, valid_lengths = [], []
-    for source_tokens, source_mask, target_tokens in pair_iter(x_dev, FLAGS.num_wit, flag_seq2seq=flag_seq2seq,
-                                                                       batch_size=FLAGS.batch_size,
-                                                                       prob_high=FLAGS.prob_high,
-                                                                       prob_noncand=FLAGS.prob_noncand,
-                                                                       prior=FLAGS.prior,
-                                                                       sort_and_shuffle=False):
+    for source_tokens, source_mask, target_tokens in pair_iter(x_dev, FLAGS.num_wit,
+                                                               flag_eeg=FLAGS.flag_eeg,
+                                                               flag_seq2seq=flag_seq2seq,
+                                                               flag_clean=FLAGS.flag_clean,
+                                                               batch_size=FLAGS.batch_size,
+                                                               prob_high=FLAGS.prob_high,
+                                                               prob_noncand=FLAGS.prob_noncand,
+                                                               prior=FLAGS.prior,
+                                                               sort_and_shuffle=False):
         cost = model.test(sess, source_tokens, source_mask, target_tokens)
         valid_costs.append(cost * source_mask.shape[1])
         valid_lengths.append(np.sum(source_mask[1:, :]))
@@ -117,7 +120,9 @@ def train():
             ## Train
             epoch_tic = time.time()
             for source_tokens, source_mask, target_tokens in pair_iter(x_train, FLAGS.num_wit,
+                                                                       flag_eeg=FLAGS.flag_eeg,
                                                                        flag_seq2seq=flag_seq2seq,
+                                                                       flag_clean=FLAGS.flag_clean,
                                                                        batch_size=FLAGS.batch_size,
                                                                        prob_high=FLAGS.prob_high,
                                                                        prob_noncand=FLAGS.prob_noncand,
