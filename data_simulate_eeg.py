@@ -87,13 +87,14 @@ def generate_direchlet(ch, num_cand, prior=1, prob_high=0.7, prob_noncand=0.1):
     if not flag_high:
         shuffle(prob_new)
         prob_tgt = prob_new[0]
-        prob_cand = prob_new[1:].append(max_v)
+        prob_new.append(max_v)
+        prob_cand = prob_new[1:]
     else:
         prob_tgt = max_v
         prob_cand = prob_new
     prob_vec = np.ones(len(id2char)) * (prob_noncand * 1. / (len(id2char) - num_cand))
     prob_vec[ch] = prob_tgt
-    for ind, item in enumerate(index):
+    for ind, item in enumerate(index[:num_cand-1]):
         prob_vec[item] = prob_cand[ind]
     return prob_vec
 

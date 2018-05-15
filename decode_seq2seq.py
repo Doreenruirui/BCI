@@ -28,8 +28,9 @@ import tensorflow as tf
 import model_concat
 
 from flag import FLAGS
-from data_generation import id2char, char2id, load_vocabulary
+from data_generate import id2char, char2id, load_vocabulary
 from evaluate import batch_mrr, batch_recall_at_k
+from data_simulate_eeg import generate_clean
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -44,7 +45,8 @@ len_x = None
 
 def create_model(session):
     global model, word2id
-    vocab_size_word = len(word2id)
+    if FLAGS.flag_word:
+        vocab_size_word = len(word2id)
     vocab_size_char = len(char2id)
     model = model_concat.Model(FLAGS.size, FLAGS.num_cand, FLAGS.num_layers,
                         FLAGS.max_gradient_norm, FLAGS.learning_rate,
@@ -77,8 +79,8 @@ def read_data():
     logging.info("Get NLC data in %s" % FLAGS.data_dir)
     x_dev = pjoin(FLAGS.data_dir, FLAGS.dev + '.ids')
     vocab_size_char = len(id2char)
-    word2id, id2word = load_vocabulary(FLAGS.data_dir)
     if FLAGS.flag_word:
+        word2id, id2word = load_vocabulary(FLAGS.data_dir)
         rev_vocab = id2word
     else:
         rev_vocab = id2char
@@ -96,7 +98,7 @@ def read_data():
     sorted_index = np.argsort(len_line)
     line_x = map(lambda ele: lines[ele], sorted_index)
     len_x = map(lambda ele: len_line[ele], sorted_index)
-    data = np.load(pjoin(FLAGS.data_dir, FLAGS.dev + '.prob.npy'))
+    data = np.load(pjoin(FLAGS.data_dir, FLAGS.dev + '.' + FLAGS.random + '.prob.npy'))
     data = data[:, FLAGS.start:FLAGS.end, :]
     data = data[:, sorted_index, :]
 
@@ -157,8 +159,7 @@ def decode():
     f_perplex = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'perplex.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
 
     with tf.Session() as sess:
-        model, epoch = create_model(sess)
-        print('epoch', epoch)
+        create_model(sess)
         for i in range(FLAGS.start_batch, num_chunk):
             start = i * FLAGS.batch_size
             end = min(num_line, (i + 1) * FLAGS.batch_size)

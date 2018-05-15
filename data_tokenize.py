@@ -79,28 +79,6 @@ def word_tokenize(path_data, file_data):
                 f_out.write(cur_line + '\n')
 
 
-def reprocess_file(path_data, file_data, max_num_words):
-    num_word = 0
-    num_sen = 0
-    list_num_word = []
-    with open(pjoin(path_data, file_data + '.line'), 'w')  as f_out:
-        for line in file(pjoin(path_data, file_data)):
-            list_sent = sent_tokenize(line.strip())
-            for sent in list_sent:
-                sent = remove_nonascii(sent)
-                sent = re.sub(' +', ' ', re.sub('-', ' ', sent))
-                # sent = re.sub(' +', ' ', ''.join([ele if ele.isalpha() else ' ' for ele in sent]))
-                list_words = [''.join([c if c.isalpha() else '' for c in ele])
-                              for ele in sent.strip().split(' ')]
-                list_words = [ele for ele in list_words if len(ele.strip()) > 0]
-                len_line = len(list_words)
-                f_out.write(' '.join(list_words[:max_num_words]) + '\n')
-                num_word += len_line
-                list_num_word.append(len_line)
-                num_sen += 1
-    print num_word * 1. / num_sen
-    print np.mean(list_num_word)
-    print max(list_num_word), min(list_num_word)
 
 
 

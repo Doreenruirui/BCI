@@ -31,7 +31,7 @@ import tensorflow as tf
 
 import model_concat
 from flag import FLAGS
-from data_generation import pair_iter_distributed as pair_iter, id2char
+from data_generate import pair_iter_distributed as pair_iter, id2char
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -60,9 +60,8 @@ def create_model(session, vocab_size_char, vocab_size_word):
 def validate(model, sess, x_dev, flag_seq2seq):
     valid_costs, valid_lengths = [], []
     for source_tokens, source_mask, target_tokens in pair_iter(x_dev, FLAGS.num_wit,
-                                                               flag_eeg=FLAGS.flag_eeg,
+                                                               data_random=FLAGS.random,
                                                                flag_seq2seq=flag_seq2seq,
-                                                               flag_clean=FLAGS.flag_clean,
                                                                batch_size=FLAGS.batch_size,
                                                                prob_high=FLAGS.prob_high,
                                                                prob_noncand=FLAGS.prob_noncand,
@@ -120,9 +119,8 @@ def train():
             ## Train
             epoch_tic = time.time()
             for source_tokens, source_mask, target_tokens in pair_iter(x_train, FLAGS.num_wit,
-                                                                       flag_eeg=FLAGS.flag_eeg,
+                                                                       data_random=FLAGS.random,
                                                                        flag_seq2seq=flag_seq2seq,
-                                                                       flag_clean=FLAGS.flag_clean,
                                                                        batch_size=FLAGS.batch_size,
                                                                        prob_high=FLAGS.prob_high,
                                                                        prob_noncand=FLAGS.prob_noncand,
@@ -169,7 +167,7 @@ def train():
 
             if len(previous_losses) > 2 and valid_cost > previous_losses[-1]:
                 logging.info("Annealing learning rate by %f" % FLAGS.learning_rate_decay_factor)
-                sess.run(model.learning_rate_decay_op)
+                sess.run(model.lr_decay_op)
                 model.saver.restore(sess, checkpoint_path + ("-%d" % best_epoch))
             else:
                 previous_losses.append(valid_cost)

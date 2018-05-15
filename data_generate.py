@@ -2,7 +2,7 @@ import string
 import random
 from os.path import join as pjoin
 import numpy as np
-from simulate_eeg import generate_direchlet, generate_eeg, generate_clean, load_eegs
+from data_simulate_eeg import generate_direchlet, generate_eeg, generate_clean, load_eegs
 
 
 id2char = [b'<pad>', b'<sos>', b'<eos>', b' '] + list(string.ascii_lowercase)
@@ -91,9 +91,8 @@ def pair_iter_distributed(file_data, num_cand, prior=1,
                           prob_high=0.7, prob_noncand=0.0,
                           batch_size=128, feed=0,
                           flag_seq2seq=False,
-                          flag_eeg=False,
-                          sort_and_shuffle=True,
-                          flag_clean=False):
+                          data_random="eeg",
+                          sort_and_shuffle=True):
     fx = open(file_data)
     batches = []
     load_eegs(nbest=num_cand)
@@ -108,23 +107,22 @@ def pair_iter_distributed(file_data, num_cand, prior=1,
         x_tokens = map(lambda tokenlist: [char2id['<sos>']] +
                                          tokenlist[:-1] +
                                          [char2id['<pad>']], x_tokens)
-        if flag_clean:
+        if data_random == "clean":
             x_probs = map(lambda tokenlist: map(lambda ele:
                                                 generate_clean(ele)
                                                 ,tokenlist),
                           x_tokens)
+        elif data_random == "eeg":
+            x_probs = map(lambda tokenlist: map(lambda ele:
+                                                generate_eeg(ele, num_cand),
+                                                tokenlist),
+                          x_tokens)
         else:
-            if flag_eeg:
-                x_probs = map(lambda tokenlist: map(lambda ele:
-                                                    generate_eeg(ele, num_cand)
-                                                    , tokenlist),
-                              x_tokens)
-            else:
-                x_probs = map(lambda tokenlist: map(lambda ele:
-                                                    generate_direchlet(ele, num_cand,
-                                                                       prior=prior,
-                                                                       prob_high=prob_high,
-                                                                       prob_noncand=prob_noncand),
+            x_probs = map(lambda tokenlist: map(lambda ele:
+                                                generate_direchlet(ele, num_cand,
+                                                                   prior=prior,
+                                                                   prob_high=prob_high,
+                                                                   prob_noncand=prob_noncand),
                                                     tokenlist),
                               x_tokens)
         if feed:

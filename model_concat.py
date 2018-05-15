@@ -19,7 +19,7 @@ from __future__ import division
 from __future__ import print_function
 
 import random
-from data_generation import char2id
+from data_generate import char2id
 
 import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
@@ -31,7 +31,7 @@ from tensorflow.python.ops import embedding_ops
 from tensorflow.python.ops import rnn
 from tensorflow.python.ops import rnn_cell
 from tensorflow.python.ops import variable_scope as vs
-from rnn_models import GRUCellAttn
+from model_rnn import GRUCellAttn
 from module import label_smooth
 
 

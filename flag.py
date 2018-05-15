@@ -44,5 +44,6 @@ tf.app.flags.DEFINE_boolean("flag_word", False, "Whether to predict word or not"
 tf.app.flags.DEFINE_boolean("flag_bidirect", False, "Whether to use birectional lstm")
 tf.app.flags.DEFINE_boolean("flag_eeg", False, "whetehr to use eeg to generate the data")
 tf.app.flags.DEFINE_boolean("flag_clean", False, "whetehr to generate the clean data")
+tf.app.flags.DEFINE_string("random", 'eeg', "how to generate the clean data")
 
 FLAGS = tf.app.flags.FLAGS
