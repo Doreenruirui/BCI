@@ -18,10 +18,12 @@ def generate_prob():
         if len(strs) > max_len:
             max_len = len(strs)
     num_line = len(line_x)
+    max_len = min(max_len, 300)
     prob_mat = np.zeros((max_len, num_line, len(char2id)))
     for i in range(num_line):
         line = line_x[i]
         src_toks = [char2id['<sos>']] + line[:-1]
+        src_toks = src_toks[:max_len]
         if FLAGS.random == 'clean':
             src_probs = [generate_clean(ele) for ele in src_toks]
         elif FLAGS.random == 'eeg':
@@ -34,7 +36,7 @@ def generate_prob():
                             for ele in src_toks]
         src_probs = np.asarray(src_probs)
         prob_mat[:len(line),i,:] = src_probs
-    np.save(pjoin(FLAGS.data_dir, FLAGS.dev + '.' + FLAGS.random + '.prob'), prob_mat)
+    np.save(pjoin(FLAGS.data_dir, FLAGS.dev + '.' + FLAGS.random + '.' + str(FLAGS.num_wit) + '.prob'), prob_mat)
 
 def main(_):
     generate_prob()

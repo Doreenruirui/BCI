@@ -14,22 +14,57 @@ def overall_recall(filename):
     sum_res = 0.
     if os.path.exists(filename):
         for line in file(filename):
+            if len(line.strip()) == 0:
+                continue
             items = map(float, line.strip().split('\t'))
             num_res += len(items)
             sum_res += sum(items)
     print sum_res / num_res
 
 
-def overall_perplex(filename):
+def overall_perplex_neural(filename):
     num_res = 0.
     sum_res = 0.
     if os.path.exists(filename):
         for line in file(filename):
             items = map(float, line.strip().split('\t'))
-            num_res += 1
-            sum_res += np.exp(-sum(items)/len(items))
+            num_res += len(items)
+            sum_res += -sum(items)
+            #sum_res += np.exp(-sum(items)/len(items))
             #sum_res += 1./(np.prod(items) ** (1./ len(items)))
     print sum_res / num_res
+    print np.exp(- sum_res / num_res)
+
+def overall_perplex_kenlm(filename):
+    num_res = 0.
+    sum_res = 0.
+    unnormal = 0
+    if os.path.exists(filename):
+        for line in file(filename):
+            items = map(float, line.strip().split('\t'))
+            perplex = items[0]
+            nitem = items[1]
+            #sum_res += perplex * nitem
+            #num_res += nitem
+            if 10 ** (-perplex * nitem) == 0:
+                unnormal += 1
+            else:
+                sum_res += np.log(10 ** (-perplex * nitem)) * -1    
+                num_res += nitem
+    print sum_res / num_res
+    print unnormal
+    #print 10 ** (- sum_res / num_res)
+
+def overall_perplex_baseline(filename):
+    num_res = 0.
+    sum_res = 0.
+    if os.path.exists(filename):
+        for line in file(filename):
+            items = map(float, line.strip().split('\t'))
+            sum_res += np.sum(-1 * np.log(np.asarray(items)))
+            num_res += len(items)
+    print sum_res / num_res
+    print np.exp(- sum_res / num_res)
 
 def eval_length(filename, metric, lenlabel):
     list_res = []
@@ -53,8 +88,15 @@ def eval_length(filename, metric, lenlabel):
          1, "./Results/%s_Length" % metric)
 
 filename = sys.argv[1]
-#overall_perplex(filename)
-overall_recall(filename)
+flag = int(sys.argv[2])
+if flag == 1:
+    overall_perplex_neural(filename)
+elif flag == 2:
+    overall_perplex_kenlm(filename)
+elif flag==3:
+    overall_perplex_baseline(filename)
+elif flag == 0:
+    overall_recall(filename)
 #eval_length(filename, "MRR", "Seq2Seq")
 
 

@@ -2,7 +2,7 @@ import string
 import random
 from os.path import join as pjoin
 import numpy as np
-from data_simulate_eeg import generate_direchlet, generate_eeg, generate_clean, load_eegs, generate_clean_noisy
+from data_simulate_eeg import generate_direchlet, generate_eeg, generate_clean, load_eegs
 
 
 id2char = [b'<pad>', b'<sos>', b'<eos>', b' '] + list(string.ascii_lowercase)
@@ -112,11 +112,6 @@ def pair_iter_distributed(file_data, num_cand, prior=1,
                                                 generate_clean(ele)
                                                 ,tokenlist),
                           x_tokens)
-        elif data_random == 'clean_noisy':
-            x_probs = map(lambda tokenlist: map(lambda ele:
-                                                generate_clean_noisy(ele, prob=prob_high)
-                                                ,tokenlist),
-                          x_tokens)
         elif data_random == "eeg":
             x_probs = map(lambda tokenlist: map(lambda ele:
                                                 generate_eeg(ele, num_cand),
@@ -186,20 +181,3 @@ def pair_iter_word_distributed(file_data, num_cand, prior=1,
         yield (source_probs, source_mask, target_tokens, target_tokens_word)
     return
 
-def process_batch_clean(x_tokens):
-    y_tokens = x_tokens
-    x_tokens = map(lambda tokenlist: [char2id['<sos>']] +
-                                     tokenlist[:-1] +
-                                     [char2id['<pad>']], x_tokens)
-
-    x_probs = map(lambda tokenlist: map(lambda ele:
-                                        generate_clean(ele)
-                                        ,tokenlist),
-                  x_tokens)
-    x_probs_padded = padded(x_probs, len(char2id), 0.0)
-    y_padded = padded(y_tokens, 1)
-    y_padded = map(lambda tokenlist: [char2id['<sos>']] + tokenlist, y_padded)
-    source_probs = np.transpose(np.array(x_probs_padded), (1, 0, 2))
-    source_mask = (np.sum(source_probs, -1) > 0).astype(np.int32)
-    target_tokens = np.array(y_padded).T
-    return source_probs, source_mask, target_tokens

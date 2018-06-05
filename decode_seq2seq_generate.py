@@ -27,7 +27,7 @@ import tensorflow as tf
 import model_concat
 
 from flag import FLAGS
-from data_generate import id2char, char2id, load_vocabulary
+from data_generate import id2char, char2id, load_vocabulary, process_batch_clean
 from evaluate import batch_mrr, batch_recall_at_k
 from data_simulate_eeg import generate_clean
 
@@ -36,7 +36,6 @@ logging.basicConfig(level=logging.INFO)
 
 
 id2word, word2id = None, None
-data = None
 model = None
 line_x = None
 len_x = None
@@ -67,14 +66,14 @@ def decode_string(list_tokens, revocab):
     else:
         return map(lambda tokens: ''.join([id2char[tok] for tok in tokens[1:]]), list_tokens)
 
+
 def get_mask(len_input, max_len):
     num_line = len(len_input)
     mask = map(lambda ele: [1] * min(ele, max_len) + [0] * (max_len - min(ele, max_len)), len_input)
     return np.asarray(mask).T
 
-
 def read_data():
-    global data, line_x, len_x, word2id, id2word
+    global line_x, len_x, word2id, id2word
     logging.info("Get NLC data in %s" % FLAGS.data_dir)
     x_dev = pjoin(FLAGS.data_dir, FLAGS.dev + '.ids')
     vocab_size_char = len(id2char)
@@ -97,18 +96,12 @@ def read_data():
     sorted_index = np.argsort(len_line)
     line_x = map(lambda ele: lines[ele], sorted_index)
     len_x = map(lambda ele: len_line[ele], sorted_index)
-    data = np.load(pjoin(FLAGS.data_dir, FLAGS.dev + '.' + FLAGS.random + '.' + str(FLAGS.num_wit) + '.prob.npy'))
-    data = data[:, FLAGS.start:FLAGS.end, :]
-    data = data[:, sorted_index, :]
 
 def decode_batch(sess, batch_size, s, e):
-    global data, model, line_x, len_x
+    global model, line_x, len_x
     cur_chunk_len = len_x[s:e]
     cur_max_len = max(cur_chunk_len)
-    cur_max_len = min(cur_max_len, 300)
-    src_probs = data[:cur_max_len, s:e, :]
-    tgt_toks = map(lambda line: [char2id['<sos>']] + line[:300] + [char2id['<pad>']] * (cur_max_len - len(line)), line_x[s:e])
-    tgt_toks = np.asarray(tgt_toks).T
+    src_probs, src_mask, tgt_toks = process_batch_clean(line_x[s:e])
     batch_size = min(batch_size, e - s)
     cur_recall = np.zeros((2, batch_size, cur_max_len))
     cur_mrr = np.zeros((2, batch_size, cur_max_len))
@@ -128,7 +121,6 @@ def decode_batch(sess, batch_size, s, e):
             src_mask = get_mask(cur_chunk_len, cur_max_len + 1)
             encoder_out = model.encode(sess, src_probs, src_mask)
         for k in range(cur_max_len):
-            print('\t' + str(k))
             cur_mask = get_mask(cur_chunk_len, k + 1)
             if FLAGS.flag_bidirect:
                 outputs, prediction, perplex, top_seqs = model.decode_beam(sess, src_probs[:k+1,:,:], tgt_toks[:k+2,:], cur_mask, FLAGS.beam_size)
@@ -148,9 +140,9 @@ def decode_batch(sess, batch_size, s, e):
 
 
 def decode():
-    global word2id, id2word, data, model, line_x, len_x
-    #if not os.path.exists(pjoin(FLAGS.data_dir, FLAGS.out_dir)):
-    #    os.makedirs(pjoin(FLAGS.data_dir, FLAGS.out_dir))
+    global word2id, id2word, model, line_x, len_x
+    if not os.path.exists(pjoin(FLAGS.data_dir, FLAGS.out_dir)):
+        os.makedirs(pjoin(FLAGS.data_dir, FLAGS.out_dir))
     read_data()
     num_line = len(line_x)
     num_chunk = int(np.ceil(num_line * 1. / FLAGS.batch_size))
@@ -168,24 +160,23 @@ def decode():
             end = min(num_line, (i + 1) * FLAGS.batch_size)
             cur_len = len_x[start:end]
             max_len = max(cur_len)
-            print(i, max_len)
-            # if max_len > 200:
-            #     chunk_size = 1
-            #     cur_num_chunk = int(FLAGS.batch_size / chunk_size)
-            #     for j in range(cur_num_chunk):
-            #         cur_start = i * FLAGS.batch_size + j * chunk_size
-            #         cur_end = min(num_line, cur_start + chunk_size)
-            #         mrr, recall, perplex = decode_batch(sess, chunk_size, cur_start, cur_end)
-            #         for pred_id in range(2):
-            #             f_mrr[pred_id].write(mrr[pred_id])
-            #             f_recall[pred_id].write(recall[pred_id])
-            #         f_perplex.write(perplex)
-            # else:
-            mrr, recall, perplex = decode_batch(sess, FLAGS.batch_size, start, end)
-            for pred_id in range(2):
-                f_mrr[pred_id].write(mrr[pred_id])
-                f_recall[pred_id].write(recall[pred_id])
-            f_perplex.write(perplex)
+            if max_len > 125:
+                chunk_size = 1
+                cur_num_chunk = int(FLAGS.batch_size / chunk_size)
+                for j in range(cur_num_chunk):
+                    cur_start = i * FLAGS.batch_size + j * chunk_size
+                    cur_end = min(num_line, cur_start + chunk_size)
+                    mrr, recall, perplex = decode_batch(sess, chunk_size, cur_start, cur_end)
+                    for pred_id in range(2):
+                        f_mrr[pred_id].write(mrr[pred_id])
+                        f_recall[pred_id].write(recall[pred_id])
+                    f_perplex.write(perplex)
+            else:
+                mrr, recall, perplex = decode_batch(sess, FLAGS.batch_size, start, end)
+                for pred_id in range(2):
+                    f_mrr[pred_id].write(mrr[pred_id])
+                    f_recall[pred_id].write(recall[pred_id])
+                f_perplex.write(perplex)
         for pred_id in range(2):
             f_mrr[pred_id].close()
             f_recall[pred_id].close()

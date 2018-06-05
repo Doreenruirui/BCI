@@ -33,12 +33,6 @@ def load_eegs(path='EEGEvidence.txt-high', nbest=3):
             a_sample = []
 
 
-def generate_clean(ch):
-    prob_vec = np.zeros(len(id2char))
-    prob_vec[ch] = 1.0
-    return prob_vec
-
-
 def generate_eeg(ch, nbest=3):
     """
     generate according to target and non-target
@@ -63,6 +57,32 @@ def generate_eeg(ch, nbest=3):
     for i in range(nbest - 1):
         res[index[i]] = sample[i + 1]
     return res
+
+def generate_clean(ch):
+    prob_vec = np.zeros(len(id2char))
+    if ch > 0:
+        prob_vec[ch] = 1.0
+    return prob_vec
+
+def generate_clean_noisy(ch, prob=0.9):
+    if ch == 0:
+        return np.zeros(len(id2char))
+    elif ch == 1:
+        prob_vec = np.zeros(len(id2char))
+        prob_vec[1] = 1.0
+        return prob_vec
+    flag = np.random.binomial(1, prob)
+    if flag:
+        prob_vec = np.zeros(len(id2char))
+        prob_vec[ch] = 1.0
+    else:
+        index = np.arange(len(id2char)).tolist()
+        del index[ch]
+        index = index[3:]
+        prob_vec = np.zeros(len(id2char))
+        chose = np.random.choice(len(index), 1)
+        prob_vec[index[chose[0]]] = 1.0
+    return prob_vec
 
 
 def generate_direchlet(ch, num_cand, prior=1, prob_high=0.7, prob_noncand=0.1):

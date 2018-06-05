@@ -50,7 +50,6 @@ class Model(object):
                  learning_rate, learning_rate_decay,
                  forward_only=False, optimizer="adam", num_pred=5):
         self.size = size
-        self.num_cand = num_cand
         self.num_layers = num_layers
         self.learning_rate = learning_rate
         self.learning_decay = learning_rate_decay
@@ -98,9 +97,10 @@ class Model(object):
                                               -1]) * \
                                   tf.reshape(self.L_enc,
                                              [1, 1, vocab_size, self.size])
-            self.encoder_inputs = tf.reshape(self.encoder_inputs,
-                                             [self.len_inp, -1, 
-                                              vocab_size * self.size])
+            #self.encoder_inputs = tf.reshape(self.encoder_inputs,
+            #                                 [self.len_inp, -1, 
+            #                                  vocab_size * self.size])
+            self.encoder_inputs = tf.reduce_sum(self.encoder_inputs, reduction_indices=2)
             self.decoder_inputs = embedding_ops.embedding_lookup(self.L_enc, self.tgt_toks)
 
     def setup_encoder(self, flag_bidirect):
@@ -162,30 +162,35 @@ class Model(object):
             logits2d = rnn_cell._linear(tf.reshape(output,
                                                    [-1, self.size]),
                                         vocab_size, True, 1.0)
-            outputs2d = tf.nn.log_softmax(logits2d)
-            self.outputs = tf.arg_max(tf.reshape(outputs2d,
-                                      [-1, self.batch_size, vocab_size]), 2)
+            self.outputs2d = tf.nn.log_softmax(logits2d)
+            # self.outputs = tf.argmax(tf.reshape(outputs2d,
+            #                           [-1, self.batch_size, vocab_size]), 2)
             labels = tf.reshape(tf.pad(tf.slice(self.tgt_toks, [1, 0], [-1, -1]),
                                        [[0,1],[0,0]]),
                                 [-1])
             self.labels = labels
-            labels = label_smooth(labels, vocab_size)
+            if self.foward_only:
+                labels = tf.one_hot(labels, depth=vocab_size)
+            else:
+                labels = label_smooth(labels, vocab_size)
             mask1d = tf.reshape(self.src_mask, [-1])
             losses1d = tf.nn.softmax_cross_entropy_with_logits(logits2d,
                                                                       labels) \
                        * tf.to_float(mask1d)
-            losses2d = tf.reshape(losses1d, [self.len_inp, self.batch_size])
-            self.losses = tf.reduce_sum(losses2d) / tf.to_float(self.batch_size)
+            self.losses2d = tf.reshape(losses1d, [self.len_inp, self.batch_size])
+            self.losses = tf.reduce_sum(self.losses2d) / tf.to_float(self.batch_size)
 
-    def build_model(self, vocab_size_char, model='lstm', flag_word=False, vocab_size_word=0, loss="char"):
+    def build_model(self, vocab_size_char, model='lstm', flag_bidirect=False, flag_word=False, vocab_size_word=0, loss="char"):
         self._add_place_holders(flag_word)
         with tf.variable_scope("Model", initializer=tf.uniform_unit_scaling_initializer(1.0)):
             self.setup_embeddings(vocab_size_char)
-            if model == 'lstm':
+            if flag_bidirect:
+                self.setup_encoder(flag_bidirect=True)
+            else:
                 self.setup_encoder(flag_bidirect=False)
+            if model == 'lstm':
                 output = self.encoder_output
             else:
-                self.setup_encoder(flag_bidirect=True)
                 self.setup_decoder()
                 output = self.decoder_output
             if flag_word:
@@ -193,22 +198,32 @@ class Model(object):
             else:
                 self.setup_loss(output, vocab_size_char)
             if self.foward_only:
-                self.setup_beam("Logistic", vocab_size_char, model)
+                if model == 'seq2seq':
+                    self.setup_beam("Logistic", vocab_size_char, model)
+                else:
+                    self.setup_lstm(vocab_size_char)
         if not self.foward_only:
             self.setup_train()
 
         self.saver = tf.train.Saver(tf.all_variables(), max_to_keep=0)
 
-    def beam_step_lstm(self, time_step, batch_size, state_inputs):
+    def beam_step_lstm(self, time_step, state_inputs):
         inp = tf.slice(self.encoder_inputs, [time_step, 0, 0], [1, -1, -1])
-        inp = tf.reshape(tf.tile(tf.reshape(inp, [1, -1]), [batch_size, 1]), [batch_size, len(char2id) * self.size])
+        inp = tf.reshape(inp, [-1, len(char2id) * self.size])
         with vs.variable_scope("Encoder", reuse=True):
             with vs.variable_scope('RNN', reuse=True):
+                # batch_size * size
                 out, state_outputs = self.encoder_fw_cell(inp, state_inputs)
         return out, state_outputs
 
-    def beam_step_seq2seq(self, time_step, batch_size, beam_seqs, state_inputs):
-        inp = tf.reshape(tf.slice(beam_seqs, [0, time_step], [-1, 1]), [batch_size])
+    def beam_step_seq2seq(self, time_step, beam_seqs, state_inputs):
+        beam_size = tf.shape(beam_seqs)[1]
+        self.attn_cell.mask = tf.cast(tf.tile(tf.reshape(tf.transpose(self.src_mask, [1, 0]),
+                                                         [self.batch_size, 1, -1]),
+                                              [1, beam_size, 1]),
+                                      tf.bool)
+        inp = tf.reshape(tf.slice(beam_seqs, [0, 0, time_step], [-1, -1, 1]),
+                         [self.batch_size * beam_size])
         inputs = embedding_ops.embedding_lookup(self.L_enc, inp)
         with vs.variable_scope("Decoder", reuse=True):
             with vs.variable_scope("RNN", reuse=True):
@@ -216,70 +231,145 @@ class Model(object):
                     rnn_out, rnn_outputs = self.decoder_cell(inputs, state_inputs[:self.num_layers-1])
             with vs.variable_scope("Attn", reuse=True):
                 with vs.variable_scope("RNN", reuse=True):
-                    self.attn_cell.mask = tf.cast(tf.tile(self.src_mask, [1, batch_size]), tf.bool)
-                    out, attn_outputs = self.attn_cell(rnn_out, state_inputs[-1])
+                    out, attn_outputs = self.attn_cell.beam(rnn_out, state_inputs[-1], beam_size, self.batch_size)
         state_outputs = rnn_outputs + (attn_outputs, )
         return out, state_outputs
+
 
     def beam_loss(self, scope, output, vocab_size):
         with vs.variable_scope(scope, reuse=True):
             do2d = tf.reshape(output, [-1, self.size])
             logits2d = rnn_cell._linear(do2d, vocab_size, True, 1.0)
-            logprobs2d = tf.nn.log_softmax(logits2d)
-        return logprobs2d
+            logprobs3d = tf.reshape(tf.nn.log_softmax(logits2d), [self.batch_size, -1, vocab_size])
+        return logprobs3d
+
+
+    def setup_lstm(self, vocab_size):
+        probs, index = tf.nn.top_k(self.outputs2d, k=self.num_pred)
+        self.top_seqs = tf.reshape(index, [-1, self.batch_size, self.num_pred])
+
 
     def setup_beam(self, loss_scope, vocab_size, model='lstm'):
         time_0 = tf.constant(0)
-        beam_seqs_0 = tf.constant([[char2id['<sos>']]])
-        beam_probs_0 = tf.constant([0.])
-        top_seqs_0 = tf.zeros([1, self.num_pred], dtype=tf.int32)
-        top_probs_0 = tf.zeros([1, self.num_pred], dtype=tf.float32)
-        perplex_0 = tf.constant([0.])
-        state_0 = tf.zeros([1, self.size])
+        beam_seqs_0 = tf.ones([self.batch_size, 1, 1], dtype=tf.int32) * char2id['<sos>']
+        beam_probs_0 = tf.zeros(shape=[self.batch_size, 1], dtype=tf.float32)
+        # top_seqs_0 = tf.zeros([self.batch_size, self.num_pred, 1], dtype=tf.int32)
+        top_seqs_1 = tf.zeros([self.batch_size, self.num_pred, 1], dtype=tf.int32)
+        top_seqs_2 = tf.zeros([self.batch_size, self.num_pred, 1], dtype=tf.int32)
+        top_seqs_3 = tf.zeros([self.batch_size, self.num_pred, 1], dtype=tf.int32)
+        top_seqs_4 = tf.zeros([self.batch_size, self.num_pred, 1], dtype=tf.int32)
+        perplex_0 = tf.zeros([self.batch_size, 1], dtype=tf.float32)
+        state_0 = tf.zeros([self.batch_size, self.size])
         states_0 = (state_0,) * self.num_layers
 
-        def decode_cond(time, beam_seqs, beam_probs, top_seqs, top_probs, perplex, *states):
+        def decode_cond(time, beam_seqs, beam_probs, perplex, top_seqs1, top_seqs2, top_seqs3, top_seqs4, *states):
             return time < self.len_inp
 
-        def decode_step(time, beam_seqs, beam_probs, top_seqs, top_probs, perplex, *states):
-            batch_size = tf.shape(beam_probs)[0]
+        def decode_step(time, beam_seqs, beam_probs, perplex, top_seqs1, top_seqs2, top_seqs3, top_seqs4, *states):
             if model == 'lstm':
-                decoder_outputs, state_output = self.beam_step_lstm(time, batch_size, states)
+                decoder_outputs, state_output = self.beam_step_lstm(time, states)
             else:
-                decoder_outputs, state_output = self.beam_step_seq2seq(time, batch_size, beam_seqs, states)
-            logprobs2d = self.beam_loss(loss_scope, decoder_outputs, vocab_size)
-
-            total_probs = logprobs2d + tf.reshape(beam_probs, [-1, 1])
-            flat_total_probs = tf.reshape(total_probs, [-1])
-
-            beam_k = tf.minimum(tf.size(flat_total_probs), self.beam_size)
-            next_beam_probs, top_indices = tf.nn.top_k(flat_total_probs, k=beam_k)
-
+                decoder_outputs, state_output = self.beam_step_seq2seq(time, beam_seqs, states)
+            old_beam_size = tf.shape(beam_seqs)[1]
+            logprobs3d = self.beam_loss(loss_scope, decoder_outputs, vocab_size)
+            # batch_size * old_beam_size * vocab_size
+            total_probs = logprobs3d + tf.reshape(beam_probs, [self.batch_size, -1, 1])
+            # batch_size * (old_beam_size * vocab_size)
+            flat_total_probs = tf.reshape(total_probs, [self.batch_size, -1])
+            # new_beam_size
+            beam_size = tf.minimum(tf.shape(flat_total_probs)[1], self.beam_size)
+            # batch_size * new_beam_size, batch_size * new_beam_size
+            next_beam_probs, top_indices = tf.nn.top_k(flat_total_probs, k=beam_size)
+            # batch_size * new_beam_size
             next_bases = tf.floordiv(top_indices, vocab_size)
+            # batch_size * new_beam_size
             next_mods = tf.mod(top_indices, vocab_size)
+            # batch_size * new_beam_size * 1
+            batch_index = tf.tile(tf.reshape(tf.range(self.batch_size),
+                                             [-1, 1, 1]),
+                                  [1, beam_size, 1])
+            # batch_size * new_beam_size * 1
+            base_index = tf.reshape(next_bases, [self.batch_size, -1, 1])
+            # batch_size * new_beam_size * 2
+            fetch_index = tf.concat(2, [batch_index, base_index])
+            # batch_size * new_beam_size * len_output
+            gather_seqs = tf.gather_nd(beam_seqs, fetch_index)
+            # batch_size * new_beam_size * (len_output + 1)
+            next_beam_seqs = tf.concat(2, [gather_seqs,
+                                           tf.expand_dims(next_mods, -1)])
+            # [(batch_size * new_beam_size) * num_units] * 3
+            if model == 'seq2seq':
+                next_states = [tf.reshape(tf.gather_nd(tf.reshape(state,
+                                                       [self.batch_size, -1, self.size]),
+                                            fetch_index),
+                                          [self.batch_size * beam_size, -1])
+                               for state in state_output]
+            else:
+                next_states = [state for state in state_output]
 
-            cur_probs = tf.reshape(tf.slice(next_beam_probs, [0], [self.num_pred]), [1, self.num_pred])
-            cur_seqs = tf.reshape(tf.slice(next_mods, [0], [self.num_pred]), [1, self.num_pred])
-            next_top_seqs = tf.concat(0, [top_seqs, cur_seqs])
-            next_top_probs = tf.concat(0, [top_probs, cur_probs])
 
-            next_states = [tf.gather(state, next_bases) for state in state_output]
-            next_beam_seqs = tf.concat(1, [tf.gather(beam_seqs, next_bases),
-                                           tf.reshape(next_mods, [-1, 1])])
+            # cur_seqs = tf.expand_dims(tf.slice(next_mods, [0, 0], [-1, self.num_pred]), -1)
+            # next_top_seqs = tf.concat(2, [top_seqs, cur_seqs])
 
-            cur_tok = tf.reshape(tf.slice(self.tgt_toks, [time + 1, 0], [1, -1]), ())
-            perplex_prob = tf.reduce_max(tf.slice(total_probs, [0, cur_tok], [-1, 1]))
-            next_perplex = tf.concat(0, [perplex,tf.reshape(perplex_prob, [-1])])
+            # batch_size * vocab_size
+            sum_probs = tf.reduce_sum(total_probs, reduction_indices=1)
+            # batch_size * num_pred * 1
+            cur_seqs1 = tf.expand_dims(tf.nn.top_k(sum_probs, self.num_pred)[1], -1)
+            # batch_szie * num_pred * (len_output + 1)
+            next_top_seqs1 = tf.concat(2, [top_seqs1, cur_seqs1])
 
-            return [time + 1, next_beam_seqs, next_beam_probs, next_top_seqs, next_top_probs, next_perplex] + next_states
+
+            max_probs = tf.reduce_max(total_probs, reduction_indices=1)
+            cur_seqs2 = tf.expand_dims(tf.nn.top_k(max_probs, self.num_pred)[1], -1)
+            next_top_seqs2 = tf.concat(2, [top_seqs2, cur_seqs2])
+
+
+            sum_probs_1 = tf.reduce_sum(logprobs3d, reduction_indices=1)
+            cur_seqs3 = tf.expand_dims(tf.nn.top_k(sum_probs_1, self.num_pred)[1], -1)
+            next_top_seqs3= tf.concat(2, [top_seqs3, cur_seqs3])
+
+
+            max_probs_1 = tf.reduce_max(logprobs3d, reduction_indices=1)
+            cur_seqs4 = tf.expand_dims(tf.nn.top_k(max_probs_1, self.num_pred)[1], -1)
+            next_top_seqs4 = tf.concat(2, [top_seqs4, cur_seqs4])
+
+            if model == 'seq2seq':
+                # batch_size
+                cur_tok = tf.tile(tf.reshape(tf.slice(self.tgt_toks,
+                                                      [time + 1, 0], [1, -1]),
+                                             [-1, 1, 1]),
+                                  [1, old_beam_size, 1])
+                # batch_size * old_beam_size * 1
+                batch_index = tf.tile(tf.reshape(tf.range(self.batch_size), [-1, 1, 1]),
+                                      [1, old_beam_size, 1])
+                beam_index = tf.tile(tf.reshape(tf.range(old_beam_size), [1, -1, 1]), [self.batch_size, 1, 1])
+                toks_index = tf.concat(2, [batch_index, beam_index, cur_tok])
+                perplex_prob = tf.reduce_max(tf.gather_nd(logprobs3d, toks_index),
+                                             reduction_indices=-1)
+                next_perplex = tf.concat(1, [perplex, tf.reshape(perplex_prob, [-1, 1])])
+            else:
+                logprobs3d = tf.reshape(logprobs3d, [-1, vocab_size])
+                cur_tok = tf.reshape(tf.slice(self.tgt_toks,
+                                                      [time + 1, 0], [1, -1]),
+                                             [-1, 1])
+                batch_index = tf.reshape(tf.range(self.batch_size), [-1, 1])
+                toks_index = tf.concat(1, [batch_index, cur_tok])
+                perplex_prob = tf.gather_nd(logprobs3d, toks_index)
+                next_perplex = tf.concat(1, [perplex, tf.reshape(perplex_prob, [-1, 1])])
+
+            return [time + 1, next_beam_seqs, next_beam_probs, next_perplex, next_top_seqs1, next_top_seqs2, next_top_seqs3, next_top_seqs4] + next_states
 
         var_shape = []
         var_shape.append((time_0, time_0.get_shape()))
-        var_shape.append((beam_seqs_0, tf.TensorShape([None, None])))
-        var_shape.append((beam_probs_0, tf.TensorShape([None, ])))
-        var_shape.append((top_seqs_0, tf.TensorShape([None, None])))
-        var_shape.append((top_probs_0, tf.TensorShape([None, None])))
-        var_shape.append((perplex_0, tf.TensorShape([None, ])))
+        var_shape.append((beam_seqs_0, tf.TensorShape([None, None, None])))
+        var_shape.append((beam_probs_0, tf.TensorShape([None, None])))
+        var_shape.append((perplex_0, tf.TensorShape([None, None])))
+        # var_shape.append((top_seqs_0, tf.TensorShape([None, None, None])))
+        var_shape.append((top_seqs_1, tf.TensorShape([None, None, None])))
+        var_shape.append((top_seqs_2, tf.TensorShape([None, None, None])))
+        var_shape.append((top_seqs_3, tf.TensorShape([None, None, None])))
+        var_shape.append((top_seqs_4, tf.TensorShape([None, None, None])))
+        # var_shape.append((top_probs_0, tf.TensorShape([None, None])))
         var_shape.extend([(state_0, tf.TensorShape([None, self.size])) for state_0 in states_0])
         loop_vars, loop_var_shapes = zip(*var_shape)
         self.loop_vars = loop_vars
@@ -288,21 +378,54 @@ class Model(object):
         self.vars = ret_vars
         self.beam_output = ret_vars[1]
         self.beam_scores = ret_vars[2]
-        self.top_outputs = ret_vars[3]
-        self.top_scores = ret_vars[4]
-        self.perplex = ret_vars[5]
+        self.perplex = ret_vars[3]
+        self.top_seqs_1 = ret_vars[4]
+        self.top_seqs_2 = ret_vars[5]
+        self.top_seqs_3 = ret_vars[6]
+        self.top_seqs_4 = ret_vars[7]
 
-    def decode_beam(self, session, src_toks, tgt_toks, src_mask, beam_size, num_cand):
+    def decode_beam(self, session, src_toks, tgt_toks, src_mask, beam_size):
         input_feed = {}
         input_feed[self.src_toks] = src_toks
         input_feed[self.src_mask] = src_mask
         input_feed[self.tgt_toks] = tgt_toks
         input_feed[self.keep_prob] = 1.
         input_feed[self.beam_size] = beam_size
-        self.num_cand = num_cand
-        output_feed = [self.beam_output, self.beam_scores, self.top_outputs, self.top_scores, self.perplex]
+        output_feed = [self.beam_output, self.beam_scores, self.perplex,  self.top_seqs_1, self.top_seqs_2, self.top_seqs_3, self.top_seqs_4]
         outputs = session.run(output_feed, input_feed)
-        return outputs[0], outputs[1], outputs[2], outputs[3], outputs[4]
+        return outputs[0], outputs[1], outputs[2], [outputs[3], outputs[4], outputs[5], outputs[6]]
+
+    def decode_lstm(self, session, src_toks, tgt_toks, src_mask, beam_size):
+        input_feed = {}
+        input_feed[self.src_toks] = src_toks
+        input_feed[self.src_mask] = src_mask
+        input_feed[self.tgt_toks] = tgt_toks
+        input_feed[self.keep_prob] = 1.
+        output_feed = [self.losses2d,self.top_seqs]
+        outputs = session.run(output_feed, input_feed)
+        return outputs[0], outputs[1]
+
+    def encode(self, session, src_toks, src_mask):
+        input_feed = {}
+        input_feed[self.src_toks] = src_toks
+        input_feed[self.src_mask] = src_mask
+        input_feed[self.keep_prob] = 1.
+        output_feed = [self.encoder_output]
+        outputs = session.run(output_feed, input_feed)
+        return outputs[0]
+
+    def decode(self, session, encoder_output, src_mask, tgt_toks, beam_size):
+        input_feed = {}
+        input_feed[self.encoder_output] = encoder_output
+        input_feed[self.src_mask] = src_mask
+        input_feed[self.tgt_toks] = tgt_toks
+        input_feed[self.keep_prob] = 1.
+        input_feed[self.beam_size] = beam_size
+        input_feed[self.batch_size] = encoder_output.shape[1]
+        input_feed[self.len_inp] = encoder_output.shape[0]
+        output_feed = [self.beam_output, self.beam_scores, self.perplex,  self.top_seqs_1, self.top_seqs_2, self.top_seqs_3, self.top_seqs_4]
+        outputs = session.run(output_feed, input_feed)
+        return outputs[0], outputs[1], outputs[2], [outputs[3], outputs[4], outputs[5], outputs[6]]
 
     def train(self, session, src_toks, src_mask, tgt_toks, keep_prob):
         input_feed = {}

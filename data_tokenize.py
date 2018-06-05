@@ -83,6 +83,6 @@ def word_tokenize(path_data, file_data):
 
 
 #reprocess_file(sys.argv[1], sys.argv[2], 20)
-vocabulary(sys.argv[1], sys.argv[2], 50000)
+#vocabulary(sys.argv[1], sys.argv[2], 50000)
 tokenize(sys.argv[1], sys.argv[2])
-word_tokenize(sys.argv[1], sys.argv[2])
+#word_tokenize(sys.argv[1], sys.argv[2])

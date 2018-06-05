@@ -58,4 +58,4 @@ elif task == 1:
 elif task == 2:
     arg_ratio = float(sys.argv[4])
     arg_split_id = int(sys.argv[5])
-    split_train_test(arg_folder, arg_file, arg_ratio)
+    split_train_test(arg_folder, arg_file, arg_ratio, arg_split_id)
