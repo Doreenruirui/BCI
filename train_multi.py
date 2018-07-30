@@ -58,11 +58,10 @@ def create_model(session, vocab_size_char, vocab_size_word):
     return model, num_epoch
 
 
-def validate(model, sess, cur_len):
+def validate(model, sess):
     valid_costs, valid_lengths = [], []
     for source_tokens, source_mask, target_tokens in pair_iter(FLAGS.data_dir,
                                                                FLAGS.dev, FLAGS.num_wit,
-                                                               cur_len=cur_len,
                                                                num_top=FLAGS.num_top,
                                                                max_seq_len=FLAGS.max_seq_len,
                                                                data_random=FLAGS.random,
@@ -70,6 +69,7 @@ def validate(model, sess, cur_len):
                                                                prior=FLAGS.prior,
                                                                prob_high=FLAGS.prob_high,
                                                                prob_in=FLAGS.prob_in,
+                                                               sort_and_shuffle=False,
                                                                flag_generate=FLAGS.flag_generate):
         cost = model.test(sess, source_tokens, source_mask, target_tokens)
         valid_costs.append(cost * source_mask.shape[1])
@@ -86,12 +86,17 @@ def train():
     logging.info("Vocabulary size: %d" % vocab_size)
     if not os.path.exists(FLAGS.train_dir):
         os.makedirs(FLAGS.train_dir)
+    if FLAGS.model == 'seq2seq':
+        flag_seq2seq = 1
+    else:
+        flag_seq2seq = 0
     file_handler = logging.FileHandler("{0}/log.txt".format(FLAGS.train_dir))
     logging.getLogger().addHandler(file_handler)
     with open(os.path.join(FLAGS.train_dir, "flags.json"), 'w') as fout:
         json.dump(FLAGS.__flags, fout)
     with tf.Session() as sess:
         logging.info("Creating %d layers of %d units." % (FLAGS.num_layers, FLAGS.size))
+
         model, epoch = create_model(sess, vocab_size, False)
 
         if False:
@@ -101,7 +106,7 @@ def train():
             toc = time.time()
             print ("Number of params: %d (retreival took %f secs)" % (num_params, toc - tic))
 
-        best_epoch = epoch
+        best_epoch = 0
         best_cost = float('inf')
         previous_losses = []
         exp_cost = None
@@ -109,26 +114,15 @@ def train():
         exp_norm = None
         total_iters = 0
         start_time = time.time()
-        cur_len = -2
-        # if epoch >= 1:
-        #     if FLAGS.flag_varlen:
-        #         best_cost = validate(model, sess, epoch)
-        #     else:
-        #         best_cost = validate(model, sess, cur_len - 1)
-
         while (FLAGS.epochs == 0 or epoch < FLAGS.epochs):
             epoch += 1
+            print(epoch)
             current_step = 0
 
             ## Train
             epoch_tic = time.time()
-            if FLAGS.flag_varlen:
-                cur_len = epoch - 1
-
-            print('epoch', epoch, cur_len)
             for source_tokens, source_mask, target_tokens in pair_iter(FLAGS.data_dir, 'train',
                                                                        FLAGS.num_wit,
-                                                                       cur_len=cur_len,
                                                                        num_top=FLAGS.num_top,
                                                                        max_seq_len=FLAGS.max_seq_len,
                                                                        batch_size=FLAGS.batch_size,
@@ -145,7 +139,7 @@ def train():
                 total_iters += np.sum(source_mask)
                 tps = total_iters / (time.time() - start_time)
                 current_step += 1
-                print('iter', current_step)
+                print(current_step)
                 lengths = np.sum(source_mask, axis=0)
                 mean_length = np.mean(lengths)
                 std_length = np.std(lengths)
@@ -171,39 +165,27 @@ def train():
             checkpoint_path = os.path.join(FLAGS.train_dir, "best.ckpt")
 
             ## Validate
-            valid_cost = validate(model, sess, cur_len)
+            valid_cost = validate(model, sess)
 
             logging.info("Epoch %d Validation cost: %f time: %f" % (epoch, valid_cost, epoch_toc - epoch_tic))
 
 
-            if len(previous_losses) > 2 and valid_cost > previous_losses[-1]:
+            if valid_cost < best_cost:
+                best_cost = valid_cost
+                best_epoch = epoch
+                model.saver.save(sess, checkpoint_path, global_step=epoch)
+                for epoch_id in range(best_epoch):
+                    os.remove(checkpoint_path + ("-%d" % epoch_id))
+            else:
+            # if len(previous_losses) > 2 and valid_cost > previous_losses[-1]:
                 logging.info("Annealing learning rate by %f" % FLAGS.learning_rate_decay_factor)
                 sess.run(model.lr_decay_op)
                 model.saver.restore(sess, checkpoint_path + ("-%d" % best_epoch))
-            else:
-                previous_losses.append(valid_cost)
-                best_epoch = epoch
-                model.saver.save(sess, checkpoint_path, global_step=epoch)
-            sys.stdout.flush()
-
-            # if valid_cost < best_cost:
-            #     best_cost = valid_cost
+            # else:
+            #     previous_losses.append(valid_cost)
             #     best_epoch = epoch
             #     model.saver.save(sess, checkpoint_path, global_step=epoch)
-            #     # for epoch_id in range(best_epoch):
-            #     #     if os.path.exists(checkpoint_path + ("-%d" % epoch_id)):
-            #     #         os.remove(checkpoint_path + ("-%d" % epoch_id))
-            #     #         os.remove(checkpoint_path + ("-%d.meta" % epoch_id))
-            # else:
-            # # if len(previous_losses) > 2 and valid_cost > previous_losses[-1]:
-            #     logging.info("Annealing learning rate by %f" % FLAGS.learning_rate_decay_factor)
-            #     sess.run(model.lr_decay_op)
-            #     model.saver.restore(sess, checkpoint_path + ("-%d" % best_epoch))
-            # # else:
-            # #     previous_losses.append(valid_cost)
-            # #     best_epoch = epoch
-            # #     model.saver.save(sess, checkpoint_path, global_step=epoch)
-            # sys.stdout.flush()
+            sys.stdout.flush()
 
 
 def main(_):

@@ -34,6 +34,8 @@ def count_frequency():
 def decode():
     # candidates = [3, 8, 4, 23, 12, 17, 18, 22, 21, 11]
     candidates, cand_prob = count_frequency()
+    #print candidates, [id2char[ele] for ele in candidates], [cand_prob[ele] for ele in candidates]
+    #return 
     folder_out = pjoin(folder_bci, folder_eval)
     if not exists(folder_out):
         os.makedirs(folder_out)

@@ -31,7 +31,7 @@ from tensorflow.python.ops import embedding_ops
 from tensorflow.python.ops import rnn
 from tensorflow.python.ops import rnn_cell
 from tensorflow.python.ops import variable_scope as vs
-from model_rnn import GRUCellAttn
+from model_rnn import GRUCellAttn2 as GRUCellAttn
 from module import label_smooth
 
 
@@ -87,14 +87,9 @@ class Model(object):
         self.updates = opt.apply_gradients(
             zip(clipped_gradients, params), global_step=self.global_step)
 
-    def setup_embeddings(self, vocab_size, model_sum=0, model='seq2seq'):
+    def setup_embeddings(self, vocab_size):
         with vs.variable_scope("embeddings"):
-            zeros = tf.zeros([1, self.size])
-            enc = tf.get_variable("L_enc", [vocab_size - 1, self.size])
-            self.L_enc = tf.concat(0, [zeros, enc])
-            dec = tf.get_variable("L_dec", [vocab_size - 1, self.size])
-            self.L_dec = tf.concat(0, [zeros, dec])
-
+            self.L_enc = tf.get_variable("L_enc", [vocab_size, self.size])
             self.encoder_inputs = tf.reshape(self.src_toks,
                                              [self.len_inp,
                                               self.batch_size,
@@ -102,32 +97,10 @@ class Model(object):
                                               -1]) * \
                                   tf.reshape(self.L_enc,
                                              [1, 1, vocab_size, self.size])
-            embed_pad = tf.tile(tf.reshape(tf.zeros((vocab_size, 1)) * self.L_enc,
-                                           [1, 1, vocab_size, -1]),
-                                [1, self.batch_size, 1, 1])
-            embed_sos = embedding_ops.embedding_lookup(self.L_dec, char2id['<sos>'])
-            embed_sos = tf.tile(tf.reshape(embed_sos, [1, 1, -1]),
-                                [1, self.batch_size, 1])
-            if model == 'seq2seq':
-                self.encoder_inputs = tf.concat(0, [self.encoder_inputs,
-                                                    embed_pad])
-                self.len_inp += 1
-
-            if model_sum == 1:
-                self.encoder_inputs = tf.reduce_sum(self.encoder_inputs, reduction_indices=2)
-            else:
-                self.encoder_inputs = tf.reshape(self.encoder_inputs,
-                                                 [self.len_inp, -1,
-                                                  vocab_size * self.size])
-                if model_sum == 2:
-                    self.encoder_inputs = rnn_cell._linear(tf.reshape(self.encoder_inputs,
-                                                                      [-1, vocab_size * self.size]),
-                                                           self.size, True, 1.0)
-                    self.encoder_inputs = tf.reshape(self.encoder_inputs,
-                                                     [self.len_inp, -1, self.size])
-            self.decoder_inputs = embedding_ops.embedding_lookup(self.L_dec, self.tgt_toks)
-            if model == 'seq2seq':
-                self.decoder_inputs = tf.concat(0, [embed_sos, self.decoder_inputs])
+            self.encoder_inputs = tf.reshape(self.encoder_inputs,
+                                             [self.len_inp, -1, 
+                                              vocab_size * self.size])
+            self.decoder_inputs = embedding_ops.embedding_lookup(self.L_enc, self.tgt_toks)
 
     def setup_encoder(self, flag_bidirect):
         with vs.variable_scope("Encoder"):
@@ -153,54 +126,17 @@ class Model(object):
                                                            self.batch_size, dtype=tf.float32),
                                                        initial_state_bw=self.encoder_bw_cell.zero_state(
                                                            self.batch_size, dtype=tf.float32))
-                # out = out[0] + out[1]
+                #out = out[0] + out[1]
                 out = tf.concat(2, [out[0], out[1]])
             else:
                 out, _ = rnn.dynamic_rnn(self.encoder_fw_cell, inp, srclen,
                                          dtype=tf.float32, time_major=True)
             self.encoder_output = out
 
-    def setup_encoder_forward(self):
-        with vs.variable_scope("Encoder", reuse=None):
-            inp = tf.nn.dropout(self.encoder_inputs, self.keep_prob)
-            srclen = tf.reduce_sum(self.src_mask, reduction_indices=0)
-            fw_cell = rnn_cell.GRUCell(self.size)
-            fw_cell = rnn_cell.DropoutWrapper(
-                fw_cell, output_keep_prob=self.keep_prob)
-            self.encoder_fw_cell = rnn_cell.MultiRNNCell(
-                [fw_cell] * self.num_layers, state_is_tuple=True)
-            self.enc_fw_out, _ = rnn.dynamic_rnn(
-                self.encoder_fw_cell, inp, tf.cast(srclen, tf.int64),
-                dtype=tf.float32, time_major=True,
-                initial_state=self.encoder_fw_cell.zero_state(self.batch_size,
-                                                              dtype=tf.float32),
-                scope='BiRNN_FW')
-
-    def setup_encoder_backward(self):
-        with vs.variable_scope("Encoder", reuse=None):
-            inp = tf.nn.dropout(self.encoder_inputs, self.keep_prob)
-            inp = tf.transpose(inp, [1, 0, 2])
-            srclen = tf.reduce_sum(self.src_mask, reduction_indices=0)
-            inp = tf.reverse_sequence(inp, tf.cast(srclen, tf.int64), seq_dim=1, batch_dim=0)
-            inp = tf.transpose(inp, [1, 0, 2])
-            bw_cell = rnn_cell.GRUCell(self.size)
-            bw_cell = rnn_cell.DropoutWrapper(
-                bw_cell, output_keep_prob=self.keep_prob)
-            self.encoder_bw_cell = rnn_cell.MultiRNNCell(
-                [bw_cell] * self.num_layers, state_is_tuple=True)
-            self.enc_bw_out, _ = rnn.dynamic_rnn(
-                self.encoder_bw_cell,
-                inp,
-                tf.cast(srclen, tf.int64),
-                dtype=tf.float32, time_major=True,
-                initial_state=self.encoder_fw_cell.zero_state(self.batch_size,
-                                                              dtype=tf.float32),
-                scope='BiRNN_BW')
-
     def setup_decoder(self):
         with vs.variable_scope("Decoder"):
-            inp =  tf.nn.dropout(self.decoder_inputs, self.keep_prob)
-            tgt_len = tf.reduce_sum(self.src_mask, reduction_indices=0)
+            inp = self.decoder_inputs
+            tgt_len = tf.reduce_sum(self.tgt_mask, reduction_indices=0)
             if self.num_layers > 1:
                 with vs.variable_scope("RNN"):
                     decoder_cell = rnn_cell.GRUCell(self.size)
@@ -213,17 +149,15 @@ class Model(object):
                                              initial_state=self.decoder_cell.zero_state(
                                                  self.batch_size, dtype=tf.float32))
 
-
             with vs.variable_scope("Attn"):
-                src_mask = tf.concat(0, [tf.zeros((1, self.batch_size), dtype=tf.int32), self.src_mask])
                 self.attn_cell = GRUCellAttn(self.size, self.len_inp,
-                                             self.encoder_output, src_mask)
+                                             self.encoder_output, self.src_mask)
                 self.decoder_output, _ = rnn.dynamic_rnn(self.attn_cell, inp, tgt_len,
                                                          dtype=tf.float32, time_major=True,
                                                          initial_state=self.attn_cell.zero_state(
                                                              self.batch_size, dtype=tf.float32))
 
-    def setup_loss(self, output, vocab_size, model):
+    def setup_loss(self, output, vocab_size):
         with vs.variable_scope("Logistic"):
             logits2d = rnn_cell._linear(tf.reshape(output,
                                                    [-1, self.size]),
@@ -231,42 +165,27 @@ class Model(object):
             self.outputs2d = tf.nn.log_softmax(logits2d)
             # self.outputs = tf.argmax(tf.reshape(outputs2d,
             #                           [-1, self.batch_size, vocab_size]), 2)
-
-            if model == 'seq2seq':
-                self.mask =  tf.concat(0, [self.src_mask, tf.zeros((1, self.batch_size), dtype=tf.int32)])
-                labels = tf.reshape(tf.concat(0,
-                                              [self.tgt_toks,
-                                               tf.zeros((1, self.batch_size),
-                                                        dtype=tf.int32)]),
-                                    [-1])
-            else:
-                self.mask = self.src_mask
-                labels = tf.reshape(self.tgt_toks, [-1])
+            labels = tf.reshape(tf.pad(tf.slice(self.tgt_toks, [1, 0], [-1, -1]),
+                                       [[0,1],[0,0]]),
+                                [-1])
             self.labels = labels
             if self.foward_only:
                 labels = tf.one_hot(labels, depth=vocab_size)
             else:
                 labels = label_smooth(labels, vocab_size)
-
-            mask1d = tf.reshape(self.mask, [-1])
+            mask1d = tf.reshape(self.src_mask, [-1])
             losses1d = tf.nn.softmax_cross_entropy_with_logits(logits2d,
                                                                       labels) \
                        * tf.to_float(mask1d)
             self.losses2d = tf.reshape(losses1d, [self.len_inp, self.batch_size])
             self.losses = tf.reduce_sum(self.losses2d) / tf.to_float(self.batch_size)
 
-
-    def build_model(self, vocab_size_char, model='lstm', model_sum=0, flag_bidirect=False, flag_word=False, vocab_size_word=0, loss="char"):
+    def build_model(self, vocab_size_char, model='lstm', flag_bidirect=False, flag_word=False, vocab_size_word=0, loss="char"):
         self._add_place_holders(flag_word)
         with tf.variable_scope("Model", initializer=tf.uniform_unit_scaling_initializer(1.0)):
-            self.setup_embeddings(vocab_size_char, model_sum=model_sum, model=model)
+            self.setup_embeddings(vocab_size_char)
             if flag_bidirect:
-                if not self.foward_only:
-                    self.setup_encoder(flag_bidirect=True)
-                else:
-                    self.setup_encoder_forward()
-                    self.setup_encoder_backward()
-                    self.encoder_output = tf.concat(2, [self.enc_fw_out, self.enc_bw_out])
+                self.setup_encoder(flag_bidirect=True)
             else:
                 self.setup_encoder(flag_bidirect=False)
             if model == 'lstm':
@@ -275,9 +194,9 @@ class Model(object):
                 self.setup_decoder()
                 output = self.decoder_output
             if flag_word:
-                self.setup_loss(output, vocab_size_word, model)
+                self.setup_loss(output, vocab_size_word)
             else:
-                self.setup_loss(output, vocab_size_char, model)
+                self.setup_loss(output, vocab_size_char)
             if self.foward_only:
                 if model == 'seq2seq':
                     self.setup_beam("Logistic", vocab_size_char, model)
@@ -287,6 +206,7 @@ class Model(object):
             self.setup_train()
 
         self.saver = tf.train.Saver(tf.all_variables(), max_to_keep=0)
+
 
     def beam_step_seq2seq(self, time_step, beam_seqs, state_inputs):
         beam_size = tf.shape(beam_seqs)[1]
@@ -307,6 +227,7 @@ class Model(object):
         state_outputs = rnn_outputs + (attn_outputs, )
         return out, state_outputs
 
+
     def beam_loss(self, scope, output, vocab_size):
         with vs.variable_scope(scope, reuse=True):
             do2d = tf.reshape(output, [-1, self.size])
@@ -318,6 +239,7 @@ class Model(object):
     def setup_lstm(self, vocab_size):
         probs, index = tf.nn.top_k(self.outputs2d, k=self.num_pred)
         self.top_seqs = tf.reshape(index, [-1, self.batch_size, self.num_pred])
+
 
     def setup_beam(self, loss_scope, vocab_size, model='lstm'):
         time_0 = tf.constant(0)
@@ -448,24 +370,6 @@ class Model(object):
         output_feed = [self.beam_output, self.beam_scores, self.perplex,  self.top_seqs_1, self.top_seqs_2, self.top_seqs_3, self.top_seqs_4]
         outputs = session.run(output_feed, input_feed)
         return outputs[0], outputs[1], outputs[2], [outputs[3], outputs[4], outputs[5], outputs[6]]
-
-    def encode_fw(self, session, src_toks, src_mask):
-        input_feed = {}
-        input_feed[self.src_toks] = src_toks
-        input_feed[self.src_mask] = src_mask
-        input_feed[self.keep_prob] = 1.
-        output_feed = [self.enc_fw_out]
-        outputs = session.run(output_feed, input_feed)
-        return outputs[0]
-
-    def encode_bw(self, session, src_toks, src_mask):
-        input_feed = {}
-        input_feed[self.src_toks] = src_toks
-        input_feed[self.src_mask] = src_mask
-        input_feed[self.keep_prob] = 1.
-        output_feed = [self.enc_bw_out]
-        outputs = session.run(output_feed, input_feed)
-        return outputs[0]
 
     def decode_lstm(self, session, src_toks, tgt_toks, src_mask):
         input_feed = {}

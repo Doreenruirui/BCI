@@ -4,10 +4,7 @@ from nltk.tokenize import sent_tokenize
 import sys
 import numpy as np
 from os.path import join as pjoin
-
-
-id2char = [b'<pad>', b'<sos>', b'<eos>', b' '] + list(string.ascii_lowercase)
-char2id = {k: v for v, k in enumerate(id2char)}
+from data_generate import id2char, char2id
 
 
 def remove_nonascii(text):

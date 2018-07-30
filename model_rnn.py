@@ -251,9 +251,9 @@ class GRUCellAttn(rnn_cell.GRUCell):
         self.encoder_len = encoder_len
         with vs.variable_scope(scope or type(self).__name__):
             with vs.variable_scope("Attn1"):
-                hs2d = array_ops.reshape(self.hs, [-1, num_units])
+                hs2d = array_ops.reshape(self.hs, [-1, 2 * num_units])
                 phi_hs2d = tanh(rnn_cell._linear(hs2d, num_units, True, 1.0))
-                self.phi_hs = array_ops.reshape(phi_hs2d, array_ops.shape(self.hs))
+                self.phi_hs = array_ops.reshape(phi_hs2d, [self.encoder_len, -1, num_units])
         super(GRUCellAttn, self).__init__(num_units)
 
     def __call__(self, inputs, state, scope=None):
@@ -275,6 +275,54 @@ class GRUCellAttn(rnn_cell.GRUCell):
 
     def beam(self, inputs, state, beam_size, batch_size, scope=None):
         gru_out, gru_state = super(GRUCellAttn, self).__call__(inputs, state, scope)
+        with vs.variable_scope(scope or type(self).__name__):
+            with vs.variable_scope("Attn2"):
+                gamma_h = tanh(rnn_cell._linear(gru_out, self._num_units,
+                                                True, 1.0))
+                gamma_h  = tf.reshape(gamma_h, [batch_size, -1, self._num_units])
+            self.phi_hs = tf.transpose(self.phi_hs, [1, 2, 0])
+            weights = tf.batch_matmul(gamma_h, self.phi_hs)
+            weights = tf.select(self.mask, weights, tf.ones_like(weights) * (-2 ** 32 + 1))
+            weights = tf.reshape(tf.nn.softmax(tf.reshape(weights,
+                                                          [batch_size * beam_size, -1])),
+                                 [batch_size, beam_size, -1])
+            context = tf.batch_matmul(weights, tf.transpose(self.hs, [1, 0, 2]))
+            context = tf.reshape(context, [batch_size * beam_size, 2 * self._num_units])
+            with vs.variable_scope("AttnConcat"):
+                out = tf.nn.relu(rnn_cell._linear([context, gru_out], self._num_units, True, 1.0))
+            return (out, out)
+
+class GRUCellAttn2(rnn_cell.GRUCell):
+    def __init__(self, num_units, encoder_len, encoder_output, encoder_mask, scope=None):
+        self.hs = encoder_output
+        self.mask = tf.cast(encoder_mask, tf.bool)
+        self.encoder_len = encoder_len
+        with vs.variable_scope(scope or type(self).__name__):
+            with vs.variable_scope("Attn1"):
+                hs2d = array_ops.reshape(self.hs, [-1, 2 * num_units])
+                phi_hs2d = tanh(rnn_cell._linear(hs2d, num_units, True, 1.0))
+                self.phi_hs = array_ops.reshape(phi_hs2d, array_ops.shape(self.hs))
+        super(GRUCellAttn2, self).__init__(num_units)
+
+    def __call__(self, inputs, state, scope=None):
+        gru_out, gru_state = super(GRUCellAttn2, self).__call__(inputs, state, scope)
+        with vs.variable_scope(scope or type(self).__name__):
+            with vs.variable_scope("Attn2"):
+                gamma_h = tanh(rnn_cell._linear(gru_out, self._num_units,
+                                                True, 1.0))
+            weights = tf.reduce_sum(self.phi_hs * gamma_h,
+                                    reduction_indices=2)
+            weights = tf.select(self.mask, weights, tf.ones_like(weights) * (-2 ** 32 + 1))
+            weights = tf.transpose(tf.nn.softmax(tf.transpose(weights)))
+            context = tf.reduce_sum(self.hs * tf.reshape(weights,
+                                                         [self.encoder_len, -1, 1]),
+                                    reduction_indices=0)
+            with vs.variable_scope("AttnConcat"):
+                out = tf.nn.relu(rnn_cell._linear([context, gru_out], self._num_units, True, 1.0))
+            return (out, out)
+
+    def beam(self, inputs, state, beam_size, batch_size, scope=None):
+        gru_out, gru_state = super(GRUCellAttn2, self).__call__(inputs, state, scope)
         with vs.variable_scope(scope or type(self).__name__):
             with vs.variable_scope("Attn2"):
                 gamma_h = tanh(rnn_cell._linear(gru_out, self._num_units,

@@ -4,6 +4,7 @@ from random import shuffle, randint
 import string
 import math
 from bitweight import *
+import sys
 
 eeg = None
 id2char = [b'<pad>', b'<sos>', b'<eos>', b' '] + list(string.ascii_lowercase)
@@ -119,3 +120,52 @@ def generate_direchlet(ch, num_cand, prior=1, prob_high=0.7, prob_noncand=0.1):
     return prob_vec
 
 
+def generate_direchlet_non(ch, num_cand, prior=1, prob_high=0.7, prob_in=1.0, prob_noncand=0.1):
+    if ch == 1:
+        prob_vec = np.zeros(len(id2char))
+        prob_vec[ch] = 1.0
+        return prob_vec
+    elif ch == 0:
+        return np.zeros(len(id2char))
+    index = np.arange(len(id2char)).tolist()
+    del index[ch]
+    index = index[3:]
+    shuffle(index)
+    prior_vec = np.ones(num_cand)
+    prior_vec[num_cand - 1] = prior
+    prob = np.random.dirichlet(prior_vec, size=1)[0, :] * (1. - prob_noncand)
+    flag_high = np.random.binomial(1, prob_high)
+    max_id = np.argmax(prob)
+    max_v = prob[max_id]
+    prob_new = prob.tolist()
+    del prob_new[max_id]
+    prob_vec = np.ones(len(id2char)) * (prob_noncand * 1. / (len(id2char) - num_cand))
+    if not flag_high:
+        shuffle(prob_new)
+        prob_new.append(max_v)
+        if prob_in == 0:
+            flag_in = 0
+        elif 0 < prob_in < 1.0:
+            flag_in = np.random.binomial(1, prob_in)
+        else:
+            flag_in = 1
+        if flag_in:
+            prob_tgt = prob_new[0]
+            prob_cand = prob_new[1:]
+            prob_vec[ch] = prob_tgt
+            for ind, item in enumerate(index[:num_cand - 1]):
+                prob_vec[item] = prob_cand[ind]
+        else:
+            prob_cand = prob_new
+            for ind, item in enumerate(index[:num_cand]):
+                prob_vec[item] = prob_cand[ind]
+    else:
+        prob_tgt = max_v
+        prob_cand = prob_new
+        prob_vec[ch] = prob_tgt
+        for ind, item in enumerate(index[:num_cand-1]):
+            prob_vec[item] = prob_cand[ind]
+    return prob_vec
+
+
+# generate_direchlet_non(int(sys.argv[1]), num_cand=4, prob_high=0.7, prob_in=0.7, prob_noncand=0.0, prior=3)

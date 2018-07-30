@@ -19,7 +19,8 @@ def plot(x, y, xlabel,ylabel, xlim, ylim, lenlabel,title, fig, file_fig):
     if len(y) > 1:
         for i in range(len(y)):
             plt.plot(x, y[i], cs[i], label=lenlabel[i])
-            plt.scatter(x, y[i], c='c', s=15, marker=dot[i])
+            # plt.scatter(x, y[i], c='c', s=15)
+            # plt.scatter(x, y[i], c='c', s=15, marker=dot[i])
         # plt.legend(bbox_to_anchor=(0, 0.26, 0.96, 1), bbox_transform=plt.gcf().transFigure, loc=4, fontsize=6.5)
         plt.legend(borderpad=2, bbox_transform=plt.gcf().transFigure, loc=1, fontsize=20)
         # leg = plt.gca().get_legend()
@@ -29,7 +30,7 @@ def plot(x, y, xlabel,ylabel, xlim, ylim, lenlabel,title, fig, file_fig):
         # plt.setp(ltext, fontsize=6)  # the legend text fontsize
         # plt.setp(llines, linewidth=2)  # the legend linewidth
     else:
-        plt.plot(x, y[0], '-o')
+        plt.plot(x, y[0], '-')
     # plt.axes().set_aspect('equal')
     plt.tight_layout()
     plt.savefig(file_fig)

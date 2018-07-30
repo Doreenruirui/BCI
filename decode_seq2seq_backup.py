@@ -23,22 +23,23 @@ import os
 import numpy as np
 from six.moves import xrange
 import tensorflow as tf
+
 import model_concat as model_concat
+
 from flag import FLAGS
-from data_generate import id2char, char2id, load_vocabulary, padded
+from data_generate import id2char, char2id, load_vocabulary
 from evaluate import batch_mrr, batch_recall_at_k
-from data_simulate_eeg_varlen import create_vector
+from data_simulate_eeg import generate_clean
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
 
 id2word, word2id = None, None
+data = None
 model = None
 line_x = None
 len_x = None
-data = None
-index_x = None
 
 
 def create_model(session):
@@ -60,108 +61,100 @@ def create_model(session):
     else:
         raise ValueError("No trained Model Found")
 
-
 def decode_string(list_tokens, revocab):
     if FLAGS.flag_word:
         return map(lambda tokens: ' '.join([id2word[ele] if revocab[ele] != ' ' else '<space>' for ele in tokens[1:]]), list_tokens)
     else:
         return map(lambda tokens: ''.join([id2char[tok] for tok in tokens[1:]]), list_tokens)
 
-
-def read_data():
-    global line_x, data, len_x, index_x
-    logging.info("Get NLC data in %s" % FLAGS.data_dir)
-    x_dev = pjoin(FLAGS.data_dir, FLAGS.dev + '.ids')
-    filename = '%s.%s.%d' % (FLAGS.dev, FLAGS.random, FLAGS.num_top)
-    if FLAGS.random == 'random':
-        filename = pjoin(FLAGS.data_dir, '%s_%.1f_%.1f_%.1f' % (filename,
-                                                              FLAGS.prob_high,
-                                                              FLAGS.prior,
-                                                              FLAGS.prob_in))
-    fx = open(x_dev)
-    fc = open(filename + '.cand')
-    fp = open(filename + '.prob')
-    line_id = 0
-    data, list_tokens, len_line = [], [], []
-    linex, linec, linep = fx.readline(), fc.readline(), fp.readline()
-    voc_size = len(char2id)
-    pad_head = np.zeros(voc_size)
-    pad_head[char2id['<sos>']] = 1.
-    while line_id < FLAGS.end and len(linex.strip()) > 0:
-        if line_id >= FLAGS.start:
-            cur_line = map(int, linex.strip('\n').split(' '))[:FLAGS.max_seq_len]
-            list_tokens.append(cur_line)
-            len_line.append(len(cur_line))
-            newc = linec.strip().split('\t')[:FLAGS.max_seq_len]
-            cands = map(lambda ele: [int(s) for s in ele.split()[:FLAGS.num_wit]], newc)
-            newp = linec.strip().split('\t')[:FLAGS.max_seq_len]
-            probs = map(lambda ele: [int(s) for s in ele.split()[:FLAGS.num_wit]], newp)
-            vecs = [pad_head] + map(lambda cand, prob: create_vector(cand, prob), cands[:-1], probs[:-1])
-            data.append(vecs)
-        line_id += 1
-        linex, linec, linep = fx.readline(), fc.readline(), fp.readline()
-    index_x = np.argsort(len_line)
-    line_x = map(lambda ele: list_tokens[ele], index_x)
-    len_x = map(lambda ele: len_line[ele], index_x)
-    data = map(lambda ele: data[ele], index_x)
-
-
 def get_mask(len_input, max_len):
+    num_line = len(len_input)
     mask = map(lambda ele: [1] * min(ele, max_len) + [0] * (max_len - min(ele, max_len)), len_input)
     return np.asarray(mask).T
 
 
+def read_data():
+    global data, line_x, len_x, word2id, id2word
+    logging.info("Get NLC data in %s" % FLAGS.data_dir)
+    x_dev = pjoin(FLAGS.data_dir, FLAGS.dev + '.ids')
+    vocab_size_char = len(id2char)
+    if FLAGS.flag_word:
+        word2id, id2word = load_vocabulary(FLAGS.data_dir)
+        rev_vocab = id2word
+    else:
+        rev_vocab = id2char
+    lines = []
+    len_line = []
+    line_id = 0
+    for line in file(x_dev):
+        if line_id == FLAGS.end:
+            break
+        if line_id >= FLAGS.start:
+            cur_line = map(int, line.strip('\n').split(' '))
+            lines.append(cur_line)
+            len_line.append(len(cur_line))
+        line_id += 1
+    sorted_index = np.argsort(len_line)
+    line_x = map(lambda ele: lines[ele], sorted_index)
+    len_x = map(lambda ele: len_line[ele], sorted_index)
+    if FLAGS.random == 'clean':
+        filename = pjoin(FLAGS.data_dir, FLAGS.dev + '.' + FLAGS.random + '.prob.npy')
+    else:
+        if FLAGS.prob_in == 1.0:
+            filename = pjoin(FLAGS.data_dir, FLAGS.dev + '.' + FLAGS.random + '.' + str(FLAGS.num_wit) + '_' + str(FLAGS.prob_high) + '_' + str(FLAGS.prior) + '.prob.npy')
+        else:
+            filename = pjoin(FLAGS.data_dir, FLAGS.dev + '.' + FLAGS.random + '.' + str(FLAGS.num_wit) + '_' + str(FLAGS.prob_high) + '_' + str(FLAGS.prior) + '_' + str(FLAGS.prob_in) + '.prob.npy')
+    data = np.load(filename)
+    data = data[:, FLAGS.start:FLAGS.end, :]
+    data = data[:, sorted_index, :]
+
 def decode_batch(sess, batch_size, s, e):
-    global data, model, line_x, len_x, index_x
+    global data, model, line_x, len_x
     cur_chunk_len = len_x[s:e]
     cur_max_len = max(cur_chunk_len)
-    cur_index = index_x[FLAGS.start + s: FLAGS.start + e]
-    batch_size = min(batch_size, e - s)
-    src_probs = data[s:e]
-    # padding
-    src_probs = padded(src_probs, len(id2char), 0.0)
-    src_probs = np.transpose(np.array(src_probs), (1, 0, 2))
-    tgt_toks = padded(line_x[s:e], 1)
+    cur_max_len = min(cur_max_len, 300)
+    src_probs = data[:cur_max_len, s:e, :]
+    tgt_toks = map(lambda line: [char2id['<sos>']] + line[:300] + [char2id['<pad>']] * (cur_max_len - len(line)), line_x[s:e])
     tgt_toks = np.asarray(tgt_toks).T
-    # results
+    batch_size = min(batch_size, e - s)
     cur_recall = np.zeros((2, batch_size, cur_max_len))
     cur_mrr = np.zeros((2, batch_size, cur_max_len))
     cur_perplex = np.zeros((batch_size, cur_max_len))
-
     if FLAGS.model == "lstm":
+        # cur_mask = np.ones_like(tgt_toks) * (tgt_toks > 0)
+        src_probs = np.concatenate((src_probs, np.zeros((1, src_probs.shape[1], src_probs.shape[2]))),axis=0)
         cur_mask = (np.sum(src_probs, -1) > 0).astype(np.int32)
         perplex, top_seqs = model.decode_lstm(sess, src_probs, tgt_toks, cur_mask)
         top_seqs = np.transpose(top_seqs, [1, 2, 0])
-        truth = np.transpose(tgt_toks)
-        cur_mrr[0, :, :] = batch_mrr(top_seqs, truth, 10)
-        cur_recall[0, :, :] = batch_recall_at_k(top_seqs, truth, 10)
-        cur_perplex = np.transpose(perplex)[:, :-1]
+        batch_size, num_pred, len_inp = top_seqs.shape
+        #top_seqs = np.concatenate((top_seqs[:,:5,:], np.ones((batch_size, 1, len_inp)) *
+        #                           np.reshape(np.array([3, 8, 4, 23, 12]), [1, -1, 1])), axis=1)
+        truth = np.transpose(tgt_toks[1:, :])
+        cur_mrr[0,:,:] = batch_mrr(top_seqs[:, :, :-1], truth, 10)
+        cur_recall[0, :, :] = batch_recall_at_k(top_seqs[:, :, :-1], truth, 10)
+        cur_perplex = np.transpose(perplex)[:,:-1]
     elif FLAGS.model == "seq2seq":
-        if FLAGS.flag_bidirect:
-            src_mask = get_mask(cur_chunk_len, cur_max_len)
-            encoder_out_fw = model.encode_fw(sess, src_probs, src_mask)
-        else:
-            src_mask = get_mask(cur_chunk_len, cur_max_len)
+        if not FLAGS.flag_bidirect:
+            src_mask = get_mask(cur_chunk_len, cur_max_len + 1)
             encoder_out = model.encode(sess, src_probs, src_mask)
         for k in range(cur_max_len):
             print('\t' + str(k))
             cur_mask = get_mask(cur_chunk_len, k + 1)
             if FLAGS.flag_bidirect:
-                encoder_out_bw = model.encode_bw(sess, src_probs[:k+1,:,:], cur_mask)
-                encoder_out = np.concatenate((encoder_out_fw[:k+1,:,:], encoder_out_bw), 2)
-            outputs, prediction, perplex, top_seqs = model.decode(sess, encoder_out, cur_mask,
-                                                                      tgt_toks[:k + 1, :], FLAGS.beam_size)
-            cur_truth = np.transpose(tgt_toks[k, :])
+                outputs, prediction, perplex, top_seqs = model.decode_beam(sess, src_probs[:k+1,:,:], tgt_toks[:k+2,:], cur_mask, FLAGS.beam_size)
+            else:
+                outputs, prediction, perplex, top_seqs = model.decode(sess, encoder_out[:k + 1, :, :], cur_mask,
+                                                                      tgt_toks[:k + 2, :], FLAGS.beam_size)
+            cur_truth = np.transpose(tgt_toks[k + 1, :])
             for pred_id in range(2):
-                cur_pred = top_seqs[pred_id][:, :, k]
+                cur_pred = top_seqs[pred_id][:, :, k+1]
                 cur_mrr[pred_id, :, k] = batch_mrr(cur_pred, cur_truth, FLAGS.num_cand)
                 cur_recall[pred_id, :, k] = batch_recall_at_k(cur_pred, cur_truth, FLAGS.num_cand)
-            cur_perplex[:, k] = perplex[:, k]
+            cur_perplex[:, k] = perplex[:, k + 1]
     str_mrr = ['\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_mrr[pred_id], cur_chunk_len)) + '\n' for pred_id in range(2)]
     str_recall = ['\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_recall[pred_id], cur_chunk_len)) + '\n' for pred_id in range(2)]
     str_perplex = '\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_perplex, cur_chunk_len)) + '\n'
-    str_index = '\n'.join(map(str, cur_index)) + '\n'
-    return str_mrr, str_recall, str_perplex, str_index
+    return str_mrr, str_recall, str_perplex
 
 
 def decode():
@@ -173,33 +166,41 @@ def decode():
     num_chunk = int(np.ceil(num_line * 1. / FLAGS.batch_size))
     f_mrr = []
     f_recall = []
-    if FLAGS.model == 'seq2seq':
-        num_file = 2
-    else:
-        num_file = 1
-    for pred_id in range(num_file):
+    for pred_id in range(2):
         f_mrr.append(open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'mrr%d.%d_%d' % (pred_id, FLAGS.start, FLAGS.end)), 'w'))
         f_recall.append(open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'recall%d.%d_%d') % (pred_id, FLAGS.start, FLAGS.end), 'w'))
-    f_index = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'index.%d_%d' % (FLAGS.start, FLAGS.end)), 'w')
     f_perplex = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'perplex.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
 
     with tf.Session() as sess:
         create_model(sess)
-        for i in range(num_chunk):
+        for i in range(FLAGS.start_batch, num_chunk):
             start = i * FLAGS.batch_size
             end = min(num_line, (i + 1) * FLAGS.batch_size)
-            print('batch', i)
-            mrr, recall, perplex, index = decode_batch(sess, FLAGS.batch_size, start, end)
-            for pred_id in range(num_file):
+            cur_len = len_x[start:end]
+            max_len = max(cur_len)
+            print(i, max_len)
+            # if max_len > 200:
+            #     chunk_size = 1
+            #     cur_num_chunk = int(FLAGS.batch_size / chunk_size)
+            #     for j in range(cur_num_chunk):
+            #         cur_start = i * FLAGS.batch_size + j * chunk_size
+            #         cur_end = min(num_line, cur_start + chunk_size)
+            #         mrr, recall, perplex = decode_batch(sess, chunk_size, cur_start, cur_end)
+            #         for pred_id in range(2):
+            #             f_mrr[pred_id].write(mrr[pred_id])
+            #             f_recall[pred_id].write(recall[pred_id])
+            #         f_perplex.write(perplex)
+            # else:
+            mrr, recall, perplex = decode_batch(sess, FLAGS.batch_size, start, end)
+            for pred_id in range(2):
                 f_mrr[pred_id].write(mrr[pred_id])
                 f_recall[pred_id].write(recall[pred_id])
             f_perplex.write(perplex)
-            f_index.write(index)
-        for pred_id in range(num_file):
+        for pred_id in range(2):
             f_mrr[pred_id].close()
             f_recall[pred_id].close()
         f_perplex.close()
-        f_index.close()
+
 
 
 def main(_):
