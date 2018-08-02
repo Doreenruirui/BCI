@@ -148,15 +148,15 @@ def decode_batch(sess, batch_size, s, e):
             cur_mask = get_mask(cur_chunk_len, k + 1)
             if FLAGS.flag_bidirect:
                 encoder_out_bw = model.encode_bw(sess, src_probs[:k+1,:,:], cur_mask)
-                encoder_out = np.concatenate((encoder_out_fw[:k+1,:,:], encoder_out_bw), 2)
+                encoder_out = np.concatenate((encoder_out_fw[:k+1,:,:], encoder_out_bw[:k+1,:,:]), 2)
             outputs, prediction, perplex, top_seqs = model.decode(sess, encoder_out, cur_mask,
                                                                       tgt_toks[:k + 1, :], FLAGS.beam_size)
             cur_truth = np.transpose(tgt_toks[k, :])
             for pred_id in range(2):
-                cur_pred = top_seqs[pred_id][:, :, k]
+                cur_pred = top_seqs[pred_id][:, :, k + 1]
                 cur_mrr[pred_id, :, k] = batch_mrr(cur_pred, cur_truth, FLAGS.num_cand)
                 cur_recall[pred_id, :, k] = batch_recall_at_k(cur_pred, cur_truth, FLAGS.num_cand)
-            cur_perplex[:, k] = perplex[:, k]
+            cur_perplex[:, k] = perplex[:, k + 1]
     str_mrr = ['\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_mrr[pred_id], cur_chunk_len)) + '\n' for pred_id in range(2)]
     str_recall = ['\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_recall[pred_id], cur_chunk_len)) + '\n' for pred_id in range(2)]
     str_perplex = '\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_perplex, cur_chunk_len)) + '\n'

@@ -71,6 +71,7 @@ class Model(object):
         self.beam_size = tf.placeholder(tf.int32)
         self.batch_size = tf.shape(self.src_toks)[1]
         self.len_inp = tf.shape(self.src_toks)[0]
+        self.src_len = tf.cast(tf.reduce_sum(self.src_mask, reduction_indices=0), tf.int64)
 
     def setup_train(self):
         self.lr = tf.Variable(float(self.learning_rate), trainable=False)
@@ -102,17 +103,9 @@ class Model(object):
                                               -1]) * \
                                   tf.reshape(self.L_enc,
                                              [1, 1, vocab_size, self.size])
-            embed_pad = tf.tile(tf.reshape(tf.zeros((vocab_size, 1)) * self.L_enc,
-                                           [1, 1, vocab_size, -1]),
-                                [1, self.batch_size, 1, 1])
             embed_sos = embedding_ops.embedding_lookup(self.L_dec, char2id['<sos>'])
             embed_sos = tf.tile(tf.reshape(embed_sos, [1, 1, -1]),
                                 [1, self.batch_size, 1])
-            if model == 'seq2seq':
-                self.encoder_inputs = tf.concat(0, [self.encoder_inputs,
-                                                    embed_pad])
-                self.len_inp += 1
-
             if model_sum == 1:
                 self.encoder_inputs = tf.reduce_sum(self.encoder_inputs, reduction_indices=2)
             else:
@@ -120,19 +113,21 @@ class Model(object):
                                                  [self.len_inp, -1,
                                                   vocab_size * self.size])
                 if model_sum == 2:
-                    self.encoder_inputs = rnn_cell._linear(tf.reshape(self.encoder_inputs,
+                    self.encoder_inputs = tf.nn.relu(rnn_cell._linear(tf.reshape(self.encoder_inputs,
                                                                       [-1, vocab_size * self.size]),
-                                                           self.size, True, 1.0)
+                                                           self.size, True, 1.0))
                     self.encoder_inputs = tf.reshape(self.encoder_inputs,
                                                      [self.len_inp, -1, self.size])
-            self.decoder_inputs = embedding_ops.embedding_lookup(self.L_dec, self.tgt_toks)
+            self.decoder_inputs = embedding_ops.embedding_lookup(self.L_dec,
+                                                                 tf.slice(self.tgt_toks,
+                                                                          [0, 0],
+                                                                          [self.len_inp -1, -1]))
             if model == 'seq2seq':
                 self.decoder_inputs = tf.concat(0, [embed_sos, self.decoder_inputs])
 
     def setup_encoder(self, flag_bidirect):
         with vs.variable_scope("Encoder"):
             inp = tf.nn.dropout(self.encoder_inputs, self.keep_prob)
-            srclen = tf.reduce_sum(self.src_mask, reduction_indices=0)
             fw_cell = rnn_cell.GRUCell(self.size)
             fw_cell = rnn_cell.DropoutWrapper(
                 fw_cell, output_keep_prob=self.keep_prob)
@@ -146,7 +141,7 @@ class Model(object):
                     [bw_cell] * self.num_layers, state_is_tuple=True)
                 out, _ = rnn.bidirectional_dynamic_rnn(self.encoder_fw_cell,
                                                        self.encoder_bw_cell,
-                                                       inp, tf.cast(srclen, tf.int64),
+                                                       inp, self.src_len,
                                                        dtype=tf.float32,
                                                        time_major=True,
                                                        initial_state_fw=self.encoder_fw_cell.zero_state(
@@ -156,21 +151,20 @@ class Model(object):
                 # out = out[0] + out[1]
                 out = tf.concat(2, [out[0], out[1]])
             else:
-                out, _ = rnn.dynamic_rnn(self.encoder_fw_cell, inp, srclen,
+                out, _ = rnn.dynamic_rnn(self.encoder_fw_cell, inp, self.src_len,
                                          dtype=tf.float32, time_major=True)
             self.encoder_output = out
 
     def setup_encoder_forward(self):
         with vs.variable_scope("Encoder", reuse=None):
             inp = tf.nn.dropout(self.encoder_inputs, self.keep_prob)
-            srclen = tf.reduce_sum(self.src_mask, reduction_indices=0)
             fw_cell = rnn_cell.GRUCell(self.size)
             fw_cell = rnn_cell.DropoutWrapper(
                 fw_cell, output_keep_prob=self.keep_prob)
             self.encoder_fw_cell = rnn_cell.MultiRNNCell(
                 [fw_cell] * self.num_layers, state_is_tuple=True)
             self.enc_fw_out, _ = rnn.dynamic_rnn(
-                self.encoder_fw_cell, inp, tf.cast(srclen, tf.int64),
+                self.encoder_fw_cell, inp, self.src_len,
                 dtype=tf.float32, time_major=True,
                 initial_state=self.encoder_fw_cell.zero_state(self.batch_size,
                                                               dtype=tf.float32),
@@ -180,8 +174,7 @@ class Model(object):
         with vs.variable_scope("Encoder", reuse=None):
             inp = tf.nn.dropout(self.encoder_inputs, self.keep_prob)
             inp = tf.transpose(inp, [1, 0, 2])
-            srclen = tf.reduce_sum(self.src_mask, reduction_indices=0)
-            inp = tf.reverse_sequence(inp, tf.cast(srclen, tf.int64), seq_dim=1, batch_dim=0)
+            inp = tf.reverse_sequence(inp, self.src_len, seq_dim=1, batch_dim=0)
             inp = tf.transpose(inp, [1, 0, 2])
             bw_cell = rnn_cell.GRUCell(self.size)
             bw_cell = rnn_cell.DropoutWrapper(
@@ -191,16 +184,18 @@ class Model(object):
             self.enc_bw_out, _ = rnn.dynamic_rnn(
                 self.encoder_bw_cell,
                 inp,
-                tf.cast(srclen, tf.int64),
+                self.src_len,
                 dtype=tf.float32, time_major=True,
                 initial_state=self.encoder_fw_cell.zero_state(self.batch_size,
                                                               dtype=tf.float32),
                 scope='BiRNN_BW')
+            self.enc_bw_out = tf.transpose(self.enc_bw_out, [1, 0, 2])
+            self.enc_bw_out = tf.reverse_sequence(self.enc_bw_out, self.src_len, seq_dim=1, batch_dim=0)
+            self.enc_bw_out = tf.transpose(self.enc_bw_out, [1, 0, 2])
 
     def setup_decoder(self):
         with vs.variable_scope("Decoder"):
             inp =  tf.nn.dropout(self.decoder_inputs, self.keep_prob)
-            tgt_len = tf.reduce_sum(self.src_mask, reduction_indices=0)
             if self.num_layers > 1:
                 with vs.variable_scope("RNN"):
                     decoder_cell = rnn_cell.GRUCell(self.size)
@@ -208,17 +203,16 @@ class Model(object):
                                                            output_keep_prob=self.keep_prob)
                     self.decoder_cell = rnn_cell.MultiRNNCell(
                         [decoder_cell] * (self.num_layers - 1), state_is_tuple=True)
-                    inp, _ = rnn.dynamic_rnn(self.decoder_cell, inp, tgt_len,
+                    inp, _ = rnn.dynamic_rnn(self.decoder_cell, inp, self.src_len,
                                              dtype=tf.float32, time_major=True,
                                              initial_state=self.decoder_cell.zero_state(
                                                  self.batch_size, dtype=tf.float32))
 
 
             with vs.variable_scope("Attn"):
-                src_mask = tf.concat(0, [tf.zeros((1, self.batch_size), dtype=tf.int32), self.src_mask])
                 self.attn_cell = GRUCellAttn(self.size, self.len_inp,
-                                             self.encoder_output, src_mask)
-                self.decoder_output, _ = rnn.dynamic_rnn(self.attn_cell, inp, tgt_len,
+                                             self.encoder_output, self.src_mask)
+                self.decoder_output, _ = rnn.dynamic_rnn(self.attn_cell, inp, self.src_len,
                                                          dtype=tf.float32, time_major=True,
                                                          initial_state=self.attn_cell.zero_state(
                                                              self.batch_size, dtype=tf.float32))
@@ -229,20 +223,10 @@ class Model(object):
                                                    [-1, self.size]),
                                         vocab_size, True, 1.0)
             self.outputs2d = tf.nn.log_softmax(logits2d)
-            # self.outputs = tf.argmax(tf.reshape(outputs2d,
-            #                           [-1, self.batch_size, vocab_size]), 2)
-
-            if model == 'seq2seq':
-                self.mask =  tf.concat(0, [self.src_mask, tf.zeros((1, self.batch_size), dtype=tf.int32)])
-                labels = tf.reshape(tf.concat(0,
-                                              [self.tgt_toks,
-                                               tf.zeros((1, self.batch_size),
-                                                        dtype=tf.int32)]),
-                                    [-1])
-            else:
-                self.mask = self.src_mask
-                labels = tf.reshape(self.tgt_toks, [-1])
+            self.mask = self.src_mask
+            labels = tf.reshape(self.tgt_toks, [-1])
             self.labels = labels
+
             if self.foward_only:
                 labels = tf.one_hot(labels, depth=vocab_size)
             else:
@@ -296,7 +280,7 @@ class Model(object):
                                       tf.bool)
         inp = tf.reshape(tf.slice(beam_seqs, [0, 0, time_step], [-1, -1, 1]),
                          [self.batch_size * beam_size])
-        inputs = embedding_ops.embedding_lookup(self.L_enc, inp)
+        inputs = embedding_ops.embedding_lookup(self.L_dec, inp)
         with vs.variable_scope("Decoder", reuse=True):
             with vs.variable_scope("RNN", reuse=True):
                 with vs.variable_scope("RNN", reuse=True):
@@ -399,7 +383,7 @@ class Model(object):
             next_top_seqs4 = tf.concat(2, [top_seqs4, cur_seqs4])
 
             cur_tok = tf.tile(tf.reshape(tf.slice(self.tgt_toks,
-                                                  [time + 1, 0], [1, -1]),
+                                                  [time, 0], [1, -1]),
                                          [-1, 1, 1]),
                               [1, old_beam_size, 1])
             # batch_size * old_beam_size * 1
