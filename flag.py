@@ -6,7 +6,7 @@ tf.app.flags.DEFINE_float("max_gradient_norm", 10.0, "Clip gradients to this nor
 tf.app.flags.DEFINE_float("keep_prob", 0.9, "Fraction of units randomly dropped on non-recurrent connections.")
 tf.app.flags.DEFINE_float("gpu_frac", 1.0, "Fraction of GPU device used")
 tf.app.flags.DEFINE_integer("batch_size", 128, "Batch size to use during training.")
-tf.app.flags.DEFINE_integer("epochs", 40, "Number of epochs to train.")
+tf.app.flags.DEFINE_integer("epochs", 100, "Number of epochs to train.")
 tf.app.flags.DEFINE_integer("size", 400, "Size of each model layer.")
 tf.app.flags.DEFINE_integer("num_layers", 3, "Number of layers in the model.")
 tf.app.flags.DEFINE_integer("num_heads", 8, "Size of each model layer.")

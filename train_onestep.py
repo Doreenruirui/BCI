@@ -42,7 +42,7 @@ def create_model(session, vocab_size_char, vocab_size_word):
                         FLAGS.max_gradient_norm, FLAGS.learning_rate,
                         FLAGS.learning_rate_decay_factor, forward_only=False,
                         optimizer=FLAGS.optimizer)
-    model.build_model(vocab_size_char, model=FLAGS.model,
+    model.build_model_onestep(vocab_size_char, model=FLAGS.model,
                       flag_bidirect=FLAGS.flag_bidirect, model_sum=FLAGS.flag_sum)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     num_epoch = 0
@@ -110,11 +110,6 @@ def train():
         total_iters = 0
         start_time = time.time()
         cur_len = -2
-        # if epoch >= 1:
-        #     if FLAGS.flag_varlen:
-        #         best_cost = validate(model, sess, epoch)
-        #     else:
-        #         best_cost = validate(model, sess, cur_len - 1)
 
         while (FLAGS.epochs == 0 or epoch < FLAGS.epochs):
             epoch += 1
@@ -175,7 +170,6 @@ def train():
 
             logging.info("Epoch %d Validation cost: %f time: %f" % (epoch, valid_cost, epoch_toc - epoch_tic))
 
-
             if len(previous_losses) > 2 and valid_cost > previous_losses[-1]:
                 logging.info("Annealing learning rate by %f" % FLAGS.learning_rate_decay_factor)
                 sess.run(model.lr_decay_op)
@@ -186,24 +180,6 @@ def train():
                 model.saver.save(sess, checkpoint_path, global_step=epoch)
             sys.stdout.flush()
 
-            # if valid_cost < best_cost:
-            #     best_cost = valid_cost
-            #     best_epoch = epoch
-            #     model.saver.save(sess, checkpoint_path, global_step=epoch)
-            #     # for epoch_id in range(best_epoch):
-            #     #     if os.path.exists(checkpoint_path + ("-%d" % epoch_id)):
-            #     #         os.remove(checkpoint_path + ("-%d" % epoch_id))
-            #     #         os.remove(checkpoint_path + ("-%d.meta" % epoch_id))
-            # else:
-            # # if len(previous_losses) > 2 and valid_cost > previous_losses[-1]:
-            #     logging.info("Annealing learning rate by %f" % FLAGS.learning_rate_decay_factor)
-            #     sess.run(model.lr_decay_op)
-            #     model.saver.restore(sess, checkpoint_path + ("-%d" % best_epoch))
-            # # else:
-            # #     previous_losses.append(valid_cost)
-            # #     best_epoch = epoch
-            # #     model.saver.save(sess, checkpoint_path, global_step=epoch)
-            # sys.stdout.flush()
 
 
 def main(_):

@@ -103,9 +103,6 @@ class Model(object):
                                               -1]) * \
                                   tf.reshape(self.L_enc,
                                              [1, 1, vocab_size, self.size])
-            embed_sos = embedding_ops.embedding_lookup(self.L_dec, char2id['<sos>'])
-            embed_sos = tf.tile(tf.reshape(embed_sos, [1, 1, -1]),
-                                [1, self.batch_size, 1])
             if model_sum == 1:
                 self.encoder_inputs = tf.reduce_sum(self.encoder_inputs, reduction_indices=2)
             else:
@@ -118,11 +115,14 @@ class Model(object):
                                                            self.size, True, 1.0))
                     self.encoder_inputs = tf.reshape(self.encoder_inputs,
                                                      [self.len_inp, -1, self.size])
-            self.decoder_inputs = embedding_ops.embedding_lookup(self.L_dec,
-                                                                 tf.slice(self.tgt_toks,
-                                                                          [0, 0],
-                                                                          [self.len_inp -1, -1]))
             if model == 'seq2seq':
+                embed_sos = embedding_ops.embedding_lookup(self.L_dec, char2id['<sos>'])
+                embed_sos = tf.tile(tf.reshape(embed_sos, [1, 1, -1]),
+                                    [1, self.batch_size, 1])
+                self.decoder_inputs = embedding_ops.embedding_lookup(self.L_dec,
+                                                                     tf.slice(self.tgt_toks,
+                                                                              [0, 0],
+                                                                              [self.len_inp - 1, -1]))
                 self.decoder_inputs = tf.concat(0, [embed_sos, self.decoder_inputs])
 
     def setup_encoder(self, flag_bidirect):
@@ -217,10 +217,10 @@ class Model(object):
                                                          initial_state=self.attn_cell.zero_state(
                                                              self.batch_size, dtype=tf.float32))
 
-    def setup_loss(self, output, vocab_size, model):
+    def setup_loss(self, output, vocab_size, size):
         with vs.variable_scope("Logistic"):
             logits2d = rnn_cell._linear(tf.reshape(output,
-                                                   [-1, self.size]),
+                                                   [-1, size]),
                                         vocab_size, True, 1.0)
             self.outputs2d = tf.nn.log_softmax(logits2d)
             self.mask = self.src_mask
@@ -239,6 +239,31 @@ class Model(object):
             self.losses2d = tf.reshape(losses1d, [self.len_inp, self.batch_size])
             self.losses = tf.reduce_sum(self.losses2d) / tf.to_float(self.batch_size)
 
+    def setup_loss_onestep(self, output, vocab_size, size):
+        with vs.variable_scope("Logistic"):
+            batch_index = tf.range(self.batch_size)
+            fetch_index = tf.cast(tf.reduce_sum(self.src_mask, reduction_indices=0), dtype=tf.int32)
+            fetch_index = fetch_index - 1 + batch_index * self.len_inp
+            new_output = tf.gather(tf.reshape(tf.transpose(output, [1,0,2]),
+                                              [-1, size]),
+                                   fetch_index) # batch_size * size
+            logits2d = rnn_cell._linear(new_output,
+                                        vocab_size, True, 1.0) # batch_size * voc_size
+            self.outputs2d = tf.nn.log_softmax(logits2d)  # batch_size * voc_size
+            labels = tf.gather(tf.reshape(tf.transpose(self.tgt_toks,
+                                                       [1,0]),
+                                          [-1]),
+                               fetch_index) # batch_size
+            self.labels = labels
+            if self.foward_only:
+                labels = tf.one_hot(labels, depth=vocab_size) # batch_size * voc_size
+            else:
+                labels = label_smooth(labels, vocab_size)
+
+            self.losses2d = tf.nn.softmax_cross_entropy_with_logits(logits2d,
+                                                                      labels) # batch_size
+            self.losses = tf.reduce_sum(self.losses2d) / tf.to_float(self.batch_size)
+            probs, self.top_seqs = tf.nn.top_k(self.outputs2d, k=self.num_pred) # batch_size * num_pred
 
     def build_model(self, vocab_size_char, model='lstm', model_sum=0, flag_bidirect=False, flag_word=False, vocab_size_word=0, loss="char"):
         self._add_place_holders(flag_word)
@@ -259,14 +284,41 @@ class Model(object):
                 self.setup_decoder()
                 output = self.decoder_output
             if flag_word:
-                self.setup_loss(output, vocab_size_word, model)
+                self.setup_loss(output, vocab_size_word, self.size)
             else:
-                self.setup_loss(output, vocab_size_char, model)
+                if model == 'lstm' and flag_bidirect:
+                    self.setup_loss(output, vocab_size_char, 2 * self.size)
+                else:
+                    self.setup_loss(output, vocab_size_char, self.size)
             if self.foward_only:
                 if model == 'seq2seq':
-                    self.setup_beam("Logistic", vocab_size_char, model)
+                    self.setup_beam("Logistic", vocab_size_char)
                 else:
-                    self.setup_lstm(vocab_size_char)
+                    self.setup_lstm()
+        if not self.foward_only:
+            self.setup_train()
+
+        self.saver = tf.train.Saver(tf.all_variables(), max_to_keep=0)
+
+    def build_model_onestep(self, vocab_size_char, model='lstm', model_sum=0, flag_bidirect=False, flag_word=False, vocab_size_word=0, loss="char"):
+        self._add_place_holders(flag_word)
+        with tf.variable_scope("Model", initializer=tf.uniform_unit_scaling_initializer(1.0)):
+            self.setup_embeddings(vocab_size_char, model_sum=model_sum, model=model)
+            if flag_bidirect:
+                if not self.foward_only:
+                    self.setup_encoder(flag_bidirect=True)
+                else:
+                    self.setup_encoder_forward()
+                    self.setup_encoder_backward()
+                    self.encoder_output = tf.concat(2, [self.enc_fw_out, self.enc_bw_out])
+            else:
+                self.setup_encoder(flag_bidirect=False)
+            if model == 'lstm':
+                output = self.encoder_output
+            else:
+                self.setup_decoder()
+                output = self.decoder_output
+            self.setup_loss_onestep(output, vocab_size_char, 2 * self.size)
         if not self.foward_only:
             self.setup_train()
 
@@ -298,12 +350,11 @@ class Model(object):
             logprobs3d = tf.reshape(tf.nn.log_softmax(logits2d), [self.batch_size, -1, vocab_size])
         return logprobs3d
 
-
-    def setup_lstm(self, vocab_size):
+    def setup_lstm(self):
         probs, index = tf.nn.top_k(self.outputs2d, k=self.num_pred)
         self.top_seqs = tf.reshape(index, [-1, self.batch_size, self.num_pred])
 
-    def setup_beam(self, loss_scope, vocab_size, model='lstm'):
+    def setup_beam(self, loss_scope, vocab_size):
         time_0 = tf.constant(0)
         beam_seqs_0 = tf.ones([self.batch_size, 1, 1], dtype=tf.int32) * char2id['<sos>']
         beam_probs_0 = tf.zeros(shape=[self.batch_size, 1], dtype=tf.float32)
@@ -454,6 +505,19 @@ class Model(object):
     def decode_lstm(self, session, src_toks, tgt_toks, src_mask):
         input_feed = {}
         input_feed[self.src_toks] = src_toks
+        input_feed[self.src_mask] = src_mask
+        input_feed[self.tgt_toks] = tgt_toks
+        input_feed[self.keep_prob] = 1.
+        output_feed = [self.losses2d,self.top_seqs]
+        outputs = session.run(output_feed, input_feed)
+        return outputs[0], outputs[1]
+
+    def decode_bilstm(self, session, enc_out_fw, enc_out_bw, tgt_toks, src_mask):
+        input_feed = {}
+        input_feed[self.enc_fw_out] = enc_out_fw
+        input_feed[self.enc_bw_out] = enc_out_bw
+        input_feed[self.batch_size] = enc_out_fw.shape[1]
+        input_feed[self.len_inp] = enc_out_fw.shape[0]
         input_feed[self.src_mask] = src_mask
         input_feed[self.tgt_toks] = tgt_toks
         input_feed[self.keep_prob] = 1.

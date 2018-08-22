@@ -1,5 +1,5 @@
 import numpy as np
-from plot_curve import plot
+#from plot_curve import plot
 import os
 import sys
 

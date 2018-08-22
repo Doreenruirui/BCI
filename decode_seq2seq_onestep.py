@@ -50,7 +50,7 @@ def create_model(session):
                         FLAGS.max_gradient_norm, FLAGS.learning_rate,
                         FLAGS.learning_rate_decay_factor, forward_only=True,
                         optimizer=FLAGS.optimizer, num_pred=FLAGS.num_cand)
-    model.build_model(vocab_size_char, model=FLAGS.model, flag_bidirect=FLAGS.flag_bidirect, model_sum=FLAGS.flag_sum)
+    model.build_model_onestep(vocab_size_char, model=FLAGS.model, flag_bidirect=FLAGS.flag_bidirect)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
         logging.info("Reading model parameters from %s" % ckpt.model_checkpoint_path)
@@ -133,12 +133,6 @@ def decode_batch(sess, batch_size, s, e):
     if FLAGS.model == "lstm":
         if FLAGS.flag_bidirect:
             cur_mask = get_mask(cur_chunk_len, cur_max_len)
-            #perplex, top_seqs = model.decode_lstm(sess, src_probs, tgt_toks, cur_mask)
-            #top_seqs = np.transpose(top_seqs, [1, 2, 0])
-            #truth = np.transpose(tgt_toks)
-            #cur_mrr[0, :, :] = batch_mrr(top_seqs, truth, 10)
-            #cur_recall[0, :, :] = batch_recall_at_k(top_seqs, truth, 10)
-            #cur_perplex = np.transpose(perplex)
             encoder_out_fw = model.encode_fw(sess, src_probs, cur_mask)
             for k in range(cur_max_len):
                 print('\t' + str(k))
@@ -148,10 +142,10 @@ def decode_batch(sess, batch_size, s, e):
                 perplex, top_seqs = model.decode_bilstm(sess, encoder_out_fw[:k+1,:,:],
                                                         encoder_out_bw[:k + 1,:,:], tgt_toks[:k + 1, :], cur_mask)
                 cur_truth = np.transpose(tgt_toks[k, :])
-                cur_pred = top_seqs[k, :, :]
+                cur_pred = top_seqs
                 cur_mrr[0, :, k] = batch_mrr(cur_pred, cur_truth, FLAGS.num_cand)
                 cur_recall[0, :, k] = batch_recall_at_k(cur_pred, cur_truth, FLAGS.num_cand)
-                cur_perplex[:, k] = perplex[k, :]
+                cur_perplex[:, k] = perplex
         else:
             cur_mask = (np.sum(src_probs, -1) > 0).astype(np.int32)
             perplex, top_seqs = model.decode_lstm(sess, src_probs, tgt_toks, cur_mask)

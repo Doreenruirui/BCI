@@ -7,7 +7,7 @@ import tensorflow as tf
 
 def generate_prob():
     if FLAGS.random == 'random':
-        filename = pjoin(FLAGS.data_dir, '%s.%s.%d_%.1f_%.1f_%.1f' % (FLAGS.dev,
+        filename = pjoin(FLAGS.data_dir, '%s.%s.%d_%.2f_%.2f_%.2f' % (FLAGS.dev,
                                                                      FLAGS.random,
                                                                      FLAGS.num_top,
                                                                      FLAGS.prob_high,

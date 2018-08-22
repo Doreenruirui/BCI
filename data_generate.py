@@ -174,7 +174,7 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
         else:
             filename = '%s.%d' % (data_random, num_top)
             if data_random == 'random':
-                filename = '%s_%.1f_%.1f_%.1f' % (filename, prob_high, prior, prob_in)
+                filename = '%s_%.2f_%.2f_%.2f' % (filename, prob_high, prior, prob_in)
             fc = open(pjoin(file_data, '%s.%s.cand' % (dev, filename)))
             fp = open(pjoin(file_data, '%s.%s.cand' % (dev, filename)))
         batches = []
