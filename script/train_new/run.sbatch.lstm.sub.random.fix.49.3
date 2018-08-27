@@ -1,0 +1,32 @@
+#!/bin/bash
+#SBATCH --job-name=lsrf49.3
+#SBATCH --output=/home/dong.r/BCI/script/train_new/out.lstm.sub.random.fix.49.3
+#SBATCH --error=/home/dong.r/BCI/script/train_new/err.lstm.sub.random.fix.49.3
+#SBATCH --exclusive
+#SBATCH --partition=par-gpu-2
+#SBATCH -N 1
+
+work=/home/dong.r/BCI
+cd $work
+source ~/.bash_profile
+python train.py \
+    --data_dir="/gss_gpfs_scratch/dong.r/Dataset/BCI/Sublex/1/1/train/sub" \
+    --dev="test" \
+    --train_dir="/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_49_3" \
+    --size=512 \
+    --num_layers=3 \
+    --batch_size=32 \
+    --max_seq_len=300 \
+    --learning_rate=0.0003 \
+    --learning_rate_decay_factor=0.95 \
+    --optimizer="adam" \
+    --flag_bidirect=False \
+    --flag_generate=False \
+    --random="random" \
+    --prob_high=0.4 \
+    --prob_in=0.9 \
+    --prior=3 \
+    --num_wit=3 \
+    --num_top=5 \
+    --model="lstm" \
+    --keep_prob=0.9 

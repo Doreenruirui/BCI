@@ -95,7 +95,7 @@ class Model(object):
             self.L_enc = tf.concat(0, [zeros, enc])
             dec = tf.get_variable("L_dec", [vocab_size - 1, self.size])
             self.L_dec = tf.concat(0, [zeros, dec])
-
+            
             self.encoder_inputs = tf.reshape(self.src_toks,
                                              [self.len_inp,
                                               self.batch_size,

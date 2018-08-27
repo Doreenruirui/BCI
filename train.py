@@ -70,7 +70,8 @@ def validate(model, sess, cur_len):
                                                                prior=FLAGS.prior,
                                                                prob_high=FLAGS.prob_high,
                                                                prob_in=FLAGS.prob_in,
-                                                               flag_generate=FLAGS.flag_generate):
+                                                               flag_generate=FLAGS.flag_generate,
+                                                               prob_back=FLAGS.prob_back):
         cost = model.test(sess, source_tokens, source_mask, target_tokens)
         valid_costs.append(cost * source_mask.shape[1])
         valid_lengths.append(np.sum(source_mask))
@@ -136,7 +137,8 @@ def train():
                                                                        prior=FLAGS.prior,
                                                                        prob_high=FLAGS.prob_high,
                                                                        prob_in=FLAGS.prob_in,
-                                                                       flag_generate=FLAGS.flag_generate):
+                                                                       flag_generate=FLAGS.flag_generate,
+                                                                       prob_back=FLAGS.prob_back):
                 # Get a batch and make a step.
                 tic = time.time()
                 grad_norm, cost, param_norm = model.train(sess, source_tokens, source_mask, target_tokens, FLAGS.keep_prob)
@@ -185,25 +187,6 @@ def train():
                 best_epoch = epoch
                 model.saver.save(sess, checkpoint_path, global_step=epoch)
             sys.stdout.flush()
-
-            # if valid_cost < best_cost:
-            #     best_cost = valid_cost
-            #     best_epoch = epoch
-            #     model.saver.save(sess, checkpoint_path, global_step=epoch)
-            #     # for epoch_id in range(best_epoch):
-            #     #     if os.path.exists(checkpoint_path + ("-%d" % epoch_id)):
-            #     #         os.remove(checkpoint_path + ("-%d" % epoch_id))
-            #     #         os.remove(checkpoint_path + ("-%d.meta" % epoch_id))
-            # else:
-            # # if len(previous_losses) > 2 and valid_cost > previous_losses[-1]:
-            #     logging.info("Annealing learning rate by %f" % FLAGS.learning_rate_decay_factor)
-            #     sess.run(model.lr_decay_op)
-            #     model.saver.restore(sess, checkpoint_path + ("-%d" % best_epoch))
-            # # else:
-            # #     previous_losses.append(valid_cost)
-            # #     best_epoch = epoch
-            # #     model.saver.save(sess, checkpoint_path, global_step=epoch)
-            # sys.stdout.flush()
 
 
 def main(_):
