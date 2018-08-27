@@ -138,7 +138,8 @@ def train():
                                                                        prob_high=FLAGS.prob_high,
                                                                        prob_in=FLAGS.prob_in,
                                                                        flag_generate=FLAGS.flag_generate,
-                                                                       prob_back=FLAGS.prob_back):
+                                                                       prob_back=FLAGS.prob_back,
+                                                                       sort_and_shuffle=True):
                 # Get a batch and make a step.
                 tic = time.time()
                 grad_norm, cost, param_norm = model.train(sess, source_tokens, source_mask, target_tokens, FLAGS.keep_prob)

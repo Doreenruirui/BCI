@@ -54,29 +54,38 @@ def refill(batches, fx, batch_size, start=0, end=-1, cur_len=-1, max_seq_len=300
     return
 
 
-def refill_var(batches, fx, fc, fp, batch_size, num_wit, start=0, end=-1, cur_len=-1, max_seq_len=300, sort_and_shuffle=True):
+def refill_var(batches, fx, fy, fc, fp, batch_size, num_wit, start=0, end=-1, cur_len=-1, max_seq_len=300, sort_and_shuffle=True):
     line_pairs = []
     linex = fx.readline()
+    if fy:
+        liney = fy.readline()
     linec = fc.readline()
     linep = fp.readline()
     line_id = 0
 
     while linex:
         if line_id >= start:
-            tokens = tokenize(linex.strip())
+            x_tokens = tokenize(linex.strip())
+            if fy:
+                y_tokens = tokenize(liney.strip())
             newc = linec.strip().split('\t')
             newp = linep.strip().split('\t')
             cands = map(lambda ele: [int(s) for s in ele.split()[:num_wit]], newc)
             probs = map(lambda ele: [float(s) for s in ele.split()[:num_wit]], newp)
-            if len(tokens) >= 1:
+            if len(x_tokens) >= 1:
                 if cur_len > -1:
                     max_len = min(cur_len, max_seq_len)
                     choice = np.random.choice(max_len, 1)[0] + 1
                 else:
                     choice = max_seq_len
-                line_pairs.append((tokens[:choice], cands[:choice], probs[:choice]))
+                if fy:
+                    line_pairs.append((x_tokens[:choice], y_tokens[:choice], cands[:choice], probs[:choice]))
+                else:
+                    line_pairs.append((x_tokens[:choice, x_tokens[:choice], cands[:choice], probs[:choice]]))
         line_id += 1
         linex = fx.readline()
+        if fy:
+            liney = fy.readline()
         linec = fc.readline()
         linep = fp.readline()
         if line_id == end:
@@ -87,10 +96,11 @@ def refill_var(batches, fx, fc, fp, batch_size, num_wit, start=0, end=-1, cur_le
         line_pairs = sorted(line_pairs, key=lambda e:len(e[0]))
 
     for batch_start in xrange(0, len(line_pairs), batch_size):
-        c_batch = [ele[1] for ele in line_pairs[batch_start:batch_start + batch_size]]
-        p_batch = [ele[2] for ele in line_pairs[batch_start:batch_start + batch_size]]
+        c_batch = [ele[2] for ele in line_pairs[batch_start:batch_start + batch_size]]
+        p_batch = [ele[3] for ele in line_pairs[batch_start:batch_start + batch_size]]
         x_batch = [ele[0] for ele in line_pairs[batch_start:batch_start + batch_size]]
-        batches.append((x_batch, c_batch, p_batch))
+        y_batch = [ele[1] for ele in line_pairs[batch_start:batch_start + batch_size]]
+        batches.append((x_batch, y_batch, c_batch, p_batch))
 
     if sort_and_shuffle:
         random.shuffle(batches)
@@ -115,7 +125,7 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
               cur_len=-2,
               start=0,
               end=-1,
-              sort_and_shuffle=True):
+              sort_and_shuffle=False):
 
         if flag_generate:
             if data_random == 'eeg':
@@ -132,8 +142,10 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
             fp = open(pjoin(file_data, '%s.%s.cand' % (dev, filename)))
             if prob_back == 0.0:
                 fx = open(pjoin(file_data, dev + '.ids'))
+                fy = None
             else:
-                fx = open(pjoin(file_data,'%s.%s.ids' % (dev, filename)))
+                fx = open(pjoin(file_data,'%s.%s.ids.x' % (dev, filename)))
+                fy = open(pjoin(file_data, '%s.%s.ids.y') % (dev, filename))
 
         batches = []
         voc_size = len(char2id)
@@ -148,7 +160,7 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
                            sort_and_shuffle=sort_and_shuffle,
                            start=start, end=end)
                 else:
-                    refill_var(batches, fx, fc, fp, batch_size, num_wit,
+                    refill_var(batches, fx, fy, fc, fp, batch_size, num_wit,
                                cur_len=cur_len + 1, max_seq_len=max_seq_len,
                                sort_and_shuffle=sort_and_shuffle,
                                start=start, end=end)
@@ -161,7 +173,9 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
             if flag_generate:
                 x_tokens = batches.pop(0)
                 if prob_back > 0.:
-                    x_tokens = map(lambda tokenlist: add_backspace(tokenlist, prob_back), x_tokens)
+                    x_tokens, y_tokens = map(lambda tokenlist: add_backspace(tokenlist, prob_back), x_tokens)
+                else:
+                    y_tokens = x_tokens
                 x_probs = map(lambda tokenlist: [pad_head] + map(lambda ele: generate_simulation(ele,
                                                                                 num_wit,
                                                                                 top=num_top,
@@ -173,13 +187,13 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
                                 tokenlist[:-1]),
                           x_tokens)
             else:
-                x_tokens, cur_cands, cur_probs = batches.pop(0)
+                x_tokens, y_tokens, cur_cands, cur_probs = batches.pop(0)
                 x_probs = map(lambda cands, probs: [pad_head] +
                                                    map(lambda cand, prob: create_vector(cand, prob),
                                                        cands[:-1], probs[:-1]),
                               cur_cands, cur_probs)
             x_probs_padded = padded(x_probs, len(char2id), 0.0)
-            y_padded = padded(x_tokens, 1)
+            y_padded = padded(y_tokens, 1)
             source_probs = np.transpose(np.array(x_probs_padded), (1, 0, 2))
             source_mask = (np.sum(source_probs, -1) > 0).astype(np.int32)
             target_tokens = np.array(y_padded).T

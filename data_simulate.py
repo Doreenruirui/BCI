@@ -148,13 +148,18 @@ def add_backspace(line, prob_back):
     np.random.shuffle(rand_index)
     insert_index = rand_index[:nback]
     new_line = []
+    new_line_y = []
+    back_id = char2id['<backspace>']
     for cid in range(nc):
         if cid in insert_index:
             cand = generate_candidate(line[cid])
             new_line.append(cand[0])
-            new_line.append(char2id['<backspace>'])
+            new_line.append(back_id)
+            new_line_y.append(line[cid])
+            new_line_y.append(back_id)
         new_line.append(line[cid])
-    return new_line
+        new_line_y.append(line[cid])
+    return new_line, new_line_y
 
 # def generate_line(line, num_wit, num_top=10, prior=1., prob_high=0.7,
 #                   prob_in=1.0, prob_back=0.0, simul="eeg", flag_vec=False):

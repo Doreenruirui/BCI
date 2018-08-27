@@ -73,7 +73,7 @@ def get_mask(len_input, max_len):
 def decode_batch(sess, source_tokens, source_mask, target_tokens):
     cur_max_len = max(np.sum(source_mask, axis=0))
     cur_chunk_len = np.sum(source_mask, axis=0)
-    batch_size = source_tokens.shape[0]
+    batch_size = source_tokens.shape[1]
 
     cur_recall = np.zeros((2, batch_size, cur_max_len))
     cur_mrr = np.zeros((2, batch_size, cur_max_len))
@@ -159,7 +159,9 @@ def decode():
                                                                    prob_high=FLAGS.prob_high,
                                                                    prob_in=FLAGS.prob_in,
                                                                    flag_generate=FLAGS.flag_generate,
-                                                                   prob_back=FLAGS.prob_back):
+                                                                   prob_back=FLAGS.prob_back,
+                                                                   start=FLAGS.start,
+                                                                   end=FLAGS.end):
 
             mrr, recall, perplex = decode_batch(sess, source_tokens, source_mask, target_tokens)
             for pred_id in range(num_file):
