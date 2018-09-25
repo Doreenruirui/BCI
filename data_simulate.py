@@ -3,11 +3,11 @@ import numpy as np
 from random import shuffle, randint
 import string
 import math
-from bitweight import *
+#from bitweight import *
 import sys
 
 eeg = None
-id2char = [b'<pad>', b'<sos>', b'<eos>', b' '] + list(string.ascii_lowercase) + ['<backspace>']
+id2char = ['<pad>', '<sos>', '<eos>', ' '] + list(string.ascii_lowercase) + ['<backspace>']
 char2id = {k: v for v, k in enumerate(id2char)}
 
 
@@ -148,18 +148,25 @@ def add_backspace(line, prob_back):
     np.random.shuffle(rand_index)
     insert_index = rand_index[:nback]
     new_line = []
-    new_line_y = []
     back_id = char2id['<backspace>']
     for cid in range(nc):
         if cid in insert_index:
             cand = generate_candidate(line[cid])
             new_line.append(cand[0])
             new_line.append(back_id)
-            new_line_y.append(line[cid])
-            new_line_y.append(back_id)
         new_line.append(line[cid])
-        new_line_y.append(line[cid])
-    return new_line, new_line_y
+    return new_line
+
+
+def generate_target(tokens):
+    back_id = char2id['<backspace>']
+    def generate_line(list_tok):
+        len_list = len(list_tok)
+        for i in range(len_list):
+            if 0 < i < len_list - 1 and list_tok[i] == back_id:
+                list_tok[i - 1] = list_tok[i + 1]
+        return list_tok
+    return list(map(lambda tok_list: generate_line(tok_list), tokens))
 
 # def generate_line(line, num_wit, num_top=10, prior=1., prob_high=0.7,
 #                   prob_in=1.0, prob_back=0.0, simul="eeg", flag_vec=False):

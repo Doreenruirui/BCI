@@ -17,17 +17,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import re
 from os.path import join as pjoin
 import os
 import numpy as np
-from six.moves import xrange
 import tensorflow as tf
 import model_concat as model_concat
 from flag import FLAGS
-from data_generate import id2char, char2id, load_vocabulary, padded
+from data_generate import id2char, char2id
 from evaluate import batch_mrr, batch_recall_at_k
-from data_generate import pair_iter
+from data_generate import pair_iter_once
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -49,7 +47,7 @@ def create_model(session):
                         optimizer=FLAGS.optimizer, num_pred=FLAGS.num_cand)
     model.build_model(vocab_size_char, model=FLAGS.model, flag_bidirect=FLAGS.flag_bidirect, model_sum=FLAGS.flag_sum)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
-    if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
+    if ckpt:
         logging.info("Reading model parameters from %s" % ckpt.model_checkpoint_path)
         model.saver.restore(session, ckpt.model_checkpoint_path)
         num_epoch = int(ckpt.model_checkpoint_path.split('-')[1])
@@ -126,10 +124,11 @@ def decode_batch(sess, source_tokens, source_mask, target_tokens):
                 cur_mrr[pred_id, :, k] = batch_mrr(cur_pred, cur_truth, FLAGS.num_cand)
                 cur_recall[pred_id, :, k] = batch_recall_at_k(cur_pred, cur_truth, FLAGS.num_cand)
             cur_perplex[:, k] = perplex[:, k + 1]
-    str_mrr = ['\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_mrr[pred_id], cur_chunk_len)) + '\n' for pred_id in range(2)]
-    str_recall = ['\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_recall[pred_id], cur_chunk_len)) + '\n' for pred_id in range(2)]
-    str_perplex = '\n'.join(map(lambda a, len: '\t'.join(map(str, a[:len])), cur_perplex, cur_chunk_len)) + '\n'
-    return str_mrr, str_recall, str_perplex
+    str_mrr = ['\n'.join(list(map(lambda a, len: '\t'.join(list(map(str, a[:len]))), cur_mrr[pred_id], cur_chunk_len))) + '\n' for pred_id in range(2)]
+    str_recall = ['\n'.join(list(map(lambda a, len: '\t'.join(list(map(str, a[:len]))), cur_recall[pred_id], cur_chunk_len))) + '\n' for pred_id in range(2)]
+    str_perplex = '\n'.join(list(map(lambda a, len: '\t'.join(list(map(str, a[:len]))), cur_perplex, cur_chunk_len))) + '\n'
+    str_predict = '\n'.join(list(map(lambda a, len: '\t'.join(list(map(lambda b: ' '.join(list(map(str, b))), a[:len]))), np.transpose(top_seqs, [0, 2, 1]),cur_chunk_len))) + '\n'
+    return str_mrr, str_recall, str_perplex, str_predict
 
 
 def decode():
@@ -145,10 +144,10 @@ def decode():
         f_mrr.append(open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'mrr%d.%d_%d' % (pred_id, FLAGS.start, FLAGS.end)), 'w'))
         f_recall.append(open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'recall%d.%d_%d') % (pred_id, FLAGS.start, FLAGS.end), 'w'))
     f_perplex = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'perplex.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
-
+    f_predict = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'top.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
     with tf.Session() as sess:
         create_model(sess)
-        for source_tokens, source_mask, target_tokens in pair_iter(FLAGS.data_dir,
+        for source_tokens, source_mask, target_tokens in pair_iter_once(FLAGS.data_dir,
                                                                    FLAGS.dev, FLAGS.num_wit,
                                                                    cur_len=-2,
                                                                    num_top=FLAGS.num_top,
@@ -163,15 +162,17 @@ def decode():
                                                                    start=FLAGS.start,
                                                                    end=FLAGS.end):
 
-            mrr, recall, perplex = decode_batch(sess, source_tokens, source_mask, target_tokens)
+            mrr, recall, perplex, predict = decode_batch(sess, source_tokens, source_mask, target_tokens)
             for pred_id in range(num_file):
                 f_mrr[pred_id].write(mrr[pred_id])
                 f_recall[pred_id].write(recall[pred_id])
             f_perplex.write(perplex)
+            f_predict.write(predict)
         for pred_id in range(num_file):
             f_mrr[pred_id].close()
             f_recall[pred_id].close()
         f_perplex.close()
+        f_predict.close()
 
 
 def main(_):

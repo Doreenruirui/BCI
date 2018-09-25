@@ -6,22 +6,19 @@ import string
 from evaluate import mean_reciporal_rank
 import kenlm
 from multiprocessing import Pool
-import re
 
-folder_bci = '/gss_gpfs_scratch/dong.r/Dataset/BCI'
-folder_lm = sys.argv[1]
+folder_bci = '/scratch/dong.r/Dataset/BCI'
+file_lm = sys.argv[1]
 folder_test = sys.argv[2]
 folder_eval = sys.argv[3]
 file_name = sys.argv[4]
 num_cand = int(sys.argv[5])
 
-id2char = [b'<pad>', b'<sos>', b'<eos>', b' '] + list(string.ascii_lowercase)
-char2id = {k: v for v, k in enumerate(id2char)}
 
 def initializer():
     global lm, candidates, ncand
-    lm = kenlm.LanguageModel(pjoin(folder_lm, 'train.arpa'))
-    candidates =  ['<space>'] + list(string.ascii_lowercase)
+    lm = kenlm.LanguageModel(file_lm)
+    candidates =  ['#'] + list(string.ascii_lowercase)
     ncand = num_cand
 
 
@@ -29,26 +26,35 @@ def decode_line(paras):
     global lm, candidates, ncand
     line, line_id = paras
     line = line.strip().lower()
-    line = ' '.join([ele.strip() for ele in line.split(' ')])
-    line = [ele if ele != ' ' else '<space>' for ele in line]
-    perplex = lm.perplexity('<s> ' + ' '.join(line))
+    # line = ' '.join([ele.strip() for ele in line.split(' ')])
+    # line = [ele if ele != ' ' else '<space>' for ele in line]
+    # perplex = lm.perplexity('<s> ' + ' '.join(line))
+    line = [ele if ele != ' ' else '#' for ele in line.strip()]
+    perplex =  lm.perplexity(' '.join(line))
     nitem = len(line)
     mrr = []
     recall = []
     nch = len(line)
-    cur_sen = '<s>'
+    cur_sen = ''
     for i in range(nch):
         scores = []
         for ch in candidates:
-            scores.append(lm.perplexity(cur_sen + ' ' + ch))
+            if len(cur_sen) == 0:
+                scores.append(lm.perplexity(cur_sen))
+            else:
+                scores.append(lm.perplexity(cur_sen + ' ' + ch))
         index = np.argsort(scores).tolist()
         predicts = [candidates[ele] for ele in index[:ncand]]
         cur_mrr = mean_reciporal_rank(predicts, line[i])
         cur_recall = 1 if line[i] in predicts else 0
         mrr.append(cur_mrr)
         recall.append(cur_recall)
-        cur_sen += ' ' + line[i]
+        if len(cur_sen) == 0:
+            cur_sen = line[i]
+        else:
+            cur_sen += ' ' + line[i]
     return mrr, recall, perplex, nitem, line_id
+
 
 def decode():
     folder_out = pjoin(folder_bci, folder_eval)
@@ -60,6 +66,7 @@ def decode():
     p = Pool(100, initializer=initializer())
     with open(pjoin(folder_bci, folder_test, file_name), 'r') as f_:
         lines = [ele for ele in f_.readlines() if len(ele.strip()) > 0]
+        decode_line([lines[0], 0])
         res = p.map(decode_line, zip(lines, np.arange(len(lines))))
         list_res = [None for _ in range(len(lines))]
         for mrr, recall, perplex, nitem, line_id in res:

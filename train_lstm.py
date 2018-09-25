@@ -1,35 +1,13 @@
-# Copyright 2016 Stanford University
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
-import math
 import os
 import sys
 import time
-import random
-import json
-from os.path import join as pjoin
-
 import numpy as np
-from six.moves import xrange
 import tensorflow as tf
 
-import model_concat
+import model_concat_lstm as model_concat
 from flag import FLAGS
 from data_generate import pair_iter, id2char
 
@@ -37,13 +15,15 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-def create_model(session, vocab_size_char, vocab_size_word):
+def create_model(session, vocab_size_char):
     model = model_concat.Model(FLAGS.size, FLAGS.num_wit, FLAGS.num_layers,
-                        FLAGS.max_gradient_norm, FLAGS.learning_rate,
-                        FLAGS.learning_rate_decay_factor, forward_only=False,
-                        optimizer=FLAGS.optimizer)
-    model.build_model(vocab_size_char, model=FLAGS.model,
-                      flag_bidirect=FLAGS.flag_bidirect, model_sum=FLAGS.flag_sum)
+                               FLAGS.max_gradient_norm, FLAGS.learning_rate,
+                               FLAGS.learning_rate_decay_factor,
+                               forward_only=False,
+                               optimizer=FLAGS.optimizer)
+    model.build_lstm(vocab_size_char, model=FLAGS.model,
+                      flag_bidirect=FLAGS.flag_bidirect,
+                      model_sum=FLAGS.flag_sum)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     num_epoch = 0
     if ckpt:
@@ -93,7 +73,7 @@ def train():
     #     json.dump(FLAGS.__flags, fout)
     with tf.Session() as sess:
         logging.info("Creating %d layers of %d units." % (FLAGS.num_layers, FLAGS.size))
-        model, epoch = create_model(sess, vocab_size, False)
+        model, epoch = create_model(sess, vocab_size)
 
         if False:
             tic = time.time()
@@ -103,7 +83,6 @@ def train():
             print ("Number of params: %d (retreival took %f secs)" % (num_params, toc - tic))
 
         best_epoch = epoch
-        best_cost = float('inf')
         previous_losses = []
         exp_cost = None
         exp_length = None
@@ -111,11 +90,6 @@ def train():
         total_iters = 0
         start_time = time.time()
         cur_len = -2
-        # if epoch >= 1:
-        #     if FLAGS.flag_varlen:
-        #         best_cost = validate(model, sess, epoch)
-        #     else:
-        #         best_cost = validate(model, sess, cur_len - 1)
 
         while (FLAGS.epochs == 0 or epoch < FLAGS.epochs):
             epoch += 1
