@@ -48,6 +48,7 @@ tf.app.flags.DEFINE_boolean("flag_bidirect", False, "Whether to use birectional 
 tf.app.flags.DEFINE_boolean("flag_generate", False, "Whether to generate training data dynamically")
 tf.app.flags.DEFINE_integer("flag_sum", 0, "Whether to sum the input encodings")
 tf.app.flags.DEFINE_boolean("flag_varlen", False, "Whether to vary the input length")
+tf.app.flags.DEFINE_boolean("flag_vector", False, "Whether to generate vector as input")
 tf.app.flags.DEFINE_string("random", 'eeg', "how to generate the clean data")
 
 FLAGS = tf.app.flags.FLAGS

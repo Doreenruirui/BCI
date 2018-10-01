@@ -10,7 +10,7 @@ import model_concat as model_concat
 from flag import FLAGS
 from data_generate import id2char, char2id
 from evaluate import batch_mrr, batch_recall_at_k
-from data_generate import pair_iter_once
+from data_generate import pair_iter
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -26,11 +26,11 @@ index_x = None
 def create_model(session):
     global model, word2id
     vocab_size_char = len(char2id)
-    model = model_concat.Model(FLAGS.size, FLAGS.num_cand, FLAGS.num_layers,
+    model = model_concat.Model(FLAGS.size, FLAGS.num_layers,
                         FLAGS.max_gradient_norm, FLAGS.learning_rate,
                         FLAGS.learning_rate_decay_factor, forward_only=True,
-                        optimizer=FLAGS.optimizer, num_pred=FLAGS.num_cand)
-    model.build_model(vocab_size_char, model=FLAGS.model, flag_bidirect=FLAGS.flag_bidirect, model_sum=FLAGS.flag_sum)
+                        optimizer=FLAGS.optimizer, num_pred=FLAGS.num_cand, num_wit=FLAGS.num_wit)
+    model.build_lstm(vocab_size_char, model_sum=FLAGS.flag_sum)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     if ckpt:
         logging.info("Reading model parameters from %s" % ckpt.model_checkpoint_path)
@@ -41,11 +41,8 @@ def create_model(session):
         raise ValueError("No trained Model Found")
 
 
-def decode_string(list_tokens, revocab):
-    if FLAGS.flag_word:
-        return map(lambda tokens: ' '.join([id2word[ele] if revocab[ele] != ' ' else '<space>' for ele in tokens[1:]]), list_tokens)
-    else:
-        return map(lambda tokens: ''.join([id2char[tok] for tok in tokens[1:]]), list_tokens)
+def decode_string(list_tokens):
+    return map(lambda tokens: ''.join([id2char[tok] for tok in tokens[1:]]), list_tokens)
 
 
 def get_mask(len_input, max_len):
@@ -53,7 +50,7 @@ def get_mask(len_input, max_len):
     return np.asarray(mask).T
 
 
-def decode_batch(sess, source_tokens, source_mask, target_tokens):
+def decode_batch(sess, source_tokens, source_probs, source_mask, target_tokens):
     cur_max_len = max(np.sum(source_mask, axis=0))
     cur_chunk_len = np.sum(source_mask, axis=0)
     batch_size = source_tokens.shape[1]
@@ -61,7 +58,7 @@ def decode_batch(sess, source_tokens, source_mask, target_tokens):
     cur_recall = np.zeros((batch_size, cur_max_len))
     cur_mrr = np.zeros((batch_size, cur_max_len))
 
-    perplex, top_seqs = model.decode_lstm(sess, source_tokens, target_tokens, source_mask)
+    perplex, top_seqs = model.decode_lstm(sess, source_tokens, source_probs, target_tokens, source_mask, FLAGS.flag_sum)
     top_seqs = np.transpose(top_seqs, [1, 2, 0])
     truth = np.transpose(target_tokens)
     cur_mrr[:, :] = batch_mrr(top_seqs, truth, 10)
@@ -89,22 +86,21 @@ def decode():
     f_predict = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'top.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
     with tf.Session() as sess:
         create_model(sess)
-        for source_tokens, source_mask, target_tokens in pair_iter_once(FLAGS.data_dir,
-                                                                   FLAGS.dev, FLAGS.num_wit,
-                                                                   cur_len=-2,
-                                                                   num_top=FLAGS.num_top,
-                                                                   max_seq_len=FLAGS.max_seq_len,
-                                                                   data_random=FLAGS.random,
-                                                                   batch_size=FLAGS.batch_size,
-                                                                   prior=FLAGS.prior,
-                                                                   prob_high=FLAGS.prob_high,
-                                                                   prob_in=FLAGS.prob_in,
-                                                                   flag_generate=FLAGS.flag_generate,
-                                                                   prob_back=FLAGS.prob_back,
-                                                                   start=FLAGS.start,
-                                                                   end=FLAGS.end):
-
-            mrr, recall, perplex, predict = decode_batch(sess, source_tokens, source_mask, target_tokens)
+        for source_tokens, source_probs, source_mask, target_tokens \
+                in pair_iter(FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
+                             cur_len=-2, num_top=FLAGS.num_top,
+                             max_seq_len=FLAGS.max_seq_len,
+                             data_random=FLAGS.random,
+                             batch_size=FLAGS.batch_size,
+                             prior=FLAGS.prior, prob_high=FLAGS.prob_high,
+                             prob_in=FLAGS.prob_in,
+                             flag_generate=FLAGS.flag_generate,
+                             prob_back=FLAGS.prob_back,
+                             start=FLAGS.start, end=FLAGS.end,
+                             flag_vector=not FLAGS.flag_sum):
+            mrr, recall, perplex, predict = decode_batch(sess, source_tokens,
+                                                         source_probs, source_mask,
+                                                         target_tokens)
             f_mrr.write(mrr)
             f_recall.write(recall)
             f_perplex.write(perplex)

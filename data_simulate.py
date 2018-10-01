@@ -92,7 +92,7 @@ def generate_dirichlet(ch, index, num_wit, prior=1., prob_high=0.7, prob_in=0.78
         return index[:num_wit], prob
 
 
-def generate_simulation(ch, num_wit, top=10, flag_vec=True, simul='eeg',
+def simulate_one(ch, num_wit, top=10, flag_vec=True, simul='eeg',
                         prior=1., prob_high=0.7, prob_in=0.78):
     if simul != 'clean':
         index = generate_candidate(ch)
@@ -107,7 +107,20 @@ def generate_simulation(ch, num_wit, top=10, flag_vec=True, simul='eeg',
     if flag_vec:
         return create_vector(cand[:num_wit], prob[:num_wit])
     else:
-        return cand, prob
+        return cand[:num_wit], prob[:num_wit]
+
+
+# def simulation_list(list_tokens, num_wit, top=10, flag_vec=True, simul='eeg',
+#                     prior=1., prob_high=0.7, prob_in=0.78, pad_id=char2id['<sos>']):
+#     list_probs = []
+    # if not flag_vec:
+    #     list_tokens = []
+    # res = map(lambda tok: [res] + simulate_one(tok, num_wit, top, flag_vec, simul,
+    #                                    prior, prob_high, prob_in), list_tokens)
+    # if flag_vec:
+    #     pad_head = np.zeros(len(char2id))
+    #     pad_head[pad] = 1.
+
 
 
 def generate_backspace(ch, num_wit, top=10, flag_vec=True,

@@ -31,7 +31,7 @@ from tensorflow.python.ops import embedding_ops
 from tensorflow.python.ops import rnn
 from tensorflow.python.ops import rnn_cell
 from tensorflow.python.ops import variable_scope as vs
-from model_rnn import GRUCellAttn, _linear
+from model_rnn import GRUCellAttn, linear
 from module import label_smooth
 
 
@@ -60,7 +60,7 @@ class Model(object):
 
     def _add_place_holders(self, flag_word):
         self.keep_prob = tf.placeholder(tf.float32)
-        self.src_toks = tf.placeholder(tf.float32, 
+        self.src_toks = tf.placeholder(tf.float32,
                                            shape=[None, None, None])
         self.tgt_toks = tf.placeholder(tf.int32, shape=[None, None])
         if flag_word:
@@ -93,7 +93,7 @@ class Model(object):
             zeros = tf.zeros([1, self.size])
             enc = tf.get_variable("L_enc", [vocab_size - 1, self.size])
             self.L_enc = tf.concat([zeros, enc], axis=0)
-            
+
             self.encoder_inputs = tf.reshape(self.src_toks,
                                              [self.len_inp,
                                               self.batch_size,
@@ -109,7 +109,7 @@ class Model(object):
                                                  [self.len_inp, -1,
                                                   vocab_size * self.size])
                 if model_sum == 2:
-                    self.encoder_inputs = tf.nn.relu(_linear(tf.reshape(self.encoder_inputs,
+                    self.encoder_inputs = tf.nn.relu(linear(tf.reshape(self.encoder_inputs,
                                                                       [-1, vocab_size * self.size]),
                                                            self.size, True, 1.0))
                     self.encoder_inputs = tf.reshape(self.encoder_inputs,

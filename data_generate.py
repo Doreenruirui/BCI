@@ -100,8 +100,8 @@ def refill_var(batches, fx, fc, fp, batch_size, num_wit, start=0, end=-1, cur_le
 def padded(tokens, num_wit, pad_v=char2id['<pad>']):
     len_x = list(map(lambda x: len(x), tokens))
     maxlen = max(len_x)
-    if num_wit > 1:
-        padding = np.zeros(num_wit)
+    if num_wit >= 1:
+        padding = [pad_v] * num_wit
         return list(map(lambda token_list: token_list + [padding] * (maxlen - len(token_list)), tokens))
     else:
         padding = pad_v
@@ -111,12 +111,10 @@ def padded(tokens, num_wit, pad_v=char2id['<pad>']):
 def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
               data_random="eeg", prior=1, prob_high=0.7,
               prob_in=1.0, prob_back=0.0, flag_generate=True,
-              max_seq_len=300,
-              cur_len=-2,
-              start=0,
-              end=-1,
+              max_seq_len=300, cur_len=-2,
+              start=0, end=-1,
+              flag_vector=True,
               sort_and_shuffle=False):
-
         if flag_generate:
             if data_random == 'eeg':
                 load_eegs()
@@ -137,9 +135,12 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
 
         batches = []
         voc_size = len(char2id)
-        pad_head = np.zeros(voc_size)
-        pad_head[char2id['<sos>']] = 1.
-
+        if flag_vector:
+            pad_head = np.zeros(voc_size)
+            pad_head[char2id['<sos>']] = 1.
+        else:
+            pad_head = [char2id['<sos>']] + [0] * (num_wit - 1)
+            pad_prob = [1.] + [0.] * (num_wit - 1)
 
         while True:
             if len(batches) == 0:
@@ -165,124 +166,63 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
                     x_tokens = list(map(lambda tokenlist:
                                    add_backspace(tokenlist, prob_back),
                                    x_tokens))
-                x_probs = list(map(lambda tokenlist:
-                              [pad_head] + list(map(lambda ele:
-                                               generate_simulation(ele,
-                                                                   num_wit,
-                                                                   top=num_top,
-                                                                   prob_high=prob_high,
-                                                                   prob_in=prob_in,
-                                                                   prior=prior,
-                                                                   flag_vec=True,
-                                                                   simul=data_random),
-                                               tokenlist[:-1])),
-                              x_tokens))
-            else:
-                x_tokens, cur_cands, cur_probs = batches.pop(0)
-                x_probs = list(map(lambda cands, probs:
-                                   [pad_head] + list(map(lambda cand, prob:
-                                                         create_vector(cand, prob),
-                                                         cands[:-1], probs[:-1])),
-                              cur_cands, cur_probs))
-            if prob_back > 0:
-                y_tokens = generate_target(x_tokens)
-            else:
-                y_tokens = x_tokens
-            x_probs_padded = padded(x_probs, len(char2id), 0.0)
-            y_padded = padded(y_tokens, 1)
-            source_probs = np.transpose(np.array(x_probs_padded), (1, 0, 2))
-            source_mask = (np.sum(source_probs, -1) > 0).astype(np.int32)
-            target_tokens = np.array(y_padded).T
-            yield (source_probs, source_mask, target_tokens)
-        return
-
-def pair_iter_once(file_data, dev, num_wit, num_top=10, batch_size=128,
-              data_random="eeg", prior=1, prob_high=0.7,
-              prob_in=1.0, prob_back=0.0, flag_generate=True,
-              max_seq_len=300,
-              cur_len=-2,
-              start=0,
-              end=-1,
-              sort_and_shuffle=False):
-
-        if flag_generate:
-            if data_random == 'eeg':
-                load_eegs()
-            fx = open(pjoin(file_data, dev + '.ids'))
-        else:
-            filename = '%s.%d' % (data_random, num_top)
-            if data_random == 'random':
-                if prob_back == 0.0:
-                    filename = '%s_%.2f_%.2f_%.2f' % (filename, prob_high, prior, prob_in)
+                if flag_vector:
+                    x_probs = list(map(lambda tokenlist:
+                                       [pad_head] + list(map(lambda ele:
+                                                simulate_one(ele,
+                                                             num_wit,
+                                                             top=num_top,
+                                                             prob_high=prob_high,
+                                                             prob_in=prob_in,
+                                                             prior=prior,
+                                                             flag_vec=True,
+                                                             simul=data_random),
+                                                   tokenlist[:-1])),
+                                  x_tokens))
+                    x_cands = None
                 else:
-                    filename = '%s_%.2f_%.2f_%.2f_%.2f' % (filename, prob_high, prior, prob_in, prob_back)
-            fc = open(pjoin(file_data, '%s.%s.cand' % (dev, filename)))
-            fp = open(pjoin(file_data, '%s.%s.prob' % (dev, filename)))
-            if prob_back == 0.0:
-                fx = open(pjoin(file_data, dev + '.ids'))
+                    res = list(map(lambda tokenlist:
+                                   list(map(lambda ele:
+                                            simulate_one(ele, num_wit,
+                                                         top=num_top,
+                                                         prob_high=prob_high,
+                                                         prob_in=prob_in,
+                                                         prior=prior,
+                                                         flag_vec=False,
+                                                         simul=data_random),
+                                            tokenlist[:-1])),
+                                  x_tokens))
+                    x_cands = [[pad_head] + [e[0] for e in ele] for ele in res]
+                    x_probs = [[pad_prob] + [e[1] for e in ele] for ele in res]
+
             else:
-                fx = open(pjoin(file_data,'%s.%s.ids' % (dev, filename)))
-
-        batches = []
-        voc_size = len(char2id)
-        pad_head = np.zeros(voc_size)
-        pad_head[char2id['<sos>']] = 1.
-
-        if flag_generate:
-            refill(batches, fx, batch_size, cur_len=cur_len + 1,
-                   max_seq_len=max_seq_len,
-                   sort_and_shuffle=sort_and_shuffle,
-                   start=start, end=end)
-        else:
-            refill_var(batches, fx, fc, fp, batch_size, num_wit,
-                       cur_len=cur_len + 1, max_seq_len=max_seq_len,
-                       sort_and_shuffle=sort_and_shuffle,
-                       start=start, end=end)
-
-
-        fx.close()
-        if not flag_generate:
-            fc.close()
-            fp.close()
-
-        while True:
-            if len(batches) == 0:
-                break
-            if flag_generate:
-                x_tokens = batches.pop(0)
-                if prob_back > 0.:
-                    x_tokens = list(map(lambda tokenlist:
-                                   add_backspace(tokenlist, prob_back),
-                                   x_tokens))
-                x_probs = list(map(lambda tokenlist:
-                              [pad_head] + list(map(lambda ele:
-                                               generate_simulation(ele,
-                                                                   num_wit,
-                                                                   top=num_top,
-                                                                   prob_high=prob_high,
-                                                                   prob_in=prob_in,
-                                                                   prior=prior,
-                                                                   flag_vec=True,
-                                                                   simul=data_random),
-                                               tokenlist[:-1])),
-                              x_tokens))
-            else:
-                x_tokens, cur_cands, cur_probs = batches.pop(0)
-                x_probs = list(map(lambda cands, probs:
-                                   [pad_head] + list(map(lambda cand, prob:
-                                                         create_vector(cand, prob),
-                                                         cands[:-1], probs[:-1])),
-                              cur_cands, cur_probs))
+                x_tokens, x_cands, x_probs = batches.pop(0)
+                if flag_vector:
+                    x_probs = list(map(lambda cands, probs:
+                                       [pad_head] + list(map(lambda cand, prob:
+                                                             create_vector(cand, prob),
+                                                             cands[:-1], probs[:-1])),
+                                  x_cands, x_probs))
+                else:
+                    x_cands = [[pad_head] + ele[:-1] for ele in x_cands]
+                    x_probs = [[pad_prob] + ele[:-1] for ele in x_probs]
             if prob_back > 0:
                 y_tokens = generate_target(x_tokens)
             else:
                 y_tokens = x_tokens
-            x_probs_padded = padded(x_probs, len(char2id), 0.0)
-            y_padded = padded(y_tokens, 1)
-            source_probs = np.transpose(np.array(x_probs_padded), (1, 0, 2))
+            if flag_vector:
+                x_probs_padded = padded(x_probs, voc_size, 0.0)
+                source_probs = np.transpose(np.array(x_probs_padded), (1, 0, 2))
+                source_cands = None
+            else:
+                x_probs_padded = padded(x_probs, num_wit, 0.0)
+                x_cands_padded = padded(x_cands, num_wit)
+                source_probs = np.transpose(np.array(x_probs_padded), (1, 0, 2))
+                source_cands = np.transpose(np.array(x_cands_padded), (1, 0, 2))
+            y_padded = padded(y_tokens, 0)
             source_mask = (np.sum(source_probs, -1) > 0).astype(np.int32)
             target_tokens = np.array(y_padded).T
-            yield (source_probs, source_mask, target_tokens)
+            yield (source_cands, source_probs, source_mask, target_tokens)
         return
 
 
