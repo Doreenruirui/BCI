@@ -1,0 +1,30 @@
+#!/bin/bash
+
+work=/home/dong.r/BCI
+cd $work
+source ~/.bash_profile
+source activate tensorflow
+python train.py \
+    --data_dir="/scratch/dong.r/Dataset/BCI/Sublex/1/1/train/sub" \
+    --dev="test" \
+    --train_dir="/scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_810_new" \
+    --size=512 \
+    --num_layers=3 \
+    --batch_size=16 \
+    --max_seq_len=300 \
+    --learning_rate=0.0003 \
+    --learning_rate_decay_factor=0.95 \
+    --optimizer="adam" \
+    --flag_bidirect=False \
+    --flag_generate=False \
+    --random="random" \
+    --prob_high=0.8 \
+    --prob_in=1.0 \
+    --prior=3 \
+    --prob_back=0.0 \
+    --num_wit=1 \
+    --num_top=5 \
+    --model="lstm" \
+    --keep_prob=0.9 \
+    --flag_sum=1 
+source deactivate tensorflow

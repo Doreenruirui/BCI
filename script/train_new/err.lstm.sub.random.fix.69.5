@@ -1,0 +1,32 @@
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so locally
+I tensorflow/stream_executor/dso_loader.cc:102] Couldn't open CUDA library libcuda.so.1. LD_LIBRARY_PATH: /shared/apps/cuda7.5/lib64:/home/dong.r/glibc/glibc-2.14/build/
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:160] hostname: compute-2-130
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:185] libcuda reported version is: Not found: was unable to find libcuda.so DSO loaded into this program
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:189] kernel reported version is: Permission denied: could not open driver version path for reading: /proc/driver/nvidia/version
+I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1077] LD_LIBRARY_PATH: /shared/apps/cuda7.5/lib64:/home/dong.r/glibc/glibc-2.14/build/
+I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1078] failed to find libcuda.so on this system: Failed precondition: could not dlopen DSO: libcuda.so.1; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so locally
+INFO:root:Get NLC data in /gss_gpfs_scratch/dong.r/Dataset/BCI/Sublex/1/1/train/sub
+INFO:root:Vocabulary size: 30
+E tensorflow/stream_executor/cuda/cuda_driver.cc:491] failed call to cuInit: CUDA_ERROR_NO_DEVICE
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:140] kernel driver does not appear to be running on this host (compute-2-130): /proc/driver/nvidia/version does not exist
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:81] No GPU devices available on machine.
+INFO:root:Creating 3 layers of 512 units.
+Traceback (most recent call last):
+  File "train.py", line 213, in <module>
+    tf.app.run()
+  File "/home/dong.r/anaconda2/lib/python2.7/site-packages/tensorflow/python/platform/app.py", line 30, in run
+    sys.exit(main(sys.argv))
+  File "train.py", line 210, in main
+    train()
+  File "train.py", line 95, in train
+    model, epoch = create_model(sess, vocab_size, False)
+  File "train.py", line 46, in create_model
+    flag_bidirect=FLAGS.flag_bidirect, model_sum=FLAGS.flag_sum)
+  File "/home/dong.r/BCI/model_concat.py", line 296, in build_model
+    self.setup_train()
+  File "/home/dong.r/BCI/model_concat.py", line 83, in setup_train
+    gradients = tf.gradients(self.losses, params)
+AttributeError: 'Model' object has no attribute 'losses'

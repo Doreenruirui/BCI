@@ -1,0 +1,175 @@
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so locally
+I tensorflow/stream_executor/dso_loader.cc:102] Couldn't open CUDA library libcuda.so.1. LD_LIBRARY_PATH: /shared/apps/cuda7.5/lib64:/home/dong.r/glibc/glibc-2.14/build/
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:160] hostname: compute-2-165
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:185] libcuda reported version is: Not found: was unable to find libcuda.so DSO loaded into this program
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:189] kernel reported version is: Permission denied: could not open driver version path for reading: /proc/driver/nvidia/version
+I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1077] LD_LIBRARY_PATH: /shared/apps/cuda7.5/lib64:/home/dong.r/glibc/glibc-2.14/build/
+I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1078] failed to find libcuda.so on this system: Failed precondition: could not dlopen DSO: libcuda.so.1; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so locally
+INFO:root:Get NLC data in /gss_gpfs_scratch/dong.r/Dataset/BCI/Sublex/1/1/train/sub
+INFO:root:Vocabulary size: 30
+E tensorflow/stream_executor/cuda/cuda_driver.cc:491] failed call to cuInit: CUDA_ERROR_NO_DEVICE
+I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:140] kernel driver does not appear to be running on this host (compute-2-165): /proc/driver/nvidia/version does not exist
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:81] No GPU devices available on machine.
+INFO:root:Creating 3 layers of 512 units.
+INFO:root:Reading model parameters from /gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_89/best.ckpt-9
+INFO:root:epoch 10, iter 200, cost 2.326126, exp_cost 2.207453, grad norm 6.150988, param norm 411.098480, tps 811.023722, length mean/std 11.000000/0.000000
+INFO:root:epoch 10, iter 400, cost 2.159838, exp_cost 2.199899, grad norm 8.863632, param norm 412.071075, tps 853.399455, length mean/std 19.000000/0.000000
+INFO:root:epoch 10, iter 600, cost 2.225942, exp_cost 2.207550, grad norm 25.349155, param norm 412.981323, tps 867.549635, length mean/std 102.000000/0.000000
+INFO:root:epoch 10, iter 800, cost 2.865897, exp_cost 2.211104, grad norm 4.838078, param norm 413.851227, tps 876.827662, length mean/std 5.000000/0.000000
+INFO:root:epoch 10, iter 1000, cost 2.244728, exp_cost 2.202713, grad norm 8.890962, param norm 414.774384, tps 881.976154, length mean/std 19.000000/0.000000
+INFO:root:epoch 10, iter 1200, cost 2.237244, exp_cost 2.204956, grad norm 19.942123, param norm 415.582825, tps 884.166442, length mean/std 72.000000/0.000000
+INFO:root:epoch 10, iter 1400, cost 2.130663, exp_cost 2.206425, grad norm 8.976910, param norm 416.469849, tps 887.468493, length mean/std 20.000000/0.000000
+INFO:root:epoch 10, iter 1600, cost 2.244913, exp_cost 2.205319, grad norm 21.937056, param norm 417.317963, tps 889.648583, length mean/std 86.000000/0.000000
+INFO:root:epoch 10, iter 1800, cost 2.198429, exp_cost 2.205492, grad norm 16.623299, param norm 418.110657, tps 891.478073, length mean/std 51.000000/0.000000
+INFO:root:epoch 10, iter 2000, cost 2.222220, exp_cost 2.209124, grad norm 19.428917, param norm 418.792419, tps 892.308286, length mean/std 71.000000/0.000000
+INFO:root:epoch 10, iter 2200, cost 2.234731, exp_cost 2.210791, grad norm 20.928543, param norm 419.700531, tps 893.583887, length mean/std 82.000000/0.000000
+INFO:root:epoch 10, iter 2400, cost 2.161944, exp_cost 2.203569, grad norm 12.090302, param norm 420.558746, tps 893.935817, length mean/std 29.000000/0.000000
+INFO:root:epoch 10, iter 2600, cost 2.257509, exp_cost 2.205267, grad norm 18.042473, param norm 421.379181, tps 894.345952, length mean/std 58.000000/0.000000
+INFO:root:epoch 10, iter 2800, cost 2.277493, exp_cost 2.206975, grad norm 40.248840, param norm 422.349396, tps 895.212593, length mean/std 245.109375/1.238916
+INFO:root:epoch 10, iter 3000, cost 2.218080, exp_cost 2.209592, grad norm 17.693935, param norm 423.303650, tps 895.667569, length mean/std 60.000000/0.000000
+INFO:root:epoch 10, iter 3200, cost 2.162878, exp_cost 2.208706, grad norm 10.945944, param norm 423.910583, tps 895.720892, length mean/std 27.000000/0.000000
+INFO:root:epoch 10, iter 3400, cost 2.147584, exp_cost 2.212625, grad norm 11.520205, param norm 424.580536, tps 895.848426, length mean/std 29.000000/0.000000
+INFO:root:epoch 10, iter 3600, cost 2.692552, exp_cost 2.205664, grad norm 5.161151, param norm 425.458893, tps 895.565043, length mean/std 5.000000/0.000000
+INFO:root:epoch 10, iter 3800, cost 2.241036, exp_cost 2.214555, grad norm 25.205261, param norm 426.125214, tps 895.905193, length mean/std 116.000000/0.000000
+INFO:root:epoch 10, iter 4000, cost 2.137544, exp_cost 2.206717, grad norm 12.492847, param norm 426.931152, tps 896.287127, length mean/std 31.000000/0.000000
+INFO:root:epoch 10, iter 4200, cost 2.656159, exp_cost 2.211523, grad norm 3.707204, param norm 427.619690, tps 896.444101, length mean/std 2.000000/0.000000
+INFO:root:epoch 10, iter 4400, cost 2.298909, exp_cost 2.216627, grad norm 6.760458, param norm 428.294464, tps 896.781629, length mean/std 12.000000/0.000000
+INFO:root:epoch 10, iter 4600, cost 2.397244, exp_cost 2.226084, grad norm 5.030115, param norm 429.016846, tps 897.153269, length mean/std 8.000000/0.000000
+INFO:root:epoch 10, iter 4800, cost 2.614419, exp_cost 2.225337, grad norm 4.436998, param norm 429.734131, tps 897.606990, length mean/std 6.000000/0.000000
+INFO:root:epoch 10, iter 5000, cost 2.470304, exp_cost 2.217034, grad norm 3.980869, param norm 430.566040, tps 897.853782, length mean/std 4.000000/0.000000
+INFO:root:epoch 10, iter 5200, cost 2.250149, exp_cost 2.216487, grad norm 20.946049, param norm 431.294739, tps 898.320642, length mean/std 83.000000/0.000000
+INFO:root:epoch 10, iter 5400, cost 2.196545, exp_cost 2.218925, grad norm 12.377494, param norm 432.102234, tps 898.617909, length mean/std 34.000000/0.000000
+INFO:root:epoch 10, iter 5600, cost 2.232662, exp_cost 2.204550, grad norm 9.367820, param norm 433.025787, tps 898.685703, length mean/std 20.000000/0.000000
+INFO:root:epoch 10, iter 5800, cost 2.272251, exp_cost 2.212527, grad norm 5.892920, param norm 433.772400, tps 898.834015, length mean/std 11.000000/0.000000
+INFO:root:epoch 10, iter 6000, cost 2.156097, exp_cost 2.218117, grad norm 13.968276, param norm 434.481873, tps 898.870310, length mean/std 40.000000/0.000000
+INFO:root:epoch 10, iter 6200, cost 2.119611, exp_cost 2.216855, grad norm 9.000861, param norm 435.164276, tps 898.973403, length mean/std 20.000000/0.000000
+INFO:root:Epoch 10 Validation cost: 2.249563 time: 16667.508646
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_89/best.ckpt-10 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_89/best.ckpt-10 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:root:epoch 11, iter 200, cost 2.209205, exp_cost 2.192372, grad norm 19.276453, param norm 436.194061, tps 804.893425, length mean/std 67.000000/0.000000
+INFO:root:epoch 11, iter 400, cost 2.207366, exp_cost 2.196766, grad norm 16.436214, param norm 437.026917, tps 807.749937, length mean/std 52.000000/0.000000
+INFO:root:epoch 11, iter 600, cost 2.216841, exp_cost 2.201892, grad norm 15.155615, param norm 437.849152, tps 810.555433, length mean/std 44.000000/0.000000
+INFO:root:epoch 11, iter 800, cost 2.154260, exp_cost 2.194447, grad norm 11.273546, param norm 438.642578, tps 813.025292, length mean/std 29.000000/0.000000
+INFO:root:epoch 11, iter 1000, cost 2.099598, exp_cost 2.188341, grad norm 12.250598, param norm 439.504730, tps 815.051111, length mean/std 29.000000/0.000000
+INFO:root:epoch 11, iter 1200, cost 2.135489, exp_cost 2.201470, grad norm 10.884804, param norm 440.191376, tps 817.134908, length mean/std 26.000000/0.000000
+INFO:root:epoch 11, iter 1400, cost 2.193351, exp_cost 2.188305, grad norm 11.730502, param norm 441.097961, tps 818.689799, length mean/std 28.000000/0.000000
+INFO:root:epoch 11, iter 1600, cost 2.273983, exp_cost 2.201294, grad norm 17.247744, param norm 441.827789, tps 820.926501, length mean/std 54.000000/0.000000
+INFO:root:epoch 11, iter 1800, cost 2.123237, exp_cost 2.201389, grad norm 10.434637, param norm 442.509064, tps 822.459606, length mean/std 23.000000/0.000000
+INFO:root:epoch 11, iter 2000, cost 2.140836, exp_cost 2.208941, grad norm 12.013962, param norm 443.374603, tps 824.587769, length mean/std 31.000000/0.000000
+INFO:root:epoch 11, iter 2200, cost 2.227965, exp_cost 2.205206, grad norm 17.033047, param norm 444.223999, tps 826.348227, length mean/std 53.000000/0.000000
+INFO:root:epoch 11, iter 2400, cost 2.165988, exp_cost 2.205587, grad norm 9.441674, param norm 444.922577, tps 827.865837, length mean/std 20.000000/0.000000
+INFO:root:epoch 11, iter 2600, cost 2.052961, exp_cost 2.208649, grad norm 12.465885, param norm 445.633423, tps 829.638272, length mean/std 32.000000/0.000000
+INFO:root:epoch 11, iter 2800, cost 2.220096, exp_cost 2.215764, grad norm 8.967651, param norm 446.279755, tps 831.207317, length mean/std 18.000000/0.000000
+INFO:root:epoch 11, iter 3000, cost 2.220528, exp_cost 2.210047, grad norm 17.788885, param norm 447.084198, tps 832.455865, length mean/std 56.000000/0.000000
+INFO:root:epoch 11, iter 3200, cost 2.244861, exp_cost 2.209106, grad norm 5.059253, param norm 447.721344, tps 833.801266, length mean/std 8.000000/0.000000
+INFO:root:epoch 11, iter 3400, cost 2.170282, exp_cost 2.196983, grad norm 12.877576, param norm 448.356537, tps 834.801267, length mean/std 31.000000/0.000000
+INFO:root:epoch 11, iter 3600, cost 2.180225, exp_cost 2.206804, grad norm 14.069618, param norm 449.109772, tps 836.036535, length mean/std 38.000000/0.000000
+INFO:root:epoch 11, iter 3800, cost 2.182007, exp_cost 2.199650, grad norm 20.317583, param norm 449.775665, tps 837.110082, length mean/std 71.000000/0.000000
+INFO:root:epoch 11, iter 4000, cost 2.228855, exp_cost 2.207841, grad norm 13.371667, param norm 450.457458, tps 838.259937, length mean/std 35.000000/0.000000
+INFO:root:epoch 11, iter 4200, cost 2.172334, exp_cost 2.207011, grad norm 14.325189, param norm 451.177185, tps 839.392302, length mean/std 40.000000/0.000000
+INFO:root:epoch 11, iter 4400, cost 2.143038, exp_cost 2.214627, grad norm 10.775671, param norm 451.908630, tps 840.797103, length mean/std 25.000000/0.000000
+INFO:root:epoch 11, iter 4600, cost 2.322877, exp_cost 2.212038, grad norm 7.346292, param norm 452.640869, tps 841.842040, length mean/std 13.000000/0.000000
+INFO:root:epoch 11, iter 4800, cost 2.328522, exp_cost 2.205115, grad norm 5.296685, param norm 453.403168, tps 842.839727, length mean/std 8.000000/0.000000
+INFO:root:epoch 11, iter 5000, cost 2.162841, exp_cost 2.212427, grad norm 9.053358, param norm 454.074615, tps 844.045607, length mean/std 20.000000/0.000000
+INFO:root:epoch 11, iter 5200, cost 2.264555, exp_cost 2.216185, grad norm 7.605079, param norm 454.748718, tps 844.994331, length mean/std 15.000000/0.000000
+INFO:root:epoch 11, iter 5400, cost 2.274114, exp_cost 2.209663, grad norm 18.808323, param norm 455.457520, tps 845.897910, length mean/std 61.000000/0.000000
+INFO:root:epoch 11, iter 5600, cost 2.194263, exp_cost 2.214002, grad norm 5.513413, param norm 456.317017, tps 846.794445, length mean/std 9.000000/0.000000
+INFO:root:epoch 11, iter 5800, cost 2.117230, exp_cost 2.209293, grad norm 14.949697, param norm 456.992371, tps 847.568441, length mean/std 43.000000/0.000000
+INFO:root:epoch 11, iter 6000, cost 2.211811, exp_cost 2.211678, grad norm 25.125885, param norm 457.537964, tps 848.339516, length mean/std 102.000000/0.000000
+INFO:root:epoch 11, iter 6200, cost 2.137022, exp_cost 2.200832, grad norm 11.001004, param norm 458.232941, tps 849.065057, length mean/std 28.000000/0.000000
+INFO:root:Epoch 11 Validation cost: 2.250721 time: 16667.933629
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_89/best.ckpt-11 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_89/best.ckpt-11 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:root:epoch 12, iter 200, cost 2.125781, exp_cost 2.183939, grad norm 11.939210, param norm 459.095917, tps 805.065389, length mean/std 30.000000/0.000000
+INFO:root:epoch 12, iter 400, cost 2.117908, exp_cost 2.192239, grad norm 5.565923, param norm 459.954895, tps 806.451517, length mean/std 9.000000/0.000000
+INFO:root:epoch 12, iter 600, cost 2.134298, exp_cost 2.182467, grad norm 7.880764, param norm 460.817291, tps 807.667896, length mean/std 16.000000/0.000000
+INFO:root:epoch 12, iter 800, cost 2.086293, exp_cost 2.190822, grad norm 10.977313, param norm 461.602905, tps 809.011670, length mean/std 25.000000/0.000000
+INFO:root:epoch 12, iter 1000, cost 2.168941, exp_cost 2.198386, grad norm 9.101727, param norm 462.356476, tps 810.403501, length mean/std 19.000000/0.000000
+INFO:root:epoch 12, iter 1200, cost 2.056521, exp_cost 2.198786, grad norm 8.504823, param norm 463.095459, tps 811.846945, length mean/std 18.000000/0.000000
+INFO:root:epoch 12, iter 1400, cost 2.388990, exp_cost 2.193801, grad norm 5.158565, param norm 463.896393, tps 812.972745, length mean/std 8.000000/0.000000
+INFO:root:epoch 12, iter 1600, cost 2.209461, exp_cost 2.197638, grad norm 16.818478, param norm 464.561493, tps 814.180746, length mean/std 49.000000/0.000000
+INFO:root:epoch 12, iter 1800, cost 2.219999, exp_cost 2.204156, grad norm 26.341711, param norm 465.310974, tps 815.462022, length mean/std 103.000000/0.000000
+INFO:root:epoch 12, iter 2000, cost 2.114722, exp_cost 2.195323, grad norm 11.295763, param norm 465.998352, tps 816.453701, length mean/std 26.000000/0.000000
+INFO:root:epoch 12, iter 2200, cost 2.394238, exp_cost 2.197912, grad norm 6.536738, param norm 466.839600, tps 817.434196, length mean/std 10.000000/0.000000
+INFO:root:epoch 12, iter 2400, cost 2.240878, exp_cost 2.208495, grad norm 8.161163, param norm 467.527527, tps 818.614450, length mean/std 15.000000/0.000000
+INFO:root:epoch 12, iter 2600, cost 2.222350, exp_cost 2.204892, grad norm 12.803744, param norm 468.178101, tps 819.896091, length mean/std 30.000000/0.000000
+INFO:root:epoch 12, iter 2800, cost 2.138513, exp_cost 2.201052, grad norm 19.957464, param norm 468.795624, tps 820.854442, length mean/std 66.000000/0.000000
+INFO:root:epoch 12, iter 3000, cost 2.149347, exp_cost 2.203587, grad norm 11.107131, param norm 469.458862, tps 821.817154, length mean/std 25.000000/0.000000
+INFO:root:epoch 12, iter 3200, cost 2.153826, exp_cost 2.201537, grad norm 14.833824, param norm 470.143494, tps 822.885112, length mean/std 40.000000/0.000000
+INFO:root:epoch 12, iter 3400, cost 2.190278, exp_cost 2.208250, grad norm 15.163923, param norm 470.926270, tps 823.804845, length mean/std 41.000000/0.000000
+INFO:root:epoch 12, iter 3600, cost 2.151368, exp_cost 2.201082, grad norm 10.674181, param norm 471.596893, tps 824.692681, length mean/std 23.000000/0.000000
+INFO:root:epoch 12, iter 3800, cost 2.186996, exp_cost 2.189574, grad norm 10.948078, param norm 472.321533, tps 825.455223, length mean/std 23.000000/0.000000
+INFO:root:epoch 12, iter 4000, cost 2.104072, exp_cost 2.200135, grad norm 10.355678, param norm 472.976990, tps 826.286703, length mean/std 24.000000/0.000000
+INFO:root:epoch 12, iter 4200, cost 2.193059, exp_cost 2.196550, grad norm 18.333332, param norm 473.616058, tps 827.061251, length mean/std 60.000000/0.000000
+INFO:root:epoch 12, iter 4400, cost 2.174291, exp_cost 2.206257, grad norm 11.362782, param norm 474.291290, tps 827.792658, length mean/std 26.000000/0.000000
+INFO:root:epoch 12, iter 4600, cost 2.278187, exp_cost 2.205383, grad norm 33.560322, param norm 474.900085, tps 828.599528, length mean/std 159.890625/0.312109
+INFO:root:epoch 12, iter 4800, cost 2.140722, exp_cost 2.201910, grad norm 16.931255, param norm 475.583069, tps 829.373062, length mean/std 50.000000/0.000000
+INFO:root:epoch 12, iter 5000, cost 2.238197, exp_cost 2.208213, grad norm 6.234577, param norm 476.015717, tps 830.260647, length mean/std 11.000000/0.000000
+INFO:root:epoch 12, iter 5200, cost 2.686997, exp_cost 2.209617, grad norm 4.050270, param norm 476.678131, tps 831.022290, length mean/std 2.000000/0.000000
+INFO:root:epoch 12, iter 5400, cost 2.183937, exp_cost 2.211242, grad norm 19.875809, param norm 477.318115, tps 831.702075, length mean/std 68.000000/0.000000
+INFO:root:epoch 12, iter 5600, cost 2.256056, exp_cost 2.214951, grad norm 23.775450, param norm 477.925720, tps 832.447568, length mean/std 96.296875/0.456881
+INFO:root:epoch 12, iter 5800, cost 2.113684, exp_cost 2.201417, grad norm 12.006660, param norm 478.489807, tps 833.107572, length mean/std 29.000000/0.000000
+INFO:root:epoch 12, iter 6000, cost 2.078291, exp_cost 2.199224, grad norm 11.225467, param norm 479.212921, tps 833.679942, length mean/std 26.000000/0.000000
+INFO:root:epoch 12, iter 6200, cost 2.183169, exp_cost 2.206837, grad norm 8.794935, param norm 479.717987, tps 834.380478, length mean/std 19.000000/0.000000
+INFO:root:Epoch 12 Validation cost: 2.251791 time: 16628.859881
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_89/best.ckpt-12 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_89/best.ckpt-12 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:root:epoch 13, iter 200, cost 2.315457, exp_cost 2.197261, grad norm 6.134775, param norm 480.752808, tps 805.621348, length mean/std 10.000000/0.000000
+INFO:root:epoch 13, iter 400, cost 2.595235, exp_cost 2.180341, grad norm 4.614979, param norm 481.616638, tps 806.463115, length mean/std 5.000000/0.000000
+INFO:root:epoch 13, iter 600, cost 2.114209, exp_cost 2.182573, grad norm 13.914214, param norm 482.338470, tps 807.357472, length mean/std 35.000000/0.000000
+INFO:root:epoch 13, iter 800, cost 2.195731, exp_cost 2.192937, grad norm 8.293007, param norm 483.036621, tps 808.237875, length mean/std 15.000000/0.000000
+INFO:root:epoch 13, iter 1000, cost 2.203483, exp_cost 2.187417, grad norm 7.667094, param norm 483.749512, tps 809.116802, length mean/std 14.000000/0.000000
+INFO:root:epoch 13, iter 1200, cost 2.127460, exp_cost 2.197590, grad norm 10.297166, param norm 484.495056, tps 810.084089, length mean/std 21.000000/0.000000
+INFO:root:epoch 13, iter 1400, cost 2.134897, exp_cost 2.207737, grad norm 11.980042, param norm 485.231506, tps 811.056558, length mean/std 28.000000/0.000000
+INFO:root:epoch 13, iter 1600, cost 2.228885, exp_cost 2.197368, grad norm 18.522736, param norm 485.885712, tps 811.988498, length mean/std 57.000000/0.000000
+INFO:root:epoch 13, iter 1800, cost 2.226281, exp_cost 2.197096, grad norm 9.301875, param norm 486.557098, tps 812.911436, length mean/std 18.000000/0.000000
+INFO:root:epoch 13, iter 2000, cost 2.173515, exp_cost 2.187965, grad norm 18.112671, param norm 487.249268, tps 813.629079, length mean/std 53.000000/0.000000
+INFO:root:epoch 13, iter 2200, cost 2.138638, exp_cost 2.192485, grad norm 9.151287, param norm 487.966217, tps 814.392762, length mean/std 18.000000/0.000000
+INFO:root:epoch 13, iter 2400, cost 2.164173, exp_cost 2.199208, grad norm 13.553573, param norm 488.565704, tps 815.201557, length mean/std 34.000000/0.000000
+INFO:root:epoch 13, iter 2600, cost 2.083843, exp_cost 2.196963, grad norm 9.661780, param norm 489.156097, tps 816.000144, length mean/std 21.000000/0.000000
+INFO:root:epoch 13, iter 2800, cost 2.089682, exp_cost 2.199876, grad norm 10.846861, param norm 489.747131, tps 816.686821, length mean/std 25.000000/0.000000
+INFO:root:epoch 13, iter 3000, cost 2.177970, exp_cost 2.200922, grad norm 16.922815, param norm 490.412720, tps 817.427847, length mean/std 47.000000/0.000000
+INFO:root:epoch 13, iter 3200, cost 2.254377, exp_cost 2.194644, grad norm 21.012627, param norm 491.041351, tps 818.200126, length mean/std 69.000000/0.000000
+INFO:root:epoch 13, iter 3400, cost 2.582105, exp_cost 2.196894, grad norm 4.642377, param norm 491.613098, tps 818.961058, length mean/std 6.000000/0.000000
+INFO:root:epoch 13, iter 3600, cost 2.309569, exp_cost 2.198869, grad norm 6.911088, param norm 492.129547, tps 819.668512, length mean/std 12.000000/0.000000
+INFO:root:epoch 13, iter 3800, cost 2.214742, exp_cost 2.196595, grad norm 15.338316, param norm 492.696167, tps 820.342512, length mean/std 40.000000/0.000000
+INFO:root:epoch 13, iter 4000, cost 2.202017, exp_cost 2.197432, grad norm 8.143303, param norm 493.196777, tps 821.054714, length mean/std 15.000000/0.000000
+INFO:root:epoch 13, iter 4200, cost 2.205697, exp_cost 2.206093, grad norm 20.958208, param norm 493.859894, tps 821.738129, length mean/std 70.000000/0.000000
+INFO:root:epoch 13, iter 4400, cost 2.161080, exp_cost 2.205503, grad norm 12.623487, param norm 494.515015, tps 822.397987, length mean/std 30.000000/0.000000
+INFO:root:epoch 13, iter 4600, cost 2.209031, exp_cost 2.202734, grad norm 16.334555, param norm 495.109314, tps 823.032578, length mean/std 41.000000/0.000000
+INFO:root:epoch 13, iter 4800, cost 2.120037, exp_cost 2.200418, grad norm 8.149029, param norm 495.685791, tps 823.580600, length mean/std 16.000000/0.000000
+INFO:root:epoch 13, iter 5000, cost 2.232503, exp_cost 2.203799, grad norm 14.320488, param norm 496.359894, tps 824.136803, length mean/std 36.000000/0.000000
+INFO:root:epoch 13, iter 5200, cost 2.618245, exp_cost 2.205403, grad norm 4.682086, param norm 496.887421, tps 824.723845, length mean/std 5.000000/0.000000
+INFO:root:epoch 13, iter 5400, cost 2.293587, exp_cost 2.201611, grad norm 30.624538, param norm 497.558014, tps 825.422347, length mean/std 128.000000/0.000000
+INFO:root:epoch 13, iter 5600, cost 2.236077, exp_cost 2.198168, grad norm 10.600362, param norm 498.044769, tps 825.937751, length mean/std 22.000000/0.000000
+INFO:root:epoch 13, iter 5800, cost 2.211291, exp_cost 2.202836, grad norm 21.468792, param norm 498.621033, tps 826.524180, length mean/std 74.000000/0.000000
+INFO:root:epoch 13, iter 6000, cost 2.131617, exp_cost 2.213859, grad norm 12.888507, param norm 499.264221, tps 827.198544, length mean/std 33.000000/0.000000
+INFO:root:epoch 13, iter 6200, cost 2.218156, exp_cost 2.199020, grad norm 9.538257, param norm 499.728638, tps 827.673347, length mean/std 19.000000/0.000000
+INFO:root:Epoch 13 Validation cost: 2.253155 time: 16594.047564
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 14, iter 200, cost 2.080463, exp_cost 2.190030, grad norm 12.478021, param norm 480.779938, tps 806.128360, length mean/std 30.000000/0.000000
+INFO:root:epoch 14, iter 400, cost 2.245200, exp_cost 2.177232, grad norm 24.046228, param norm 481.483887, tps 806.721635, length mean/std 87.000000/0.000000
+INFO:root:epoch 14, iter 600, cost 2.075271, exp_cost 2.178395, grad norm 10.292440, param norm 482.180389, tps 807.366899, length mean/std 22.000000/0.000000
+INFO:root:epoch 14, iter 800, cost 2.259082, exp_cost 2.184615, grad norm 27.974346, param norm 482.908020, tps 808.048464, length mean/std 102.000000/0.000000
+INFO:root:epoch 14, iter 1000, cost 2.204358, exp_cost 2.186533, grad norm 12.584128, param norm 483.599091, tps 808.762226, length mean/std 28.000000/0.000000
+INFO:root:epoch 14, iter 1200, cost 2.109757, exp_cost 2.191711, grad norm 11.709651, param norm 484.253174, tps 809.367567, length mean/std 27.000000/0.000000
+INFO:root:epoch 14, iter 1400, cost 2.181484, exp_cost 2.198598, grad norm 13.035383, param norm 484.914948, tps 810.116739, length mean/std 31.000000/0.000000
+INFO:root:epoch 14, iter 1600, cost 2.121985, exp_cost 2.197158, grad norm 12.838494, param norm 485.669617, tps 810.813007, length mean/std 33.000000/0.000000
+INFO:root:epoch 14, iter 1800, cost 2.157944, exp_cost 2.190898, grad norm 17.654390, param norm 486.309296, tps 811.468912, length mean/std 48.000000/0.000000
+INFO:root:epoch 14, iter 2000, cost 2.144417, exp_cost 2.186826, grad norm 18.396490, param norm 487.010651, tps 812.127801, length mean/std 59.000000/0.000000
+INFO:root:epoch 14, iter 2200, cost 2.172053, exp_cost 2.198854, grad norm 11.555315, param norm 487.602417, tps 812.681055, length mean/std 25.000000/0.000000
+INFO:root:epoch 14, iter 2400, cost 2.116723, exp_cost 2.199951, grad norm 13.186936, param norm 488.310547, tps 813.372404, length mean/std 34.000000/0.000000
+INFO:root:epoch 14, iter 2600, cost 2.094218, exp_cost 2.197000, grad norm 8.083482, param norm 488.955261, tps 813.986874, length mean/std 16.000000/0.000000
+INFO:root:epoch 14, iter 2800, cost 2.052922, exp_cost 2.198785, grad norm 11.549063, param norm 489.566559, tps 814.592729, length mean/std 27.000000/0.000000
+INFO:root:epoch 14, iter 3000, cost 2.124044, exp_cost 2.197036, grad norm 11.320355, param norm 490.306305, tps 815.209906, length mean/std 26.000000/0.000000
+INFO:root:epoch 14, iter 3200, cost 2.215314, exp_cost 2.204251, grad norm 17.319546, param norm 490.968658, tps 815.741078, length mean/std 51.000000/0.000000
+INFO:root:epoch 14, iter 3400, cost 2.189788, exp_cost 2.199483, grad norm 9.063083, param norm 491.528534, tps 816.266213, length mean/std 18.000000/0.000000
+INFO:root:epoch 14, iter 3600, cost 2.339125, exp_cost 2.195080, grad norm 5.811324, param norm 492.102478, tps 816.911638, length mean/std 9.000000/0.000000
+INFO:root:epoch 14, iter 3800, cost 2.206535, exp_cost 2.195686, grad norm 9.563599, param norm 492.705536, tps 817.444121, length mean/std 18.000000/0.000000
+INFO:root:epoch 14, iter 4000, cost 2.335749, exp_cost 2.199094, grad norm 5.506227, param norm 493.389069, tps 818.008652, length mean/std 8.000000/0.000000
+INFO:root:epoch 14, iter 4200, cost 2.204365, exp_cost 2.195913, grad norm 8.514967, param norm 493.987885, tps 818.487213, length mean/std 16.000000/0.000000
+INFO:root:epoch 14, iter 4400, cost 2.208846, exp_cost 2.195732, grad norm 14.378000, param norm 494.498077, tps 818.971393, length mean/std 34.000000/0.000000
+slurmstepd: *** JOB 15798460 CANCELLED AT 2018-08-17T15:03:55 DUE TO TIME LIMIT on compute-2-165 ***

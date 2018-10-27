@@ -10,7 +10,7 @@ import model_concat as model_concat
 from flag import FLAGS
 from data_generate import id2char, char2id
 from evaluate import batch_mrr, batch_recall_at_k
-from data_generate import pair_iter
+from data_generate import load_data, iter_data
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -84,10 +84,11 @@ def decode():
     f_recall = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'recall.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
     f_perplex = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'perplex.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
     f_predict = open(pjoin(FLAGS.data_dir, FLAGS.out_dir, 'top.%d_%d') % (FLAGS.start, FLAGS.end), 'w')
+    lid = 0
     with tf.Session() as sess:
         create_model(sess)
-        for source_tokens, source_probs, source_mask, target_tokens \
-                in pair_iter(FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
+        batches = []
+        load_data(batches, FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
                              cur_len=-2, num_top=FLAGS.num_top,
                              max_seq_len=FLAGS.max_seq_len,
                              data_random=FLAGS.random,
@@ -96,11 +97,35 @@ def decode():
                              prob_in=FLAGS.prob_in,
                              flag_generate=FLAGS.flag_generate,
                              prob_back=FLAGS.prob_back,
-                             start=FLAGS.start, end=FLAGS.end,
-                             flag_vector=not FLAGS.flag_sum):
+                             start=FLAGS.start, end=FLAGS.end)
+        for batch in batches:
+            source_tokens, source_probs, source_mask, target_tokens = iter_data(
+                batch, FLAGS.num_wit,
+                num_top=FLAGS.num_top,
+                data_random=FLAGS.random,
+                prior=FLAGS.prior,
+                prob_high=FLAGS.prob_high,
+                prob_in=FLAGS.prob_in,
+                flag_generate=FLAGS.flag_generate,
+                prob_back=FLAGS.prob_back,
+                flag_vector=FLAGS.flag_vector)
+        # for source_tokens, source_probs, source_mask, target_tokens \
+                # in pair_iter(FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
+                #              cur_len=-2, num_top=FLAGS.num_top,
+                #              max_seq_len=FLAGS.max_seq_len,
+                #              data_random=FLAGS.random,
+                #              batch_size=FLAGS.batch_size,
+                #              prior=FLAGS.prior, prob_high=FLAGS.prob_high,
+                #              prob_in=FLAGS.prob_in,
+                #              flag_generate=FLAGS.flag_generate,
+                #              prob_back=FLAGS.prob_back,
+                #              start=FLAGS.start, end=FLAGS.end,
+                #              flag_vector=FLAGS.flag_vector):
             mrr, recall, perplex, predict = decode_batch(sess, source_tokens,
                                                          source_probs, source_mask,
                                                          target_tokens)
+            lid += 1
+            print(lid)
             f_mrr.write(mrr)
             f_recall.write(recall)
             f_perplex.write(perplex)

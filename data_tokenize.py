@@ -4,7 +4,7 @@ from nltk.tokenize import sent_tokenize
 import sys
 import numpy as np
 from os.path import join as pjoin
-from data_generate import id2char, char2id
+from data_simulate import id2char, char2id
 
 
 def remove_nonascii(text):
@@ -48,11 +48,14 @@ def load_vocabulary(path_data):
 
 def tokenize(path_data, file_data):
     with open(pjoin(path_data, file_data + '.ids'), 'w') as f_out:
-        for line in file(pjoin(path_data, file_data + '.line')):
-            line = line.strip().lower()
-            if len(line) > 1:
-                cur_token = char_tokenize(line)
-                f_out.write(' '.join(map(str, cur_token)) + '\n')
+        with open(pjoin(path_data, file_data + '.line')) as f_in:
+            for line in f_in:
+                new_line = ' '.join(line.strip().lower().split())
+                if len(new_line) > 1:
+                    cur_token = char_tokenize(new_line)
+                    f_out.write(' '.join(map(str, cur_token)) + '\n')
+                else:
+                    print(line)
 
 
 def word_tokenize(path_data, file_data):

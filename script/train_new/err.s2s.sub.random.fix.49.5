@@ -1,0 +1,746 @@
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so locally
+INFO:root:Get NLC data in /gss_gpfs_scratch/dong.r/Dataset/BCI/Sublex/1/1/train/sub
+INFO:root:Vocabulary size: 30
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
+name: Tesla K40m
+major: 3 minor: 5 memoryClockRate (GHz) 0.745
+pciBusID 0000:0b:00.0
+Total memory: 11.17GiB
+Free memory: 11.09GiB
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y 
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K40m, pci bus id: 0000:0b:00.0)
+INFO:root:Creating 3 layers of 512 units.
+INFO:root:Reading model parameters from /gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/s2s_sub_random_fix_49_5/best.ckpt-33
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 6479 get requests, put_count=3282 evicted_count=1000 eviction_rate=0.304692 and unsatisfied allocation rate=0.66322
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:256] Raising pool_size_limit_ from 100 to 110
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 1109 get requests, put_count=6120 evicted_count=5000 eviction_rate=0.816993 and unsatisfied allocation rate=0.000901713
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 757 get requests, put_count=2775 evicted_count=2000 eviction_rate=0.720721 and unsatisfied allocation rate=0.001321
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 989 get requests, put_count=5012 evicted_count=4000 eviction_rate=0.798085 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 1127 get requests, put_count=4156 evicted_count=3000 eviction_rate=0.721848 and unsatisfied allocation rate=0.000887311
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 722 get requests, put_count=3762 evicted_count=3000 eviction_rate=0.797448 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 420 get requests, put_count=2478 evicted_count=2000 eviction_rate=0.807103 and unsatisfied allocation rate=0.00238095
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:256] Raising pool_size_limit_ from 655 to 720
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 1362 get requests, put_count=5448 evicted_count=4000 eviction_rate=0.734214 and unsatisfied allocation rate=0.000734214
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 265 get requests, put_count=1380 evicted_count=1000 eviction_rate=0.724638 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 510 get requests, put_count=2679 evicted_count=2000 eviction_rate=0.746547 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 1207 get requests, put_count=6410 evicted_count=5000 eviction_rate=0.780031 and unsatisfied allocation rate=0.0008285
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 995 get requests, put_count=5294 evicted_count=4000 eviction_rate=0.755572 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 781 get requests, put_count=4178 evicted_count=3000 eviction_rate=0.718047 and unsatisfied allocation rate=0.00128041
+INFO:root:epoch 34, iter 200, cost 1.442183, exp_cost 1.308773, grad norm 18.155167, param norm 1249.443604, tps 884.683720, length mean/std 30.000000/0.000000
+INFO:root:epoch 34, iter 400, cost 1.272519, exp_cost 1.298925, grad norm 9.493366, param norm 1249.652588, tps 1091.602243, length mean/std 18.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 2435807 get requests, put_count=2435727 evicted_count=4000 eviction_rate=0.00164222 and unsatisfied allocation rate=0.00196444
+INFO:root:epoch 34, iter 600, cost 1.192315, exp_cost 1.294014, grad norm 8.051071, param norm 1249.935913, tps 1202.455024, length mean/std 13.000000/0.000000
+INFO:root:epoch 34, iter 800, cost 1.816024, exp_cost 1.305681, grad norm 1.910793, param norm 1250.177368, tps 1270.320659, length mean/std 2.000000/0.000000
+INFO:root:epoch 34, iter 1000, cost 1.106480, exp_cost 1.303733, grad norm 6.379805, param norm 1250.402100, tps 1313.693581, length mean/std 13.000000/0.000000
+INFO:root:epoch 34, iter 1200, cost 1.130332, exp_cost 1.284817, grad norm 6.087557, param norm 1250.652588, tps 1342.119452, length mean/std 9.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 7539811 get requests, put_count=7539868 evicted_count=14000 eviction_rate=0.0018568 and unsatisfied allocation rate=0.00194275
+INFO:root:epoch 34, iter 1400, cost 1.141330, exp_cost 1.291901, grad norm 5.803514, param norm 1250.860352, tps 1363.390251, length mean/std 10.000000/0.000000
+INFO:root:epoch 34, iter 1600, cost 1.435157, exp_cost 1.302516, grad norm 2.335231, param norm 1251.106079, tps 1380.613800, length mean/std 3.000000/0.000000
+INFO:root:epoch 34, iter 1800, cost 1.829449, exp_cost 1.302535, grad norm 1.543287, param norm 1251.402832, tps 1395.011089, length mean/std 2.000000/0.000000
+INFO:root:epoch 34, iter 2000, cost 1.340398, exp_cost 1.281948, grad norm 3.372053, param norm 1251.616211, tps 1405.033664, length mean/std 4.000000/0.000000
+INFO:root:epoch 34, iter 2200, cost 1.093073, exp_cost 1.310786, grad norm 4.611534, param norm 1251.976929, tps 1414.942683, length mean/std 8.000000/0.000000
+INFO:root:epoch 34, iter 2400, cost 1.069412, exp_cost 1.294553, grad norm 3.697053, param norm 1252.256226, tps 1423.324928, length mean/std 6.000000/0.000000
+INFO:root:epoch 34, iter 2600, cost 1.242530, exp_cost 1.311039, grad norm 3.793139, param norm 1252.520264, tps 1429.957198, length mean/std 5.000000/0.000000
+INFO:root:epoch 34, iter 2800, cost 1.390237, exp_cost 1.314039, grad norm 15.229959, param norm 1252.773682, tps 1436.218291, length mean/std 31.000000/0.000000
+INFO:root:epoch 34, iter 3000, cost 1.337607, exp_cost 1.301346, grad norm 12.109753, param norm 1253.084717, tps 1440.701465, length mean/std 24.000000/0.000000
+INFO:root:epoch 34, iter 3200, cost 1.312928, exp_cost 1.311686, grad norm 11.045119, param norm 1253.466187, tps 1445.939530, length mean/std 20.000000/0.000000
+INFO:root:epoch 34, iter 3400, cost 1.212270, exp_cost 1.306035, grad norm 4.321029, param norm 1253.722900, tps 1449.879097, length mean/std 6.000000/0.000000
+INFO:root:epoch 34, iter 3600, cost 2.912902, exp_cost 1.313693, grad norm 0.863389, param norm 1254.080688, tps 1454.088257, length mean/std 1.000000/0.000000
+INFO:root:epoch 34, iter 3800, cost 1.387209, exp_cost 1.297918, grad norm 12.407755, param norm 1254.324707, tps 1457.499213, length mean/std 25.000000/0.000000
+INFO:root:epoch 34, iter 4000, cost 1.300966, exp_cost 1.304221, grad norm 10.219929, param norm 1254.611572, tps 1460.450421, length mean/std 19.000000/0.000000
+INFO:root:epoch 34, iter 4200, cost 1.331480, exp_cost 1.294069, grad norm 12.193717, param norm 1254.883667, tps 1462.698372, length mean/std 24.000000/0.000000
+INFO:root:epoch 34, iter 4400, cost 1.284850, exp_cost 1.309645, grad norm 8.253904, param norm 1255.121460, tps 1465.313592, length mean/std 15.000000/0.000000
+INFO:root:epoch 34, iter 4600, cost 1.159153, exp_cost 1.301900, grad norm 6.949741, param norm 1255.407349, tps 1467.450116, length mean/std 13.000000/0.000000
+INFO:root:epoch 34, iter 4800, cost 1.291244, exp_cost 1.311487, grad norm 12.800713, param norm 1255.712280, tps 1469.814557, length mean/std 20.000000/0.000000
+INFO:root:epoch 34, iter 5000, cost 1.181111, exp_cost 1.299801, grad norm 7.333804, param norm 1256.188477, tps 1471.941061, length mean/std 14.000000/0.000000
+INFO:root:epoch 34, iter 5200, cost 1.261449, exp_cost 1.307753, grad norm 9.524323, param norm 1256.615356, tps 1473.808573, length mean/std 17.000000/0.000000
+INFO:root:epoch 34, iter 5400, cost 1.417735, exp_cost 1.316712, grad norm 16.272343, param norm 1256.943359, tps 1475.941346, length mean/std 30.000000/0.000000
+INFO:root:epoch 34, iter 5600, cost 1.297863, exp_cost 1.319059, grad norm 10.271886, param norm 1257.139404, tps 1477.745764, length mean/std 18.000000/0.000000
+INFO:root:epoch 34, iter 5800, cost 1.240634, exp_cost 1.307402, grad norm 10.225980, param norm 1257.542847, tps 1478.982517, length mean/std 17.000000/0.000000
+INFO:root:epoch 34, iter 6000, cost 1.331853, exp_cost 1.297528, grad norm 11.258069, param norm 1257.752563, tps 1480.195120, length mean/std 24.000000/0.000000
+INFO:root:epoch 34, iter 6200, cost 1.281039, exp_cost 1.307458, grad norm 10.006505, param norm 1258.026978, tps 1481.659891, length mean/std 18.000000/0.000000
+INFO:root:Epoch 34 Validation cost: 1.382437 time: 3977.849287
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/s2s_sub_random_fix_49_5/best.ckpt-34 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/s2s_sub_random_fix_49_5/best.ckpt-34 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:root:epoch 35, iter 200, cost 1.176799, exp_cost 1.300981, grad norm 8.289941, param norm 1258.373657, tps 1322.660681, length mean/std 15.000000/0.000000
+INFO:root:epoch 35, iter 400, cost 1.384319, exp_cost 1.300691, grad norm 12.792256, param norm 1258.731079, tps 1328.490588, length mean/std 24.000000/0.000000
+INFO:root:epoch 35, iter 600, cost 1.119550, exp_cost 1.299577, grad norm 3.825870, param norm 1259.029541, tps 1333.476696, length mean/std 6.000000/0.000000
+INFO:root:epoch 35, iter 800, cost 1.400448, exp_cost 1.289803, grad norm 94.500359, param norm 1259.288086, tps 1338.163902, length mean/std 26.000000/0.000000
+INFO:root:epoch 35, iter 1000, cost 1.092000, exp_cost 1.286630, grad norm 4.388795, param norm 1259.542969, tps 1342.824730, length mean/std 7.000000/0.000000
+INFO:root:epoch 35, iter 1200, cost 1.178773, exp_cost 1.293545, grad norm 5.988905, param norm 1259.777710, tps 1346.937581, length mean/std 10.000000/0.000000
+INFO:root:epoch 35, iter 1400, cost 1.332388, exp_cost 1.296511, grad norm 13.039513, param norm 1260.061157, tps 1351.250918, length mean/std 23.000000/0.000000
+INFO:root:epoch 35, iter 1600, cost 1.443066, exp_cost 1.316769, grad norm 17.412367, param norm 1260.329956, tps 1355.024261, length mean/std 34.000000/0.000000
+INFO:root:epoch 35, iter 1800, cost 1.101170, exp_cost 1.303927, grad norm 4.882866, param norm 1260.661255, tps 1359.095928, length mean/std 7.000000/0.000000
+INFO:root:epoch 35, iter 2000, cost 1.290855, exp_cost 1.303731, grad norm 11.244597, param norm 1260.933350, tps 1362.492407, length mean/std 20.000000/0.000000
+INFO:root:epoch 35, iter 2200, cost 1.460326, exp_cost 1.301070, grad norm 2.524632, param norm 1261.251709, tps 1365.425100, length mean/std 3.000000/0.000000
+INFO:root:epoch 35, iter 2400, cost 1.220514, exp_cost 1.304376, grad norm 9.038280, param norm 1261.571777, tps 1369.198170, length mean/std 17.000000/0.000000
+INFO:root:epoch 35, iter 2600, cost 1.215621, exp_cost 1.304553, grad norm 7.878704, param norm 1261.763062, tps 1372.196048, length mean/std 13.000000/0.000000
+INFO:root:epoch 35, iter 2800, cost 0.999562, exp_cost 1.305037, grad norm 4.969695, param norm 1262.065918, tps 1375.571258, length mean/std 9.000000/0.000000
+INFO:root:epoch 35, iter 3000, cost 1.095668, exp_cost 1.319030, grad norm 5.503275, param norm 1262.370239, tps 1378.906445, length mean/std 10.000000/0.000000
+INFO:root:epoch 35, iter 3200, cost 2.798906, exp_cost 1.313764, grad norm 0.647488, param norm 1262.656372, tps 1381.588191, length mean/std 1.000000/0.000000
+INFO:root:epoch 35, iter 3400, cost 1.116301, exp_cost 1.285332, grad norm 4.218740, param norm 1262.953491, tps 1384.039645, length mean/std 7.000000/0.000000
+INFO:root:epoch 35, iter 3600, cost 1.278617, exp_cost 1.296545, grad norm 10.269366, param norm 1263.300903, tps 1386.688229, length mean/std 19.000000/0.000000
+INFO:root:epoch 35, iter 3800, cost 1.108800, exp_cost 1.296854, grad norm 6.462336, param norm 1263.550537, tps 1389.161944, length mean/std 12.000000/0.000000
+INFO:root:epoch 35, iter 4000, cost 1.415994, exp_cost 1.313638, grad norm 14.708807, param norm 1263.827393, tps 1391.669515, length mean/std 30.000000/0.000000
+INFO:root:epoch 35, iter 4200, cost 1.182960, exp_cost 1.295301, grad norm 6.727718, param norm 1264.212646, tps 1393.916702, length mean/std 11.000000/0.000000
+INFO:root:epoch 35, iter 4400, cost 1.418340, exp_cost 1.295613, grad norm 31.818590, param norm 1264.542358, tps 1396.065488, length mean/std 33.000000/0.000000
+INFO:root:epoch 35, iter 4600, cost 1.135365, exp_cost 1.294910, grad norm 5.145226, param norm 1264.790161, tps 1398.152481, length mean/std 9.000000/0.000000
+INFO:root:epoch 35, iter 4800, cost 1.459100, exp_cost 1.306736, grad norm 22.256554, param norm 1265.107056, tps 1400.262463, length mean/std 29.000000/0.000000
+INFO:root:epoch 35, iter 5000, cost 1.154084, exp_cost 1.300856, grad norm 7.599470, param norm 1265.324951, tps 1402.352824, length mean/std 14.000000/0.000000
+INFO:root:epoch 35, iter 5200, cost 1.159329, exp_cost 1.306021, grad norm 5.847456, param norm 1265.520264, tps 1404.226974, length mean/std 10.000000/0.000000
+INFO:root:epoch 35, iter 5400, cost 1.291219, exp_cost 1.305857, grad norm 10.129726, param norm 1265.766968, tps 1406.018596, length mean/std 20.000000/0.000000
+INFO:root:epoch 35, iter 5600, cost 1.429256, exp_cost 1.317041, grad norm 15.728858, param norm 1266.161621, tps 1408.025181, length mean/std 29.000000/0.000000
+INFO:root:epoch 35, iter 5800, cost 1.135913, exp_cost 1.291652, grad norm 5.630932, param norm 1266.343750, tps 1409.858946, length mean/std 10.000000/0.000000
+INFO:root:epoch 35, iter 6000, cost 1.170034, exp_cost 1.305112, grad norm 8.193461, param norm 1266.607056, tps 1411.693402, length mean/std 13.000000/0.000000
+INFO:root:epoch 35, iter 6200, cost 1.373294, exp_cost 1.307860, grad norm 14.119245, param norm 1267.005737, tps 1413.292987, length mean/std 29.000000/0.000000
+INFO:root:Epoch 35 Validation cost: 1.382888 time: 4030.116786
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/s2s_sub_random_fix_49_5/best.ckpt-35 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/s2s_sub_random_fix_49_5/best.ckpt-35 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:root:epoch 36, iter 200, cost 1.315387, exp_cost 1.308653, grad norm 16.514076, param norm 1267.412598, tps 1335.588541, length mean/std 26.000000/0.000000
+INFO:root:epoch 36, iter 400, cost 1.223768, exp_cost 1.285983, grad norm 2.658081, param norm 1267.775513, tps 1337.993982, length mean/std 4.000000/0.000000
+INFO:root:epoch 36, iter 600, cost 1.399567, exp_cost 1.295288, grad norm 16.819286, param norm 1268.067749, tps 1340.873134, length mean/std 33.000000/0.000000
+INFO:root:epoch 36, iter 800, cost 1.193136, exp_cost 1.287466, grad norm 9.244437, param norm 1268.251953, tps 1343.242622, length mean/std 17.000000/0.000000
+INFO:root:epoch 36, iter 1000, cost 1.420233, exp_cost 1.312906, grad norm 13.539666, param norm 1268.505981, tps 1345.882044, length mean/std 28.000000/0.000000
+INFO:root:epoch 36, iter 1200, cost 1.278668, exp_cost 1.301556, grad norm 11.238967, param norm 1268.770264, tps 1348.059538, length mean/std 21.000000/0.000000
+INFO:root:epoch 36, iter 1400, cost 1.135420, exp_cost 1.306249, grad norm 4.622546, param norm 1269.097778, tps 1350.370930, length mean/std 7.000000/0.000000
+INFO:root:epoch 36, iter 1600, cost 1.215497, exp_cost 1.299362, grad norm 10.173826, param norm 1269.379883, tps 1352.776532, length mean/std 17.000000/0.000000
+INFO:root:epoch 36, iter 1800, cost 1.435541, exp_cost 1.296155, grad norm 18.071674, param norm 1269.692749, tps 1355.066210, length mean/std 35.000000/0.000000
+INFO:root:epoch 36, iter 2000, cost 1.276743, exp_cost 1.298537, grad norm 4.816820, param norm 1270.067017, tps 1357.184223, length mean/std 6.000000/0.000000
+INFO:root:epoch 36, iter 2200, cost 1.118582, exp_cost 1.295867, grad norm 4.459483, param norm 1270.330811, tps 1359.410140, length mean/std 7.000000/0.000000
+INFO:root:epoch 36, iter 2400, cost 1.358482, exp_cost 1.286439, grad norm 16.053276, param norm 1270.626343, tps 1361.360255, length mean/std 29.000000/0.000000
+INFO:root:epoch 36, iter 2600, cost 2.943733, exp_cost 1.306010, grad norm 0.730844, param norm 1270.816284, tps 1363.614710, length mean/std 1.000000/0.000000
+INFO:root:epoch 36, iter 2800, cost 1.110417, exp_cost 1.304116, grad norm 5.294604, param norm 1271.136597, tps 1365.626706, length mean/std 8.000000/0.000000
+INFO:root:epoch 36, iter 3000, cost 2.954032, exp_cost 1.291083, grad norm 0.908733, param norm 1271.456787, tps 1367.343261, length mean/std 1.000000/0.000000
+INFO:root:epoch 36, iter 3200, cost 1.212977, exp_cost 1.308476, grad norm 12.379059, param norm 1271.780151, tps 1369.498997, length mean/std 20.000000/0.000000
+INFO:root:epoch 36, iter 3400, cost 1.838407, exp_cost 1.297798, grad norm 2.204996, param norm 1272.055664, tps 1371.127858, length mean/std 2.000000/0.000000
+INFO:root:epoch 36, iter 3600, cost 1.227158, exp_cost 1.303114, grad norm 3.583761, param norm 1272.377075, tps 1373.031479, length mean/std 5.000000/0.000000
+INFO:root:epoch 36, iter 3800, cost 1.205732, exp_cost 1.310081, grad norm 6.621458, param norm 1272.764648, tps 1374.742866, length mean/std 11.000000/0.000000
+INFO:root:epoch 36, iter 4000, cost 1.244527, exp_cost 1.287393, grad norm 8.767859, param norm 1272.989868, tps 1376.245381, length mean/std 15.000000/0.000000
+INFO:root:epoch 36, iter 4200, cost 1.366510, exp_cost 1.306387, grad norm 13.812709, param norm 1273.238770, tps 1377.875590, length mean/std 30.000000/0.000000
+INFO:root:epoch 36, iter 4400, cost 1.272548, exp_cost 1.301277, grad norm 5.774693, param norm 1273.562500, tps 1379.530286, length mean/std 8.000000/0.000000
+INFO:root:epoch 36, iter 4600, cost 1.308289, exp_cost 1.294849, grad norm 13.128517, param norm 1273.816772, tps 1381.104559, length mean/std 19.000000/0.000000
+INFO:root:epoch 36, iter 4800, cost 1.231883, exp_cost 1.289269, grad norm 7.707909, param norm 1274.009155, tps 1382.451871, length mean/std 13.000000/0.000000
+INFO:root:epoch 36, iter 5000, cost 1.879510, exp_cost 1.300443, grad norm 1.793384, param norm 1274.459473, tps 1383.866173, length mean/std 2.000000/0.000000
+INFO:root:epoch 36, iter 5200, cost 1.222465, exp_cost 1.281928, grad norm 8.444809, param norm 1274.715454, tps 1385.342473, length mean/std 14.000000/0.000000
+INFO:root:epoch 36, iter 5400, cost 1.365659, exp_cost 1.314790, grad norm 3.320657, param norm 1275.026855, tps 1386.954977, length mean/std 4.000000/0.000000
+INFO:root:epoch 36, iter 5600, cost 1.146354, exp_cost 1.298588, grad norm 4.916419, param norm 1275.268677, tps 1388.392642, length mean/std 8.000000/0.000000
+INFO:root:epoch 36, iter 5800, cost 1.201764, exp_cost 1.291830, grad norm 9.241094, param norm 1275.662842, tps 1389.897824, length mean/std 15.000000/0.000000
+INFO:root:epoch 36, iter 6000, cost 1.421190, exp_cost 1.306125, grad norm 18.029022, param norm 1275.954834, tps 1391.235283, length mean/std 30.000000/0.000000
+INFO:root:epoch 36, iter 6200, cost 1.164214, exp_cost 1.313924, grad norm 4.917361, param norm 1276.206543, tps 1392.545857, length mean/std 8.000000/0.000000
+INFO:root:Epoch 36 Validation cost: 1.384849 time: 4112.337206
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/s2s_sub_random_fix_49_5/best.ckpt-36 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:tensorflow:/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/s2s_sub_random_fix_49_5/best.ckpt-36 is not in all_model_checkpoint_paths. Manually adding it.
+INFO:root:epoch 37, iter 200, cost 1.221719, exp_cost 1.303984, grad norm 3.782628, param norm 1276.571289, tps 1341.349527, length mean/std 5.000000/0.000000
+INFO:root:epoch 37, iter 400, cost 1.191415, exp_cost 1.287638, grad norm 9.191928, param norm 1276.847290, tps 1343.154232, length mean/std 17.000000/0.000000
+INFO:root:epoch 37, iter 600, cost 1.181818, exp_cost 1.284155, grad norm 2.836205, param norm 1277.058105, tps 1344.827949, length mean/std 4.000000/0.000000
+INFO:root:epoch 37, iter 800, cost 1.345510, exp_cost 1.285293, grad norm 15.045063, param norm 1277.415405, tps 1346.573558, length mean/std 26.000000/0.000000
+INFO:root:epoch 37, iter 1000, cost 1.437915, exp_cost 1.294728, grad norm 22.213722, param norm 1277.800659, tps 1348.276852, length mean/std 31.000000/0.000000
+INFO:root:epoch 37, iter 1200, cost 1.253437, exp_cost 1.297129, grad norm 10.909855, param norm 1278.021729, tps 1349.827693, length mean/std 18.000000/0.000000
+INFO:root:epoch 37, iter 1400, cost 2.900801, exp_cost 1.282015, grad norm 0.692528, param norm 1278.250488, tps 1351.404988, length mean/std 1.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 121889265 get requests, put_count=121889288 evicted_count=4000 eviction_rate=3.28167e-05 and unsatisfied allocation rate=3.89944e-05
+INFO:root:epoch 37, iter 1600, cost 1.193965, exp_cost 1.290111, grad norm 8.413687, param norm 1278.565918, tps 1352.929064, length mean/std 17.000000/0.000000
+INFO:root:epoch 37, iter 1800, cost 1.177411, exp_cost 1.289526, grad norm 6.909146, param norm 1278.825195, tps 1354.459877, length mean/std 11.000000/0.000000
+INFO:root:epoch 37, iter 2000, cost 1.426697, exp_cost 1.300498, grad norm 15.264132, param norm 1279.167725, tps 1356.010660, length mean/std 33.000000/0.000000
+INFO:root:epoch 37, iter 2200, cost 1.324656, exp_cost 1.311472, grad norm 22.216124, param norm 1279.431274, tps 1357.492200, length mean/std 28.000000/0.000000
+INFO:root:epoch 37, iter 2400, cost 2.803160, exp_cost 1.316693, grad norm 0.583961, param norm 1279.776733, tps 1359.048556, length mean/std 1.000000/0.000000
+INFO:root:epoch 37, iter 2600, cost 1.474119, exp_cost 1.314667, grad norm 21.110428, param norm 1280.073730, tps 1360.474804, length mean/std 33.000000/0.000000
+INFO:root:epoch 37, iter 2800, cost 1.195332, exp_cost 1.302358, grad norm 9.258288, param norm 1280.365112, tps 1361.823352, length mean/std 16.000000/0.000000
+INFO:root:epoch 37, iter 3000, cost 1.306765, exp_cost 1.290848, grad norm 12.716237, param norm 1280.649292, tps 1363.211488, length mean/std 24.000000/0.000000
+INFO:root:epoch 37, iter 3200, cost 1.131042, exp_cost 1.305808, grad norm 8.234543, param norm 1280.924805, tps 1364.646260, length mean/std 17.000000/0.000000
+INFO:root:epoch 37, iter 3400, cost 1.485746, exp_cost 1.303925, grad norm 20.291121, param norm 1281.178101, tps 1366.003863, length mean/std 35.000000/0.000000
+INFO:root:epoch 37, iter 3600, cost 1.087459, exp_cost 1.309191, grad norm 3.698910, param norm 1281.472290, tps 1367.472412, length mean/std 6.000000/0.000000
+INFO:root:epoch 37, iter 3800, cost 1.437065, exp_cost 1.306234, grad norm 15.028216, param norm 1281.734253, tps 1368.906975, length mean/std 26.000000/0.000000
+INFO:root:epoch 37, iter 4000, cost 1.431035, exp_cost 1.280835, grad norm 15.305626, param norm 1281.996460, tps 1370.105090, length mean/std 29.000000/0.000000
+INFO:root:epoch 37, iter 4200, cost 1.113499, exp_cost 1.307206, grad norm 5.908784, param norm 1282.230591, tps 1371.363318, length mean/std 10.000000/0.000000
+INFO:root:epoch 37, iter 4400, cost 1.350162, exp_cost 1.299851, grad norm 13.795199, param norm 1282.471680, tps 1372.555921, length mean/std 25.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 142382396 get requests, put_count=142382378 evicted_count=14000 eviction_rate=9.83268e-05 and unsatisfied allocation rate=0.000103903
+INFO:root:epoch 37, iter 4600, cost 1.139640, exp_cost 1.317849, grad norm 6.649210, param norm 1282.821045, tps 1373.880532, length mean/std 12.000000/0.000000
+INFO:root:epoch 37, iter 4800, cost 1.474390, exp_cost 1.311055, grad norm 19.725368, param norm 1283.150269, tps 1375.112231, length mean/std 37.000000/0.000000
+INFO:root:epoch 37, iter 5000, cost 1.334956, exp_cost 1.301435, grad norm 18.153713, param norm 1283.493042, tps 1376.321148, length mean/std 25.000000/0.000000
+INFO:root:epoch 37, iter 5200, cost 1.302229, exp_cost 1.303220, grad norm 11.498673, param norm 1283.659180, tps 1377.560218, length mean/std 21.000000/0.000000
+INFO:root:epoch 37, iter 5400, cost 1.081819, exp_cost 1.292371, grad norm 5.229345, param norm 1283.960571, tps 1378.654723, length mean/std 9.000000/0.000000
+INFO:root:epoch 37, iter 5600, cost 1.094200, exp_cost 1.294458, grad norm 5.944464, param norm 1284.284424, tps 1379.736119, length mean/std 11.000000/0.000000
+INFO:root:epoch 37, iter 5800, cost 1.564601, exp_cost 1.290231, grad norm 1.975383, param norm 1284.574829, tps 1380.646249, length mean/std 2.000000/0.000000
+INFO:root:epoch 37, iter 6000, cost 1.211088, exp_cost 1.294075, grad norm 5.294893, param norm 1284.902710, tps 1381.770268, length mean/std 8.000000/0.000000
+INFO:root:epoch 37, iter 6200, cost 1.464034, exp_cost 1.300834, grad norm 2.470554, param norm 1285.286377, tps 1382.756921, length mean/std 3.000000/0.000000
+INFO:root:Epoch 37 Validation cost: 1.387330 time: 4180.758058
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 38, iter 200, cost 1.158849, exp_cost 1.302558, grad norm 6.926902, param norm 1276.429077, tps 1344.830433, length mean/std 12.000000/0.000000
+INFO:root:epoch 38, iter 400, cost 1.405389, exp_cost 1.309987, grad norm 19.184616, param norm 1276.776733, tps 1346.157689, length mean/std 31.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 158065395 get requests, put_count=158065373 evicted_count=24000 eviction_rate=0.000151836 and unsatisfied allocation rate=0.000156884
+INFO:root:epoch 38, iter 600, cost 1.467715, exp_cost 1.322763, grad norm 25.496767, param norm 1277.050659, tps 1347.579969, length mean/std 32.000000/0.000000
+INFO:root:epoch 38, iter 800, cost 1.377841, exp_cost 1.299532, grad norm 12.868716, param norm 1277.295288, tps 1348.858015, length mean/std 25.000000/0.000000
+INFO:root:epoch 38, iter 1000, cost 1.151103, exp_cost 1.283727, grad norm 8.797307, param norm 1277.620972, tps 1350.176228, length mean/std 16.000000/0.000000
+INFO:root:epoch 38, iter 1200, cost 1.172567, exp_cost 1.292381, grad norm 8.713138, param norm 1277.883789, tps 1351.472714, length mean/std 15.000000/0.000000
+INFO:root:epoch 38, iter 1400, cost 1.240191, exp_cost 1.291910, grad norm 7.895583, param norm 1278.146851, tps 1352.633797, length mean/std 14.000000/0.000000
+INFO:root:epoch 38, iter 1600, cost 1.324692, exp_cost 1.300316, grad norm 13.449311, param norm 1278.529297, tps 1353.831891, length mean/std 26.000000/0.000000
+INFO:root:epoch 38, iter 1800, cost 1.221737, exp_cost 1.302475, grad norm 10.280518, param norm 1278.875244, tps 1355.035507, length mean/std 14.000000/0.000000
+INFO:root:epoch 38, iter 2000, cost 1.445326, exp_cost 1.305521, grad norm 26.418064, param norm 1279.164551, tps 1356.287292, length mean/std 36.000000/0.000000
+INFO:root:epoch 38, iter 2200, cost 1.244831, exp_cost 1.294037, grad norm 9.941919, param norm 1279.488647, tps 1357.512458, length mean/std 18.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 170449043 get requests, put_count=170449044 evicted_count=34000 eviction_rate=0.000199473 and unsatisfied allocation rate=0.00020402
+INFO:root:epoch 38, iter 2400, cost 1.295428, exp_cost 1.284851, grad norm 11.877086, param norm 1279.809692, tps 1358.604540, length mean/std 21.000000/0.000000
+INFO:root:epoch 38, iter 2600, cost 1.117587, exp_cost 1.294818, grad norm 6.926073, param norm 1280.094238, tps 1359.728428, length mean/std 12.000000/0.000000
+INFO:root:epoch 38, iter 2800, cost 1.473275, exp_cost 1.311794, grad norm 31.411963, param norm 1280.296509, tps 1360.853086, length mean/std 37.000000/0.000000
+INFO:root:epoch 38, iter 3000, cost 1.220588, exp_cost 1.304866, grad norm 5.022648, param norm 1280.551270, tps 1361.987158, length mean/std 7.000000/0.000000
+INFO:root:epoch 38, iter 3200, cost 1.302218, exp_cost 1.305957, grad norm 11.549368, param norm 1280.921143, tps 1363.073276, length mean/std 19.000000/0.000000
+INFO:root:epoch 38, iter 3400, cost 1.437284, exp_cost 1.309216, grad norm 20.824142, param norm 1281.147583, tps 1364.218480, length mean/std 37.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 179220475 get requests, put_count=179220445 evicted_count=44000 eviction_rate=0.000245508 and unsatisfied allocation rate=0.000250005
+INFO:root:epoch 38, iter 3600, cost 1.353660, exp_cost 1.304943, grad norm 15.983212, param norm 1281.406006, tps 1365.245392, length mean/std 26.000000/0.000000
+INFO:root:epoch 38, iter 3800, cost 1.226831, exp_cost 1.300196, grad norm 6.549554, param norm 1281.728149, tps 1366.330148, length mean/std 11.000000/0.000000
+INFO:root:epoch 38, iter 4000, cost 1.261328, exp_cost 1.304599, grad norm 10.389440, param norm 1282.011963, tps 1367.316714, length mean/std 19.000000/0.000000
+INFO:root:epoch 38, iter 4200, cost 1.320402, exp_cost 1.306886, grad norm 11.707237, param norm 1282.240112, tps 1368.226045, length mean/std 20.000000/0.000000
+INFO:root:epoch 38, iter 4400, cost 1.177961, exp_cost 1.308461, grad norm 7.264651, param norm 1282.440308, tps 1369.252521, length mean/std 12.000000/0.000000
+INFO:root:epoch 38, iter 4600, cost 1.475277, exp_cost 1.319600, grad norm 25.338511, param norm 1282.657104, tps 1370.298212, length mean/std 37.000000/0.000000
+INFO:root:epoch 38, iter 4800, cost 1.368075, exp_cost 1.300707, grad norm 15.412421, param norm 1282.955078, tps 1371.200518, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 188269659 get requests, put_count=188269483 evicted_count=54000 eviction_rate=0.000286823 and unsatisfied allocation rate=0.000291879
+INFO:root:epoch 38, iter 5000, cost 1.228076, exp_cost 1.302765, grad norm 7.788811, param norm 1283.283936, tps 1372.237610, length mean/std 14.000000/0.000000
+INFO:root:epoch 38, iter 5200, cost 1.303226, exp_cost 1.310213, grad norm 10.562537, param norm 1283.582275, tps 1373.200461, length mean/std 20.000000/0.000000
+INFO:root:epoch 38, iter 5400, cost 1.123218, exp_cost 1.286871, grad norm 5.004240, param norm 1283.896973, tps 1374.147683, length mean/std 8.000000/0.000000
+INFO:root:epoch 38, iter 5600, cost 1.189197, exp_cost 1.310735, grad norm 4.094744, param norm 1284.202148, tps 1375.137611, length mean/std 6.000000/0.000000
+INFO:root:epoch 38, iter 5800, cost 1.765376, exp_cost 1.306755, grad norm 1.918050, param norm 1284.572021, tps 1376.085486, length mean/std 2.000000/0.000000
+INFO:root:epoch 38, iter 6000, cost 1.151347, exp_cost 1.310162, grad norm 4.609586, param norm 1284.827026, tps 1376.966825, length mean/std 7.000000/0.000000
+INFO:root:epoch 38, iter 6200, cost 1.121268, exp_cost 1.308101, grad norm 5.429920, param norm 1285.078735, tps 1377.869514, length mean/std 8.000000/0.000000
+INFO:root:Epoch 38 Validation cost: 1.385575 time: 4257.130653
+INFO:root:Annealing learning rate by 0.950000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 198445381 get requests, put_count=198445340 evicted_count=64000 eviction_rate=0.000322507 and unsatisfied allocation rate=0.000326624
+INFO:root:epoch 39, iter 200, cost 1.954877, exp_cost 1.325017, grad norm 2.638874, param norm 1276.523071, tps 1347.359677, length mean/std 2.000000/0.000000
+INFO:root:epoch 39, iter 400, cost 1.002894, exp_cost 1.303013, grad norm 4.186087, param norm 1276.683105, tps 1348.388402, length mean/std 7.000000/0.000000
+INFO:root:epoch 39, iter 600, cost 1.099778, exp_cost 1.305642, grad norm 5.261478, param norm 1277.008179, tps 1349.514518, length mean/std 9.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 203152117 get requests, put_count=203151825 evicted_count=74000 eviction_rate=0.00036426 and unsatisfied allocation rate=0.000369516
+INFO:root:epoch 39, iter 800, cost 1.294520, exp_cost 1.318906, grad norm 10.302818, param norm 1277.211304, tps 1350.572673, length mean/std 19.000000/0.000000
+INFO:root:epoch 39, iter 1000, cost 1.184278, exp_cost 1.318165, grad norm 7.768344, param norm 1277.574463, tps 1351.685186, length mean/std 14.000000/0.000000
+INFO:root:epoch 39, iter 1200, cost 1.319755, exp_cost 1.297838, grad norm 13.540845, param norm 1277.906006, tps 1352.691002, length mean/std 27.000000/0.000000
+INFO:root:epoch 39, iter 1400, cost 1.425051, exp_cost 1.305785, grad norm 16.647097, param norm 1278.264893, tps 1353.693150, length mean/std 32.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 208898133 get requests, put_count=208898011 evicted_count=84000 eviction_rate=0.00040211 and unsatisfied allocation rate=0.000406409
+INFO:root:epoch 39, iter 1600, cost 1.196489, exp_cost 1.302861, grad norm 3.619038, param norm 1278.462402, tps 1354.636488, length mean/std 5.000000/0.000000
+INFO:root:epoch 39, iter 1800, cost 1.417955, exp_cost 1.303612, grad norm 16.980412, param norm 1278.700806, tps 1355.563029, length mean/std 27.000000/0.000000
+INFO:root:epoch 39, iter 2000, cost 1.333923, exp_cost 1.296695, grad norm 13.095361, param norm 1278.937500, tps 1356.508068, length mean/std 25.000000/0.000000
+INFO:root:epoch 39, iter 2200, cost 1.372307, exp_cost 1.303287, grad norm 87.431686, param norm 1279.281738, tps 1357.504301, length mean/std 27.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 213496376 get requests, put_count=213496186 evicted_count=94000 eviction_rate=0.000440289 and unsatisfied allocation rate=0.000444813
+INFO:root:epoch 39, iter 2400, cost 1.210956, exp_cost 1.309956, grad norm 9.617703, param norm 1279.606567, tps 1358.503348, length mean/std 16.000000/0.000000
+INFO:root:epoch 39, iter 2600, cost 1.061843, exp_cost 1.295657, grad norm 5.249855, param norm 1279.996948, tps 1359.457442, length mean/std 9.000000/0.000000
+INFO:root:epoch 39, iter 2800, cost 1.465715, exp_cost 1.324137, grad norm 19.175430, param norm 1280.286255, tps 1360.511202, length mean/std 34.000000/0.000000
+INFO:root:epoch 39, iter 3000, cost 1.156117, exp_cost 1.312539, grad norm 5.935378, param norm 1280.660767, tps 1361.406402, length mean/std 10.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 219186655 get requests, put_count=219186393 evicted_count=104000 eviction_rate=0.000474482 and unsatisfied allocation rate=0.000479217
+INFO:root:epoch 39, iter 3200, cost 1.134249, exp_cost 1.311338, grad norm 7.899083, param norm 1280.910156, tps 1362.296898, length mean/std 15.000000/0.000000
+INFO:root:epoch 39, iter 3400, cost 1.490481, exp_cost 1.293084, grad norm 22.665630, param norm 1281.204102, tps 1363.153259, length mean/std 37.000000/0.000000
+INFO:root:epoch 39, iter 3600, cost 1.069433, exp_cost 1.303672, grad norm 5.580421, param norm 1281.605225, tps 1364.072728, length mean/std 11.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 224007176 get requests, put_count=224007132 evicted_count=114000 eviction_rate=0.000508912 and unsatisfied allocation rate=0.000512573
+INFO:root:epoch 39, iter 3800, cost 1.198436, exp_cost 1.305215, grad norm 8.334920, param norm 1281.943848, tps 1364.966604, length mean/std 14.000000/0.000000
+INFO:root:epoch 39, iter 4000, cost 1.485669, exp_cost 1.288564, grad norm 18.665941, param norm 1282.259521, tps 1365.850403, length mean/std 38.000000/0.000000
+INFO:root:epoch 39, iter 4200, cost 1.609035, exp_cost 1.295168, grad norm 2.541568, param norm 1282.507812, tps 1366.625180, length mean/std 3.000000/0.000000
+INFO:root:epoch 39, iter 4400, cost 1.227618, exp_cost 1.303531, grad norm 9.689363, param norm 1282.875244, tps 1367.470977, length mean/std 15.000000/0.000000
+INFO:root:epoch 39, iter 4600, cost 1.287224, exp_cost 1.306049, grad norm 11.702543, param norm 1283.182739, tps 1368.305209, length mean/std 22.000000/0.000000
+INFO:root:epoch 39, iter 4800, cost 1.157461, exp_cost 1.310305, grad norm 7.247710, param norm 1283.423706, tps 1369.158572, length mean/std 12.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 231143353 get requests, put_count=231143045 evicted_count=124000 eviction_rate=0.000536464 and unsatisfied allocation rate=0.000541153
+INFO:root:epoch 39, iter 5000, cost 1.222161, exp_cost 1.311528, grad norm 7.601918, param norm 1283.687134, tps 1370.011616, length mean/std 12.000000/0.000000
+INFO:root:epoch 39, iter 5200, cost 1.422273, exp_cost 1.313742, grad norm 19.485256, param norm 1283.980347, tps 1370.925997, length mean/std 37.000000/0.000000
+INFO:root:epoch 39, iter 5400, cost 1.106845, exp_cost 1.306443, grad norm 5.150787, param norm 1284.201050, tps 1371.731234, length mean/std 9.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 236260944 get requests, put_count=236260962 evicted_count=134000 eviction_rate=0.000567169 and unsatisfied allocation rate=0.000570378
+INFO:root:epoch 39, iter 5600, cost 1.411458, exp_cost 1.304885, grad norm 16.346516, param norm 1284.459351, tps 1372.478844, length mean/std 26.000000/0.000000
+INFO:root:epoch 39, iter 5800, cost 1.164738, exp_cost 1.309769, grad norm 9.132823, param norm 1284.755859, tps 1373.256161, length mean/std 17.000000/0.000000
+INFO:root:epoch 39, iter 6000, cost 1.083702, exp_cost 1.310818, grad norm 4.591242, param norm 1284.968140, tps 1374.011006, length mean/std 8.000000/0.000000
+INFO:root:epoch 39, iter 6200, cost 1.180996, exp_cost 1.325147, grad norm 6.178487, param norm 1285.260254, tps 1374.846045, length mean/std 10.000000/0.000000
+INFO:root:Epoch 39 Validation cost: 1.389374 time: 4324.225621
+INFO:root:Annealing learning rate by 0.950000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 243188201 get requests, put_count=243188077 evicted_count=144000 eviction_rate=0.000592134 and unsatisfied allocation rate=0.000595835
+INFO:root:epoch 40, iter 200, cost 1.473433, exp_cost 1.305298, grad norm 18.369967, param norm 1276.453979, tps 1349.289918, length mean/std 37.000000/0.000000
+INFO:root:epoch 40, iter 400, cost 1.381342, exp_cost 1.300592, grad norm 17.509094, param norm 1276.733398, tps 1350.170967, length mean/std 31.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 246016447 get requests, put_count=246016372 evicted_count=154000 eviction_rate=0.000625975 and unsatisfied allocation rate=0.000629434
+INFO:root:epoch 40, iter 600, cost 1.176296, exp_cost 1.317136, grad norm 7.764263, param norm 1277.013306, tps 1351.143841, length mean/std 14.000000/0.000000
+INFO:root:epoch 40, iter 800, cost 1.197595, exp_cost 1.309064, grad norm 2.949296, param norm 1277.299927, tps 1352.078697, length mean/std 4.000000/0.000000
+INFO:root:epoch 40, iter 1000, cost 1.352818, exp_cost 1.303477, grad norm 15.396675, param norm 1277.624756, tps 1352.862912, length mean/std 32.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 250425162 get requests, put_count=250425039 evicted_count=164000 eviction_rate=0.000654887 and unsatisfied allocation rate=0.000658476
+INFO:root:epoch 40, iter 1200, cost 1.212398, exp_cost 1.310131, grad norm 9.397567, param norm 1277.952759, tps 1353.803273, length mean/std 18.000000/0.000000
+INFO:root:epoch 40, iter 1400, cost 1.155509, exp_cost 1.323109, grad norm 6.982772, param norm 1278.331665, tps 1354.675597, length mean/std 12.000000/0.000000
+INFO:root:epoch 40, iter 1600, cost 1.165600, exp_cost 1.311290, grad norm 7.376658, param norm 1278.619995, tps 1355.519206, length mean/std 15.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 254251616 get requests, put_count=254251554 evicted_count=174000 eviction_rate=0.000684362 and unsatisfied allocation rate=0.000687657
+INFO:root:epoch 40, iter 1800, cost 1.113415, exp_cost 1.305364, grad norm 6.078842, param norm 1278.908447, tps 1356.391607, length mean/std 11.000000/0.000000
+INFO:root:epoch 40, iter 2000, cost 1.779128, exp_cost 1.320168, grad norm 1.974001, param norm 1279.159302, tps 1357.222024, length mean/std 2.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 257118553 get requests, put_count=257118492 evicted_count=184000 eviction_rate=0.000715623 and unsatisfied allocation rate=0.000718879
+INFO:root:epoch 40, iter 2200, cost 1.468208, exp_cost 1.300209, grad norm 20.097837, param norm 1279.337280, tps 1357.993303, length mean/std 38.000000/0.000000
+INFO:root:epoch 40, iter 2400, cost 1.390113, exp_cost 1.313880, grad norm 18.276154, param norm 1279.686401, tps 1358.818701, length mean/std 32.000000/0.000000
+INFO:root:epoch 40, iter 2600, cost 1.258849, exp_cost 1.309602, grad norm 13.076994, param norm 1280.027100, tps 1359.623605, length mean/std 24.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 260897623 get requests, put_count=260897521 evicted_count=194000 eviction_rate=0.000743587 and unsatisfied allocation rate=0.000746952
+INFO:root:epoch 40, iter 2800, cost 1.377202, exp_cost 1.309840, grad norm 13.691692, param norm 1280.321411, tps 1360.364171, length mean/std 24.000000/0.000000
+INFO:root:epoch 40, iter 3000, cost 1.330888, exp_cost 1.310366, grad norm 15.662212, param norm 1280.664429, tps 1361.149336, length mean/std 28.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 264267538 get requests, put_count=264267381 evicted_count=204000 eviction_rate=0.000771945 and unsatisfied allocation rate=0.000775475
+INFO:root:epoch 40, iter 3200, cost 1.972317, exp_cost 1.296936, grad norm 1.927387, param norm 1281.032471, tps 1361.893286, length mean/std 2.000000/0.000000
+INFO:root:epoch 40, iter 3400, cost 1.359907, exp_cost 1.332888, grad norm 15.569271, param norm 1281.245361, tps 1362.672297, length mean/std 30.000000/0.000000
+INFO:root:epoch 40, iter 3600, cost 1.357434, exp_cost 1.307218, grad norm 4.104713, param norm 1281.471680, tps 1363.341959, length mean/std 5.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 267248177 get requests, put_count=267248178 evicted_count=214000 eviction_rate=0.000800754 and unsatisfied allocation rate=0.000803654
+INFO:root:epoch 40, iter 3800, cost 1.498367, exp_cost 1.315824, grad norm 21.866474, param norm 1281.723022, tps 1364.132264, length mean/std 40.000000/0.000000
+INFO:root:epoch 40, iter 4000, cost 2.790731, exp_cost 1.324414, grad norm 0.920360, param norm 1281.987061, tps 1364.876827, length mean/std 1.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 270720150 get requests, put_count=270719904 evicted_count=224000 eviction_rate=0.000827423 and unsatisfied allocation rate=0.000831198
+INFO:root:epoch 40, iter 4200, cost 1.090912, exp_cost 1.312306, grad norm 4.239976, param norm 1282.327637, tps 1365.605699, length mean/std 7.000000/0.000000
+INFO:root:epoch 40, iter 4400, cost 1.204891, exp_cost 1.325514, grad norm 7.925097, param norm 1282.585938, tps 1366.390764, length mean/std 14.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 273834003 get requests, put_count=273833963 evicted_count=234000 eviction_rate=0.000854532 and unsatisfied allocation rate=0.000857512
+INFO:root:epoch 40, iter 4600, cost 2.946444, exp_cost 1.319229, grad norm 1.100144, param norm 1282.844604, tps 1367.221362, length mean/std 1.000000/0.000000
+INFO:root:epoch 40, iter 4800, cost 1.343283, exp_cost 1.307353, grad norm 13.180413, param norm 1283.191284, tps 1367.858159, length mean/std 23.000000/0.000000
+INFO:root:epoch 40, iter 5000, cost 1.366012, exp_cost 1.307682, grad norm 14.217730, param norm 1283.448364, tps 1368.522972, length mean/std 28.000000/0.000000
+INFO:root:epoch 40, iter 5200, cost 1.346772, exp_cost 1.301864, grad norm 13.461033, param norm 1283.756958, tps 1369.243824, length mean/std 24.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 279042055 get requests, put_count=279041984 evicted_count=244000 eviction_rate=0.00087442 and unsatisfied allocation rate=0.000877456
+INFO:root:epoch 40, iter 5400, cost 1.154047, exp_cost 1.312416, grad norm 7.732247, param norm 1284.112793, tps 1369.990458, length mean/std 14.000000/0.000000
+INFO:root:epoch 40, iter 5600, cost 1.172041, exp_cost 1.310493, grad norm 8.975209, param norm 1284.413818, tps 1370.743350, length mean/std 17.000000/0.000000
+INFO:root:epoch 40, iter 5800, cost 1.303598, exp_cost 1.312378, grad norm 4.368619, param norm 1284.690796, tps 1371.456084, length mean/std 6.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 282659555 get requests, put_count=282659220 evicted_count=254000 eviction_rate=0.000898609 and unsatisfied allocation rate=0.000902538
+INFO:root:epoch 40, iter 6000, cost 1.208475, exp_cost 1.300386, grad norm 7.305838, param norm 1285.001343, tps 1372.170275, length mean/std 12.000000/0.000000
+INFO:root:epoch 40, iter 6200, cost 1.465376, exp_cost 1.313777, grad norm 24.381166, param norm 1285.337524, tps 1372.849809, length mean/std 36.000000/0.000000
+INFO:root:Epoch 40 Validation cost: 1.390231 time: 4397.948953
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 41, iter 200, cost 1.386653, exp_cost 1.300310, grad norm 16.293303, param norm 1276.393555, tps 1350.730624, length mean/std 32.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 288217229 get requests, put_count=288217205 evicted_count=264000 eviction_rate=0.000915976 and unsatisfied allocation rate=0.000918751
+INFO:root:epoch 41, iter 400, cost 1.474811, exp_cost 1.321011, grad norm 21.659210, param norm 1276.713501, tps 1351.579818, length mean/std 38.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 290886267 get requests, put_count=290886224 evicted_count=274000 eviction_rate=0.000941949 and unsatisfied allocation rate=0.000944764
+INFO:root:epoch 41, iter 600, cost 1.110624, exp_cost 1.290854, grad norm 4.361746, param norm 1277.068359, tps 1352.245376, length mean/std 7.000000/0.000000
+INFO:root:epoch 41, iter 800, cost 1.154766, exp_cost 1.326980, grad norm 4.264256, param norm 1277.296631, tps 1353.047951, length mean/std 6.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 293119490 get requests, put_count=293119506 evicted_count=284000 eviction_rate=0.000968888 and unsatisfied allocation rate=0.000971481
+INFO:root:epoch 41, iter 1000, cost 1.450441, exp_cost 1.324256, grad norm 18.886877, param norm 1277.521484, tps 1353.823016, length mean/std 37.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 294727740 get requests, put_count=294727763 evicted_count=294000 eviction_rate=0.000997531 and unsatisfied allocation rate=0.00100009
+INFO:root:epoch 41, iter 1200, cost 1.255682, exp_cost 1.324435, grad norm 9.557129, param norm 1277.859497, tps 1354.597750, length mean/std 18.000000/0.000000
+INFO:root:epoch 41, iter 1400, cost 1.359200, exp_cost 1.326021, grad norm 13.283466, param norm 1278.169678, tps 1355.421555, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 297138813 get requests, put_count=297138824 evicted_count=304000 eviction_rate=0.00102309 and unsatisfied allocation rate=0.00102567
+INFO:root:epoch 41, iter 1600, cost 1.287038, exp_cost 1.325939, grad norm 12.065376, param norm 1278.552490, tps 1356.138814, length mean/std 22.000000/0.000000
+INFO:root:epoch 41, iter 1800, cost 1.138040, exp_cost 1.319186, grad norm 6.744483, param norm 1278.795044, tps 1356.853460, length mean/std 11.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 299833753 get requests, put_count=299833750 evicted_count=314000 eviction_rate=0.00104725 and unsatisfied allocation rate=0.00104985
+INFO:root:epoch 41, iter 2000, cost 1.021428, exp_cost 1.334935, grad norm 4.050642, param norm 1279.160645, tps 1357.543011, length mean/std 7.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 301953781 get requests, put_count=301953752 evicted_count=324000 eviction_rate=0.00107301 and unsatisfied allocation rate=0.00107568
+INFO:root:epoch 41, iter 2200, cost 1.485587, exp_cost 1.311908, grad norm 19.863380, param norm 1279.469238, tps 1358.198720, length mean/std 37.000000/0.000000
+INFO:root:epoch 41, iter 2400, cost 1.295761, exp_cost 1.307999, grad norm 12.507895, param norm 1279.756348, tps 1358.906772, length mean/std 23.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 304189105 get requests, put_count=304189114 evicted_count=334000 eviction_rate=0.001098 and unsatisfied allocation rate=0.00110052
+INFO:root:epoch 41, iter 2600, cost 1.260958, exp_cost 1.321610, grad norm 7.860773, param norm 1279.981567, tps 1359.595131, length mean/std 14.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 306177899 get requests, put_count=306177842 evicted_count=344000 eviction_rate=0.00112353 and unsatisfied allocation rate=0.00112625
+INFO:root:epoch 41, iter 2800, cost 1.115459, exp_cost 1.325707, grad norm 5.754768, param norm 1280.267090, tps 1360.396916, length mean/std 10.000000/0.000000
+INFO:root:epoch 41, iter 3000, cost 1.311356, exp_cost 1.299111, grad norm 3.917745, param norm 1280.561768, tps 1361.020384, length mean/std 5.000000/0.000000
+INFO:root:epoch 41, iter 3200, cost 1.222989, exp_cost 1.308745, grad norm 7.594007, param norm 1280.880005, tps 1361.662380, length mean/std 12.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 309791512 get requests, put_count=309791309 evicted_count=354000 eviction_rate=0.0011427 and unsatisfied allocation rate=0.00114586
+INFO:root:epoch 41, iter 3400, cost 1.112585, exp_cost 1.305644, grad norm 8.683584, param norm 1281.193237, tps 1362.378277, length mean/std 15.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 311979495 get requests, put_count=311979401 evicted_count=364000 eviction_rate=0.00116674 and unsatisfied allocation rate=0.00116953
+INFO:root:epoch 41, iter 3600, cost 1.224535, exp_cost 1.313665, grad norm 4.732200, param norm 1281.465332, tps 1363.058244, length mean/std 6.000000/0.000000
+INFO:root:epoch 41, iter 3800, cost 1.188074, exp_cost 1.309485, grad norm 6.761333, param norm 1281.761963, tps 1363.734336, length mean/std 11.000000/0.000000
+INFO:root:epoch 41, iter 4000, cost 1.275551, exp_cost 1.307336, grad norm 12.101195, param norm 1282.001465, tps 1364.380318, length mean/std 21.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 315051503 get requests, put_count=315051525 evicted_count=374000 eviction_rate=0.00118711 and unsatisfied allocation rate=0.0011895
+INFO:root:epoch 41, iter 4200, cost 1.404730, exp_cost 1.332112, grad norm 15.792580, param norm 1282.279419, tps 1365.065992, length mean/std 35.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 317385821 get requests, put_count=317385834 evicted_count=384000 eviction_rate=0.00120988 and unsatisfied allocation rate=0.00121229
+INFO:root:epoch 41, iter 4400, cost 1.371923, exp_cost 1.312878, grad norm 14.700922, param norm 1282.610474, tps 1365.681372, length mean/std 26.000000/0.000000
+INFO:root:epoch 41, iter 4600, cost 1.180734, exp_cost 1.313272, grad norm 7.285952, param norm 1282.875366, tps 1366.317085, length mean/std 13.000000/0.000000
+INFO:root:epoch 41, iter 4800, cost 1.353303, exp_cost 1.286122, grad norm 15.535018, param norm 1283.071899, tps 1366.880323, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 320703620 get requests, put_count=320703070 evicted_count=394000 eviction_rate=0.00122855 and unsatisfied allocation rate=0.00123268
+INFO:root:epoch 41, iter 5000, cost 1.401107, exp_cost 1.322774, grad norm 14.386415, param norm 1283.460815, tps 1367.529665, length mean/std 25.000000/0.000000
+INFO:root:epoch 41, iter 5200, cost 1.242461, exp_cost 1.305150, grad norm 4.265693, param norm 1283.670166, tps 1368.144087, length mean/std 6.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 323240469 get requests, put_count=323240098 evicted_count=404000 eviction_rate=0.00124984 and unsatisfied allocation rate=0.00125339
+INFO:root:epoch 41, iter 5400, cost 1.237467, exp_cost 1.321276, grad norm 2.923240, param norm 1283.956665, tps 1368.746667, length mean/std 4.000000/0.000000
+INFO:root:epoch 41, iter 5600, cost 1.121845, exp_cost 1.305851, grad norm 4.230670, param norm 1284.246216, tps 1369.364855, length mean/std 6.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 326257595 get requests, put_count=326257316 evicted_count=414000 eviction_rate=0.00126894 and unsatisfied allocation rate=0.00127217
+INFO:root:epoch 41, iter 5800, cost 1.328651, exp_cost 1.328416, grad norm 16.466059, param norm 1284.494263, tps 1370.012099, length mean/std 23.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 328192456 get requests, put_count=328192468 evicted_count=424000 eviction_rate=0.00129192 and unsatisfied allocation rate=0.00129425
+INFO:root:epoch 41, iter 6000, cost 1.179414, exp_cost 1.317469, grad norm 4.142103, param norm 1284.749268, tps 1370.686013, length mean/std 6.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 330235025 get requests, put_count=330235009 evicted_count=434000 eviction_rate=0.00131422 and unsatisfied allocation rate=0.00131661
+INFO:root:epoch 41, iter 6200, cost 1.279361, exp_cost 1.321875, grad norm 10.560422, param norm 1285.056763, tps 1371.345993, length mean/std 20.000000/0.000000
+INFO:root:Epoch 41 Validation cost: 1.393607 time: 4461.074308
+INFO:root:Annealing learning rate by 0.950000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 333434002 get requests, put_count=333433386 evicted_count=444000 eviction_rate=0.0013316 and unsatisfied allocation rate=0.00133577
+INFO:root:epoch 42, iter 200, cost 1.275878, exp_cost 1.320047, grad norm 11.199654, param norm 1276.474243, tps 1352.113010, length mean/std 21.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 334831042 get requests, put_count=334831056 evicted_count=454000 eviction_rate=0.00135591 and unsatisfied allocation rate=0.00135818
+INFO:root:epoch 42, iter 400, cost 1.465991, exp_cost 1.320765, grad norm 2.614247, param norm 1276.829468, tps 1352.778361, length mean/std 3.000000/0.000000
+INFO:root:epoch 42, iter 600, cost 1.257156, exp_cost 1.317733, grad norm 10.517599, param norm 1277.087036, tps 1353.503019, length mean/std 20.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 336475055 get requests, put_count=336475066 evicted_count=464000 eviction_rate=0.001379 and unsatisfied allocation rate=0.00138128
+INFO:root:epoch 42, iter 800, cost 1.275824, exp_cost 1.307464, grad norm 11.426052, param norm 1277.387085, tps 1354.182872, length mean/std 20.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 338656901 get requests, put_count=338656831 evicted_count=474000 eviction_rate=0.00139965 and unsatisfied allocation rate=0.00140214
+INFO:root:epoch 42, iter 1000, cost 1.371927, exp_cost 1.324318, grad norm 12.946443, param norm 1277.680176, tps 1354.859760, length mean/std 22.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 340358042 get requests, put_count=340358017 evicted_count=484000 eviction_rate=0.00142203 and unsatisfied allocation rate=0.00142439
+INFO:root:epoch 42, iter 1200, cost 1.179797, exp_cost 1.322777, grad norm 3.766898, param norm 1277.989868, tps 1355.526633, length mean/std 5.000000/0.000000
+INFO:root:epoch 42, iter 1400, cost 1.453874, exp_cost 1.311194, grad norm 18.666080, param norm 1278.281006, tps 1356.170052, length mean/std 34.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 342741203 get requests, put_count=342741037 evicted_count=494000 eviction_rate=0.00144132 and unsatisfied allocation rate=0.00144407
+INFO:root:epoch 42, iter 1600, cost 1.369155, exp_cost 1.308520, grad norm 13.454140, param norm 1278.561401, tps 1356.763789, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 344421600 get requests, put_count=344421468 evicted_count=504000 eviction_rate=0.00146332 and unsatisfied allocation rate=0.00146596
+INFO:root:epoch 42, iter 1800, cost 1.435341, exp_cost 1.327853, grad norm 16.934364, param norm 1278.908936, tps 1357.444219, length mean/std 33.000000/0.000000
+INFO:root:epoch 42, iter 2000, cost 1.331569, exp_cost 1.313534, grad norm 14.263103, param norm 1279.182007, tps 1358.093082, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 347209754 get requests, put_count=347209590 evicted_count=514000 eviction_rate=0.00148037 and unsatisfied allocation rate=0.00148308
+INFO:root:epoch 42, iter 2200, cost 1.192317, exp_cost 1.308540, grad norm 6.772670, param norm 1279.415161, tps 1358.720223, length mean/std 11.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 348779310 get requests, put_count=348779301 evicted_count=524000 eviction_rate=0.00150238 and unsatisfied allocation rate=0.00150463
+INFO:root:epoch 42, iter 2400, cost 1.118887, exp_cost 1.310945, grad norm 5.838399, param norm 1279.682373, tps 1359.359652, length mean/std 9.000000/0.000000
+INFO:root:epoch 42, iter 2600, cost 1.081558, exp_cost 1.332609, grad norm 6.586606, param norm 1280.006470, tps 1360.003053, length mean/std 12.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 350653692 get requests, put_count=350653556 evicted_count=534000 eviction_rate=0.00152287 and unsatisfied allocation rate=0.00152547
+INFO:root:epoch 42, iter 2800, cost 1.694216, exp_cost 1.303937, grad norm 2.063760, param norm 1280.306030, tps 1360.599690, length mean/std 2.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 352939115 get requests, put_count=352938961 evicted_count=544000 eviction_rate=0.00154134 and unsatisfied allocation rate=0.00154398
+INFO:root:epoch 42, iter 3000, cost 1.505946, exp_cost 1.332049, grad norm 22.980762, param norm 1280.558350, tps 1361.185050, length mean/std 41.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 354125969 get requests, put_count=354125436 evicted_count=554000 eviction_rate=0.00156442 and unsatisfied allocation rate=0.00156811
+INFO:root:epoch 42, iter 3200, cost 1.151008, exp_cost 1.336745, grad norm 4.698782, param norm 1280.738403, tps 1361.808851, length mean/std 7.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 355494963 get requests, put_count=355494920 evicted_count=564000 eviction_rate=0.00158652 and unsatisfied allocation rate=0.00158882
+INFO:root:epoch 42, iter 3400, cost 1.228504, exp_cost 1.328428, grad norm 4.075619, param norm 1281.061768, tps 1362.474680, length mean/std 5.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 356812410 get requests, put_count=356812427 evicted_count=574000 eviction_rate=0.00160869 and unsatisfied allocation rate=0.00161082
+INFO:root:epoch 42, iter 3600, cost 1.076355, exp_cost 1.313948, grad norm 4.140573, param norm 1281.375244, tps 1363.069220, length mean/std 7.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 358579843 get requests, put_count=358579610 evicted_count=584000 eviction_rate=0.00162865 and unsatisfied allocation rate=0.00163146
+INFO:root:epoch 42, iter 3800, cost 1.456560, exp_cost 1.341962, grad norm 18.078730, param norm 1281.768433, tps 1363.760924, length mean/std 36.000000/0.000000
+INFO:root:epoch 42, iter 4000, cost 1.402797, exp_cost 1.299785, grad norm 18.069221, param norm 1282.071655, tps 1364.305526, length mean/std 29.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 361358445 get requests, put_count=361357831 evicted_count=594000 eviction_rate=0.0016438 and unsatisfied allocation rate=0.00164764
+INFO:root:epoch 42, iter 4200, cost 1.111402, exp_cost 1.291308, grad norm 5.246878, param norm 1282.388672, tps 1364.851039, length mean/std 9.000000/0.000000
+INFO:root:epoch 42, iter 4400, cost 1.212931, exp_cost 1.324804, grad norm 5.037526, param norm 1282.658936, tps 1365.406483, length mean/std 7.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 363889438 get requests, put_count=363888663 evicted_count=604000 eviction_rate=0.00165985 and unsatisfied allocation rate=0.00166411
+INFO:root:epoch 42, iter 4600, cost 1.414039, exp_cost 1.317295, grad norm 14.321887, param norm 1282.848389, tps 1365.975923, length mean/std 28.000000/0.000000
+INFO:root:epoch 42, iter 4800, cost 1.084130, exp_cost 1.317714, grad norm 5.493681, param norm 1283.191650, tps 1366.573041, length mean/std 9.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 366303841 get requests, put_count=366303748 evicted_count=614000 eviction_rate=0.0016762 and unsatisfied allocation rate=0.00167858
+INFO:root:epoch 42, iter 5000, cost 1.022789, exp_cost 1.307428, grad norm 4.634212, param norm 1283.399414, tps 1367.179444, length mean/std 9.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 368317201 get requests, put_count=368316989 evicted_count=624000 eviction_rate=0.00169419 and unsatisfied allocation rate=0.00169687
+INFO:root:epoch 42, iter 5200, cost 1.198580, exp_cost 1.333813, grad norm 8.968832, param norm 1283.705811, tps 1367.820742, length mean/std 17.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 370119453 get requests, put_count=370119443 evicted_count=634000 eviction_rate=0.00171296 and unsatisfied allocation rate=0.00171508
+INFO:root:epoch 42, iter 5400, cost 1.160891, exp_cost 1.317352, grad norm 6.876774, param norm 1283.990356, tps 1368.357049, length mean/std 11.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 371768035 get requests, put_count=371768035 evicted_count=644000 eviction_rate=0.00173226 and unsatisfied allocation rate=0.00173435
+INFO:root:epoch 42, iter 5600, cost 1.174877, exp_cost 1.318262, grad norm 9.286875, param norm 1284.375732, tps 1368.947468, length mean/std 18.000000/0.000000
+INFO:root:epoch 42, iter 5800, cost 1.078387, exp_cost 1.327076, grad norm 8.712181, param norm 1284.643188, tps 1369.519360, length mean/std 18.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 373769413 get requests, put_count=373769429 evicted_count=654000 eviction_rate=0.00174974 and unsatisfied allocation rate=0.00175178
+INFO:root:epoch 42, iter 6000, cost 1.109317, exp_cost 1.289357, grad norm 6.440350, param norm 1284.861572, tps 1370.072828, length mean/std 12.000000/0.000000
+INFO:root:epoch 42, iter 6200, cost 1.277902, exp_cost 1.301520, grad norm 12.422194, param norm 1285.168335, tps 1370.577214, length mean/std 21.000000/0.000000
+INFO:root:Epoch 42 Validation cost: 1.396460 time: 4524.249706
+INFO:root:Annealing learning rate by 0.950000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 378447955 get requests, put_count=378447882 evicted_count=664000 eviction_rate=0.00175453 and unsatisfied allocation rate=0.00175678
+INFO:root:epoch 43, iter 200, cost 1.451673, exp_cost 1.327328, grad norm 18.350237, param norm 1276.501587, tps 1353.698033, length mean/std 36.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 380017775 get requests, put_count=380017535 evicted_count=674000 eviction_rate=0.0017736 and unsatisfied allocation rate=0.00177627
+INFO:root:epoch 43, iter 400, cost 1.242041, exp_cost 1.312485, grad norm 4.495919, param norm 1276.729126, tps 1354.271731, length mean/std 6.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 381672959 get requests, put_count=381672872 evicted_count=684000 eviction_rate=0.00179211 and unsatisfied allocation rate=0.00179437
+INFO:root:epoch 43, iter 600, cost 1.431541, exp_cost 1.304318, grad norm 16.956337, param norm 1277.016235, tps 1354.826918, length mean/std 31.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 383259697 get requests, put_count=383259701 evicted_count=694000 eviction_rate=0.00181078 and unsatisfied allocation rate=0.0018128
+INFO:root:epoch 43, iter 800, cost 1.297795, exp_cost 1.327923, grad norm 13.998444, param norm 1277.237793, tps 1355.458794, length mean/std 24.000000/0.000000
+INFO:root:epoch 43, iter 1000, cost 1.165191, exp_cost 1.314232, grad norm 8.147857, param norm 1277.588623, tps 1356.081942, length mean/std 15.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 385299270 get requests, put_count=385298714 evicted_count=704000 eviction_rate=0.00182715 and unsatisfied allocation rate=0.00183061
+INFO:root:epoch 43, iter 1200, cost 1.326581, exp_cost 1.308351, grad norm 13.331644, param norm 1277.885254, tps 1356.662093, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 386855657 get requests, put_count=386855530 evicted_count=714000 eviction_rate=0.00184565 and unsatisfied allocation rate=0.00184798
+INFO:root:epoch 43, iter 1400, cost 1.311969, exp_cost 1.315125, grad norm 14.288609, param norm 1278.108765, tps 1357.242796, length mean/std 24.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 388529518 get requests, put_count=388528921 evicted_count=724000 eviction_rate=0.00186344 and unsatisfied allocation rate=0.00186697
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 389340504 get requests, put_count=389340475 evicted_count=734000 eviction_rate=0.00188524 and unsatisfied allocation rate=0.00188731
+INFO:root:epoch 43, iter 1600, cost 1.299960, exp_cost 1.338795, grad norm 12.787445, param norm 1278.371094, tps 1357.838860, length mean/std 24.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 390257611 get requests, put_count=390257596 evicted_count=744000 eviction_rate=0.00190643 and unsatisfied allocation rate=0.00190846
+INFO:root:epoch 43, iter 1800, cost 1.156755, exp_cost 1.315624, grad norm 4.958938, param norm 1278.681885, tps 1358.406009, length mean/std 7.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 391707380 get requests, put_count=391706705 evicted_count=754000 eviction_rate=0.00192491 and unsatisfied allocation rate=0.00192861
+INFO:root:epoch 43, iter 2000, cost 1.178960, exp_cost 1.323091, grad norm 7.999467, param norm 1279.000244, tps 1358.980243, length mean/std 14.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 392986650 get requests, put_count=392986619 evicted_count=764000 eviction_rate=0.00194409 and unsatisfied allocation rate=0.00194614
+INFO:root:epoch 43, iter 2200, cost 1.870397, exp_cost 1.316925, grad norm 2.040794, param norm 1279.294312, tps 1359.569756, length mean/std 2.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 394454481 get requests, put_count=394454242 evicted_count=774000 eviction_rate=0.0019622 and unsatisfied allocation rate=0.00196478
+INFO:root:epoch 43, iter 2400, cost 1.158538, exp_cost 1.318086, grad norm 5.619657, param norm 1279.657959, tps 1360.108888, length mean/std 8.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 396407571 get requests, put_count=396407281 evicted_count=784000 eviction_rate=0.00197776 and unsatisfied allocation rate=0.00198045
+INFO:root:epoch 43, iter 2600, cost 1.282469, exp_cost 1.313957, grad norm 9.565074, param norm 1279.918945, tps 1360.628442, length mean/std 16.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 397588679 get requests, put_count=397588632 evicted_count=794000 eviction_rate=0.00199704 and unsatisfied allocation rate=0.00199911
+INFO:root:epoch 43, iter 2800, cost 1.189985, exp_cost 1.328019, grad norm 6.736413, param norm 1280.124634, tps 1361.165009, length mean/std 12.000000/0.000000
+INFO:root:epoch 43, iter 3000, cost 1.011460, exp_cost 1.337601, grad norm 4.836782, param norm 1280.385132, tps 1361.763782, length mean/std 9.000000/0.000000
+INFO:root:epoch 43, iter 3200, cost 1.237145, exp_cost 1.322377, grad norm 8.704234, param norm 1280.771729, tps 1362.368756, length mean/std 15.000000/0.000000
+INFO:root:epoch 43, iter 3400, cost 1.437421, exp_cost 1.322415, grad norm 22.152365, param norm 1280.997192, tps 1362.934893, length mean/std 38.000000/0.000000
+INFO:root:epoch 43, iter 3600, cost 1.416603, exp_cost 1.339146, grad norm 19.983471, param norm 1281.216797, tps 1363.567121, length mean/std 29.000000/0.000000
+INFO:root:epoch 43, iter 3800, cost 1.226540, exp_cost 1.319609, grad norm 7.426639, param norm 1281.474487, tps 1363.988487, length mean/std 13.000000/0.000000
+INFO:root:epoch 43, iter 4000, cost 1.126336, exp_cost 1.340752, grad norm 8.565139, param norm 1281.710449, tps 1364.549668, length mean/std 17.000000/0.000000
+INFO:root:epoch 43, iter 4200, cost 1.183699, exp_cost 1.331506, grad norm 6.312727, param norm 1282.018188, tps 1365.082619, length mean/std 10.000000/0.000000
+INFO:root:epoch 43, iter 4400, cost 1.249081, exp_cost 1.321695, grad norm 10.374085, param norm 1282.294189, tps 1365.612054, length mean/std 19.000000/0.000000
+INFO:root:epoch 43, iter 4600, cost 1.212528, exp_cost 1.327214, grad norm 3.193495, param norm 1282.600586, tps 1366.116098, length mean/std 4.000000/0.000000
+INFO:root:epoch 43, iter 4800, cost 1.441261, exp_cost 1.318251, grad norm 15.265401, param norm 1282.846436, tps 1366.654032, length mean/std 31.000000/0.000000
+INFO:root:epoch 43, iter 5000, cost 1.435910, exp_cost 1.325411, grad norm 17.258724, param norm 1283.204834, tps 1367.202459, length mean/std 38.000000/0.000000
+INFO:root:epoch 43, iter 5200, cost 1.490055, exp_cost 1.311782, grad norm 23.439087, param norm 1283.568604, tps 1367.752849, length mean/std 41.000000/0.000000
+INFO:root:epoch 43, iter 5400, cost 1.260462, exp_cost 1.319590, grad norm 10.218130, param norm 1283.869385, tps 1368.288644, length mean/std 20.000000/0.000000
+INFO:root:epoch 43, iter 5600, cost 1.125799, exp_cost 1.324341, grad norm 7.307861, param norm 1284.146851, tps 1368.793448, length mean/std 12.000000/0.000000
+INFO:root:epoch 43, iter 5800, cost 1.177670, exp_cost 1.317635, grad norm 4.646523, param norm 1284.448242, tps 1369.313584, length mean/std 7.000000/0.000000
+INFO:root:epoch 43, iter 6000, cost 1.109090, exp_cost 1.310492, grad norm 5.800051, param norm 1284.800415, tps 1369.828114, length mean/std 10.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 24192565 get requests, put_count=24192567 evicted_count=8000 eviction_rate=0.00033068 and unsatisfied allocation rate=0.000365898
+INFO:root:epoch 43, iter 6200, cost 1.183960, exp_cost 1.308128, grad norm 5.394387, param norm 1285.102783, tps 1370.299718, length mean/std 8.000000/0.000000
+INFO:root:Epoch 43 Validation cost: 1.397888 time: 4584.150594
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 44, iter 200, cost 1.307496, exp_cost 1.318639, grad norm 10.711522, param norm 1276.528198, tps 1354.762157, length mean/std 20.000000/0.000000
+INFO:root:epoch 44, iter 400, cost 1.532170, exp_cost 1.313293, grad norm 21.452141, param norm 1276.797852, tps 1355.263407, length mean/std 42.000000/0.000000
+INFO:root:epoch 44, iter 600, cost 1.401390, exp_cost 1.335018, grad norm 18.155773, param norm 1277.086304, tps 1355.860023, length mean/std 33.000000/0.000000
+INFO:root:epoch 44, iter 800, cost 1.229200, exp_cost 1.334772, grad norm 5.264228, param norm 1277.390015, tps 1356.426906, length mean/std 8.000000/0.000000
+INFO:root:epoch 44, iter 1000, cost 1.122363, exp_cost 1.323787, grad norm 7.432000, param norm 1277.720215, tps 1356.945786, length mean/std 15.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 35362594 get requests, put_count=35362515 evicted_count=18000 eviction_rate=0.000509014 and unsatisfied allocation rate=0.000535396
+INFO:root:epoch 44, iter 1200, cost 1.091289, exp_cost 1.327955, grad norm 5.693546, param norm 1278.015259, tps 1357.554797, length mean/std 10.000000/0.000000
+INFO:root:epoch 44, iter 1400, cost 1.276653, exp_cost 1.312726, grad norm 10.068750, param norm 1278.283691, tps 1358.061196, length mean/std 16.000000/0.000000
+INFO:root:epoch 44, iter 1600, cost 1.506033, exp_cost 1.330113, grad norm 21.881248, param norm 1278.609863, tps 1358.595500, length mean/std 33.000000/0.000000
+INFO:root:epoch 44, iter 1800, cost 1.134705, exp_cost 1.317149, grad norm 3.796724, param norm 1278.797974, tps 1359.098040, length mean/std 6.000000/0.000000
+INFO:root:epoch 44, iter 2000, cost 1.051280, exp_cost 1.312767, grad norm 5.152988, param norm 1279.140015, tps 1359.574280, length mean/std 10.000000/0.000000
+INFO:root:epoch 44, iter 2200, cost 1.154178, exp_cost 1.318300, grad norm 6.148787, param norm 1279.426025, tps 1360.083072, length mean/std 10.000000/0.000000
+INFO:root:epoch 44, iter 2400, cost 1.238031, exp_cost 1.322149, grad norm 8.977672, param norm 1279.654541, tps 1360.607966, length mean/std 14.000000/0.000000
+INFO:root:epoch 44, iter 2600, cost 1.078781, exp_cost 1.334987, grad norm 5.630988, param norm 1279.921875, tps 1361.110096, length mean/std 10.000000/0.000000
+INFO:root:epoch 44, iter 2800, cost 1.553286, exp_cost 1.315078, grad norm 24.953413, param norm 1280.230225, tps 1361.628478, length mean/std 44.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 47464889 get requests, put_count=47464911 evicted_count=28000 eviction_rate=0.000589909 and unsatisfied allocation rate=0.000607438
+INFO:root:epoch 44, iter 3000, cost 1.193963, exp_cost 1.328486, grad norm 7.809128, param norm 1280.569092, tps 1362.150346, length mean/std 14.000000/0.000000
+INFO:root:epoch 44, iter 3200, cost 1.337704, exp_cost 1.329355, grad norm 12.927398, param norm 1280.797852, tps 1362.665297, length mean/std 28.000000/0.000000
+INFO:root:epoch 44, iter 3400, cost 1.319463, exp_cost 1.321257, grad norm 3.375996, param norm 1281.088013, tps 1363.149802, length mean/std 4.000000/0.000000
+INFO:root:epoch 44, iter 3600, cost 1.241823, exp_cost 1.320794, grad norm 10.672836, param norm 1281.366333, tps 1363.664316, length mean/std 18.000000/0.000000
+INFO:root:epoch 44, iter 3800, cost 1.389372, exp_cost 1.348167, grad norm 17.617134, param norm 1281.637085, tps 1364.161779, length mean/std 31.000000/0.000000
+INFO:root:epoch 44, iter 4000, cost 1.444644, exp_cost 1.320533, grad norm 18.636509, param norm 1281.922607, tps 1364.643029, length mean/std 32.000000/0.000000
+INFO:root:epoch 44, iter 4200, cost 1.320336, exp_cost 1.331728, grad norm 13.889690, param norm 1282.204468, tps 1365.139095, length mean/std 25.000000/0.000000
+INFO:root:epoch 44, iter 4400, cost 1.337278, exp_cost 1.326890, grad norm 14.430214, param norm 1282.544189, tps 1365.666958, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 59623630 get requests, put_count=59623689 evicted_count=38000 eviction_rate=0.000637331 and unsatisfied allocation rate=0.000650665
+INFO:root:epoch 44, iter 4600, cost 1.213013, exp_cost 1.321156, grad norm 8.914682, param norm 1282.884033, tps 1366.138438, length mean/std 15.000000/0.000000
+INFO:root:epoch 44, iter 4800, cost 1.530214, exp_cost 1.318220, grad norm 22.870947, param norm 1283.093506, tps 1366.659237, length mean/std 44.000000/0.000000
+INFO:root:epoch 44, iter 5000, cost 1.367177, exp_cost 1.320624, grad norm 13.872969, param norm 1283.359375, tps 1367.121182, length mean/std 26.000000/0.000000
+INFO:root:epoch 44, iter 5200, cost 1.146858, exp_cost 1.343694, grad norm 6.912320, param norm 1283.692383, tps 1367.620078, length mean/std 12.000000/0.000000
+INFO:root:epoch 44, iter 5400, cost 1.612645, exp_cost 1.320526, grad norm 2.762496, param norm 1283.894653, tps 1368.045141, length mean/std 3.000000/0.000000
+INFO:root:epoch 44, iter 5600, cost 1.186660, exp_cost 1.334754, grad norm 8.972186, param norm 1284.253784, tps 1368.554254, length mean/std 17.000000/0.000000
+INFO:root:epoch 44, iter 5800, cost 1.307260, exp_cost 1.322050, grad norm 15.273107, param norm 1284.549438, tps 1369.014363, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 69951293 get requests, put_count=69951323 evicted_count=48000 eviction_rate=0.000686191 and unsatisfied allocation rate=0.000697971
+INFO:root:epoch 44, iter 6000, cost 1.280990, exp_cost 1.324829, grad norm 11.598374, param norm 1284.806885, tps 1369.494220, length mean/std 22.000000/0.000000
+INFO:root:epoch 44, iter 6200, cost 2.875827, exp_cost 1.325995, grad norm 0.677209, param norm 1285.087524, tps 1369.978050, length mean/std 1.000000/0.000000
+INFO:root:Epoch 44 Validation cost: 1.401430 time: 4646.821585
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 45, iter 200, cost 1.441435, exp_cost 1.321898, grad norm 16.927902, param norm 1276.540527, tps 1355.817457, length mean/std 32.000000/0.000000
+INFO:root:epoch 45, iter 400, cost 1.263243, exp_cost 1.320505, grad norm 11.045822, param norm 1276.833130, tps 1356.345369, length mean/std 19.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 77828452 get requests, put_count=77828521 evicted_count=58000 eviction_rate=0.000745228 and unsatisfied allocation rate=0.000755315
+INFO:root:epoch 45, iter 600, cost 1.425808, exp_cost 1.332790, grad norm 15.473850, param norm 1277.039062, tps 1356.903823, length mean/std 32.000000/0.000000
+INFO:root:epoch 45, iter 800, cost 1.620162, exp_cost 1.310012, grad norm 2.768688, param norm 1277.325439, tps 1357.351429, length mean/std 3.000000/0.000000
+INFO:root:epoch 45, iter 1000, cost 1.372458, exp_cost 1.344342, grad norm 14.859723, param norm 1277.570190, tps 1357.859291, length mean/std 29.000000/0.000000
+INFO:root:epoch 45, iter 1200, cost 1.485185, exp_cost 1.319358, grad norm 26.083567, param norm 1277.833618, tps 1358.330029, length mean/std 43.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 83986143 get requests, put_count=83986193 evicted_count=68000 eviction_rate=0.000809657 and unsatisfied allocation rate=0.00081923
+INFO:root:epoch 45, iter 1400, cost 1.232981, exp_cost 1.332031, grad norm 3.967803, param norm 1278.066162, tps 1358.850902, length mean/std 5.000000/0.000000
+INFO:root:epoch 45, iter 1600, cost 1.201520, exp_cost 1.329010, grad norm 9.184648, param norm 1278.324097, tps 1359.361457, length mean/std 15.000000/0.000000
+INFO:root:epoch 45, iter 1800, cost 1.498767, exp_cost 1.337669, grad norm 22.049314, param norm 1278.580566, tps 1359.885171, length mean/std 44.000000/0.000000
+INFO:root:epoch 45, iter 2000, cost 1.246891, exp_cost 1.327891, grad norm 9.080361, param norm 1278.929199, tps 1360.278769, length mean/std 17.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 89230929 get requests, put_count=89230927 evicted_count=78000 eviction_rate=0.000874136 and unsatisfied allocation rate=0.000883729
+INFO:root:epoch 45, iter 2200, cost 1.468420, exp_cost 1.333708, grad norm 19.911339, param norm 1279.216064, tps 1360.768654, length mean/std 36.000000/0.000000
+INFO:root:epoch 45, iter 2400, cost 1.336683, exp_cost 1.333777, grad norm 14.334642, param norm 1279.464966, tps 1361.218165, length mean/std 27.000000/0.000000
+INFO:root:epoch 45, iter 2600, cost 1.246986, exp_cost 1.324766, grad norm 9.643654, param norm 1279.749878, tps 1361.675450, length mean/std 17.000000/0.000000
+INFO:root:epoch 45, iter 2800, cost 1.336269, exp_cost 1.333527, grad norm 11.665693, param norm 1280.030273, tps 1362.133678, length mean/std 24.000000/0.000000
+INFO:root:epoch 45, iter 3000, cost 1.213160, exp_cost 1.323226, grad norm 7.884892, param norm 1280.319458, tps 1362.622165, length mean/std 14.000000/0.000000
+INFO:root:epoch 45, iter 3200, cost 1.410232, exp_cost 1.345790, grad norm 17.531229, param norm 1280.530396, tps 1363.112283, length mean/std 28.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 97711291 get requests, put_count=97711328 evicted_count=88000 eviction_rate=0.000900612 and unsatisfied allocation rate=0.000908974
+INFO:root:epoch 45, iter 3400, cost 1.342935, exp_cost 1.345512, grad norm 12.686927, param norm 1280.955811, tps 1363.648982, length mean/std 25.000000/0.000000
+INFO:root:epoch 45, iter 3600, cost 1.226641, exp_cost 1.321983, grad norm 10.591097, param norm 1281.184326, tps 1364.113426, length mean/std 15.000000/0.000000
+INFO:root:epoch 45, iter 3800, cost 1.313517, exp_cost 1.330956, grad norm 13.330144, param norm 1281.404907, tps 1364.578169, length mean/std 24.000000/0.000000
+INFO:root:epoch 45, iter 4000, cost 1.416813, exp_cost 1.331136, grad norm 18.528162, param norm 1281.652222, tps 1365.030353, length mean/std 30.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 105067477 get requests, put_count=105067488 evicted_count=98000 eviction_rate=0.000932734 and unsatisfied allocation rate=0.000940757
+INFO:root:epoch 45, iter 4200, cost 1.129707, exp_cost 1.319392, grad norm 5.587991, param norm 1282.033203, tps 1365.473013, length mean/std 9.000000/0.000000
+INFO:root:epoch 45, iter 4400, cost 1.248512, exp_cost 1.336398, grad norm 3.276709, param norm 1282.375122, tps 1365.918195, length mean/std 4.000000/0.000000
+INFO:root:epoch 45, iter 4600, cost 1.118105, exp_cost 1.337486, grad norm 6.716202, param norm 1282.636475, tps 1366.392209, length mean/std 11.000000/0.000000
+INFO:root:epoch 45, iter 4800, cost 1.142646, exp_cost 1.300851, grad norm 2.857992, param norm 1282.926880, tps 1366.792786, length mean/std 4.000000/0.000000
+INFO:root:epoch 45, iter 5000, cost 1.455501, exp_cost 1.322908, grad norm 19.553658, param norm 1283.248413, tps 1367.221813, length mean/std 37.000000/0.000000
+INFO:root:epoch 45, iter 5200, cost 1.365527, exp_cost 1.344908, grad norm 13.128910, param norm 1283.527710, tps 1367.674975, length mean/std 24.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 113702144 get requests, put_count=113702171 evicted_count=108000 eviction_rate=0.00094985 and unsatisfied allocation rate=0.000957124
+INFO:root:epoch 45, iter 5400, cost 1.312709, exp_cost 1.320081, grad norm 15.049772, param norm 1283.805298, tps 1368.115494, length mean/std 27.000000/0.000000
+INFO:root:epoch 45, iter 5600, cost 1.182384, exp_cost 1.345994, grad norm 4.837599, param norm 1284.135986, tps 1368.587626, length mean/std 7.000000/0.000000
+INFO:root:epoch 45, iter 5800, cost 1.496584, exp_cost 1.341774, grad norm 21.366289, param norm 1284.365112, tps 1368.998879, length mean/std 40.000000/0.000000
+INFO:root:epoch 45, iter 6000, cost 1.369176, exp_cost 1.332476, grad norm 14.639149, param norm 1284.681519, tps 1369.403952, length mean/std 27.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 118614268 get requests, put_count=118614317 evicted_count=118000 eviction_rate=0.000994821 and unsatisfied allocation rate=0.00100161
+INFO:root:epoch 45, iter 6200, cost 1.484703, exp_cost 1.319358, grad norm 20.642712, param norm 1284.995972, tps 1369.808860, length mean/std 38.000000/0.000000
+INFO:root:Epoch 45 Validation cost: 1.401264 time: 4706.931151
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 46, iter 200, cost 1.184509, exp_cost 1.323371, grad norm 8.423429, param norm 1276.507812, tps 1356.767898, length mean/std 16.000000/0.000000
+INFO:root:epoch 46, iter 400, cost 1.316114, exp_cost 1.315674, grad norm 14.274346, param norm 1276.793945, tps 1357.208119, length mean/std 25.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 125680808 get requests, put_count=125680729 evicted_count=128000 eviction_rate=0.00101845 and unsatisfied allocation rate=0.00102588
+INFO:root:epoch 46, iter 600, cost 1.124022, exp_cost 1.332355, grad norm 6.628322, param norm 1277.004272, tps 1357.686218, length mean/std 10.000000/0.000000
+INFO:root:epoch 46, iter 800, cost 1.386865, exp_cost 1.323925, grad norm 16.407940, param norm 1277.340332, tps 1358.151281, length mean/std 33.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 128120670 get requests, put_count=128120638 evicted_count=138000 eviction_rate=0.00107711 and unsatisfied allocation rate=0.00108402
+INFO:root:epoch 46, iter 1000, cost 1.451621, exp_cost 1.346575, grad norm 21.149799, param norm 1277.567139, tps 1358.612945, length mean/std 35.000000/0.000000
+INFO:root:epoch 46, iter 1200, cost 1.182523, exp_cost 1.330611, grad norm 8.190240, param norm 1277.873779, tps 1359.089374, length mean/std 14.000000/0.000000
+INFO:root:epoch 46, iter 1400, cost 1.501355, exp_cost 1.319019, grad norm 45.958691, param norm 1278.173950, tps 1359.530183, length mean/std 38.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 132244276 get requests, put_count=132244247 evicted_count=148000 eviction_rate=0.00111914 and unsatisfied allocation rate=0.00112582
+INFO:root:epoch 46, iter 1600, cost 1.136324, exp_cost 1.317171, grad norm 4.096715, param norm 1278.489624, tps 1359.961479, length mean/std 6.000000/0.000000
+INFO:root:epoch 46, iter 1800, cost 1.305565, exp_cost 1.332085, grad norm 13.547377, param norm 1278.775635, tps 1360.388426, length mean/std 24.000000/0.000000
+INFO:root:epoch 46, iter 2000, cost 1.258347, exp_cost 1.338707, grad norm 10.824794, param norm 1279.063232, tps 1360.853866, length mean/std 20.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 137209773 get requests, put_count=137209750 evicted_count=158000 eviction_rate=0.00115152 and unsatisfied allocation rate=0.00115791
+INFO:root:epoch 46, iter 2200, cost 1.328155, exp_cost 1.333615, grad norm 14.826145, param norm 1279.268188, tps 1361.302531, length mean/std 25.000000/0.000000
+INFO:root:epoch 46, iter 2400, cost 1.270854, exp_cost 1.320464, grad norm 11.545487, param norm 1279.553711, tps 1361.739644, length mean/std 22.000000/0.000000
+INFO:root:epoch 46, iter 2600, cost 1.125781, exp_cost 1.325200, grad norm 7.408903, param norm 1279.840942, tps 1362.188687, length mean/std 13.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 142054406 get requests, put_count=142054174 evicted_count=168000 eviction_rate=0.00118265 and unsatisfied allocation rate=0.00119029
+INFO:root:epoch 46, iter 2800, cost 1.540925, exp_cost 1.324414, grad norm 20.664017, param norm 1280.191284, tps 1362.637508, length mean/std 41.000000/0.000000
+INFO:root:epoch 46, iter 3000, cost 1.294435, exp_cost 1.308590, grad norm 10.583383, param norm 1280.473267, tps 1363.019241, length mean/std 21.000000/0.000000
+INFO:root:epoch 46, iter 3200, cost 1.091308, exp_cost 1.338490, grad norm 3.963442, param norm 1280.705322, tps 1363.477990, length mean/std 6.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 146377835 get requests, put_count=146377893 evicted_count=178000 eviction_rate=0.00121603 and unsatisfied allocation rate=0.00122147
+INFO:root:epoch 46, iter 3400, cost 1.325659, exp_cost 1.335912, grad norm 13.098718, param norm 1281.073486, tps 1363.952456, length mean/std 22.000000/0.000000
+INFO:root:epoch 46, iter 3600, cost 1.530072, exp_cost 1.334817, grad norm 24.174952, param norm 1281.321289, tps 1364.392690, length mean/std 46.000000/0.000000
+INFO:root:epoch 46, iter 3800, cost 1.211423, exp_cost 1.328518, grad norm 3.766726, param norm 1281.657959, tps 1364.801116, length mean/std 5.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 151398844 get requests, put_count=151398629 evicted_count=188000 eviction_rate=0.00124175 and unsatisfied allocation rate=0.00124881
+INFO:root:epoch 46, iter 4000, cost 1.534599, exp_cost 1.334426, grad norm 26.151842, param norm 1281.941284, tps 1365.259258, length mean/std 42.000000/0.000000
+INFO:root:epoch 46, iter 4200, cost 1.403901, exp_cost 1.329096, grad norm 14.663990, param norm 1282.289429, tps 1365.668752, length mean/std 29.000000/0.000000
+INFO:root:epoch 46, iter 4400, cost 1.233996, exp_cost 1.335993, grad norm 9.673894, param norm 1282.546021, tps 1366.080133, length mean/std 17.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 155933539 get requests, put_count=155933377 evicted_count=198000 eviction_rate=0.00126977 and unsatisfied allocation rate=0.00127629
+INFO:root:epoch 46, iter 4600, cost 1.153115, exp_cost 1.337815, grad norm 8.903366, param norm 1282.829102, tps 1366.505086, length mean/std 17.000000/0.000000
+INFO:root:epoch 46, iter 4800, cost 1.411298, exp_cost 1.338366, grad norm 2.461084, param norm 1283.021606, tps 1366.883628, length mean/std 3.000000/0.000000
+INFO:root:epoch 46, iter 5000, cost 1.361149, exp_cost 1.325796, grad norm 19.238197, param norm 1283.303467, tps 1367.298104, length mean/std 28.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 159661764 get requests, put_count=159661805 evicted_count=208000 eviction_rate=0.00130275 and unsatisfied allocation rate=0.00130785
+INFO:root:epoch 46, iter 5200, cost 1.162799, exp_cost 1.328503, grad norm 7.653822, param norm 1283.534180, tps 1367.686718, length mean/std 14.000000/0.000000
+INFO:root:epoch 46, iter 5400, cost 1.340617, exp_cost 1.323620, grad norm 12.106214, param norm 1283.804199, tps 1368.092905, length mean/std 23.000000/0.000000
+INFO:root:epoch 46, iter 5600, cost 1.350610, exp_cost 1.321077, grad norm 13.827598, param norm 1284.148560, tps 1368.481727, length mean/std 23.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 164819239 get requests, put_count=164819118 evicted_count=218000 eviction_rate=0.00132266 and unsatisfied allocation rate=0.00132858
+INFO:root:epoch 46, iter 5800, cost 1.670937, exp_cost 1.317964, grad norm 2.788720, param norm 1284.421997, tps 1368.876337, length mean/std 3.000000/0.000000
+INFO:root:epoch 46, iter 6000, cost 1.006321, exp_cost 1.333279, grad norm 4.825376, param norm 1284.660767, tps 1369.286777, length mean/std 9.000000/0.000000
+INFO:root:epoch 46, iter 6200, cost 1.284894, exp_cost 1.322744, grad norm 10.861229, param norm 1285.029541, tps 1369.691513, length mean/std 20.000000/0.000000
+INFO:root:Epoch 46 Validation cost: 1.407605 time: 4765.639714
+INFO:root:Annealing learning rate by 0.950000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 171318086 get requests, put_count=171318155 evicted_count=228000 eviction_rate=0.00133086 and unsatisfied allocation rate=0.00133544
+INFO:root:epoch 47, iter 200, cost 1.442137, exp_cost 1.326022, grad norm 27.868481, param norm 1276.465942, tps 1357.551728, length mean/std 37.000000/0.000000
+INFO:root:epoch 47, iter 400, cost 1.211124, exp_cost 1.320148, grad norm 8.916084, param norm 1276.741455, tps 1357.955501, length mean/std 16.000000/0.000000
+INFO:root:epoch 47, iter 600, cost 1.281588, exp_cost 1.321363, grad norm 11.160779, param norm 1276.982666, tps 1358.378945, length mean/std 23.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 174663431 get requests, put_count=174663189 evicted_count=238000 eviction_rate=0.00136262 and unsatisfied allocation rate=0.0013689
+INFO:root:epoch 47, iter 800, cost 1.201968, exp_cost 1.326144, grad norm 8.537141, param norm 1277.275513, tps 1358.783510, length mean/std 14.000000/0.000000
+INFO:root:epoch 47, iter 1000, cost 1.402588, exp_cost 1.366615, grad norm 13.736122, param norm 1277.550293, tps 1359.252029, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 177557713 get requests, put_count=177557713 evicted_count=248000 eviction_rate=0.00139673 and unsatisfied allocation rate=0.00140154
+INFO:root:epoch 47, iter 1200, cost 1.236860, exp_cost 1.347957, grad norm 10.888885, param norm 1277.789062, tps 1359.698838, length mean/std 19.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 180515919 get requests, put_count=180515564 evicted_count=258000 eviction_rate=0.00142924 and unsatisfied allocation rate=0.00143593
+INFO:root:epoch 47, iter 1400, cost 1.528566, exp_cost 1.330918, grad norm 27.259703, param norm 1278.059082, tps 1360.127249, length mean/std 46.000000/0.000000
+INFO:root:epoch 47, iter 1600, cost 1.175526, exp_cost 1.323839, grad norm 7.761807, param norm 1278.373779, tps 1360.561348, length mean/std 15.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 183620676 get requests, put_count=183620386 evicted_count=268000 eviction_rate=0.00145953 and unsatisfied allocation rate=0.00146576
+INFO:root:epoch 47, iter 1800, cost 1.165734, exp_cost 1.333769, grad norm 4.574850, param norm 1278.624023, tps 1360.986366, length mean/std 7.000000/0.000000
+INFO:root:epoch 47, iter 2000, cost 1.385679, exp_cost 1.340551, grad norm 15.159316, param norm 1278.970703, tps 1361.417170, length mean/std 31.000000/0.000000
+INFO:root:epoch 47, iter 2200, cost 1.276419, exp_cost 1.325935, grad norm 4.235237, param norm 1279.283447, tps 1361.802491, length mean/std 5.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 187861296 get requests, put_count=187861053 evicted_count=278000 eviction_rate=0.00147982 and unsatisfied allocation rate=0.00148565
+INFO:root:epoch 47, iter 2400, cost 1.221225, exp_cost 1.321488, grad norm 11.861093, param norm 1279.542114, tps 1362.192219, length mean/std 21.000000/0.000000
+INFO:root:epoch 47, iter 2600, cost 1.247045, exp_cost 1.327058, grad norm 11.186188, param norm 1279.885742, tps 1362.579279, length mean/std 22.000000/0.000000
+INFO:root:epoch 47, iter 2800, cost 1.450753, exp_cost 1.331100, grad norm 21.072491, param norm 1280.120239, tps 1362.985040, length mean/std 31.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 191982704 get requests, put_count=191982724 evicted_count=288000 eviction_rate=0.00150013 and unsatisfied allocation rate=0.00150448
+INFO:root:epoch 47, iter 3000, cost 1.296487, exp_cost 1.314450, grad norm 10.844377, param norm 1280.364014, tps 1363.363338, length mean/std 19.000000/0.000000
+INFO:root:epoch 47, iter 3200, cost 1.147644, exp_cost 1.333957, grad norm 6.181923, param norm 1280.703735, tps 1363.773666, length mean/std 10.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 195033354 get requests, put_count=195033247 evicted_count=298000 eviction_rate=0.00152794 and unsatisfied allocation rate=0.00153287
+INFO:root:epoch 47, iter 3400, cost 1.353135, exp_cost 1.351973, grad norm 20.802425, param norm 1280.988647, tps 1364.227637, length mean/std 33.843750/0.363092
+INFO:root:epoch 47, iter 3600, cost 1.401504, exp_cost 1.352863, grad norm 16.732500, param norm 1281.346802, tps 1364.637316, length mean/std 28.203125/0.402325
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 198003969 get requests, put_count=198004000 evicted_count=308000 eviction_rate=0.00155552 and unsatisfied allocation rate=0.00155968
+INFO:root:epoch 47, iter 3800, cost 2.272014, exp_cost 1.335119, grad norm 1.434606, param norm 1281.591553, tps 1365.018705, length mean/std 1.531250/0.499022
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 200126628 get requests, put_count=200126562 evicted_count=318000 eviction_rate=0.00158899 and unsatisfied allocation rate=0.00159359
+INFO:root:epoch 47, iter 4000, cost 1.140209, exp_cost 1.349709, grad norm 7.293640, param norm 1282.027100, tps 1365.484411, length mean/std 13.000000/0.000000
+INFO:root:epoch 47, iter 4200, cost 1.203557, exp_cost 1.335022, grad norm 5.140427, param norm 1282.356079, tps 1365.889309, length mean/std 7.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 202698399 get requests, put_count=202698189 evicted_count=328000 eviction_rate=0.00161817 and unsatisfied allocation rate=0.00162342
+INFO:root:epoch 47, iter 4400, cost 1.182702, exp_cost 1.334925, grad norm 9.312751, param norm 1282.655396, tps 1366.282391, length mean/std 15.000000/0.000000
+INFO:root:epoch 47, iter 4600, cost 1.238495, exp_cost 1.330082, grad norm 6.887340, param norm 1282.845825, tps 1366.639317, length mean/std 11.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 205672933 get requests, put_count=205672650 evicted_count=338000 eviction_rate=0.00164339 and unsatisfied allocation rate=0.00164891
+INFO:root:epoch 47, iter 4800, cost 1.911828, exp_cost 1.334817, grad norm 2.079268, param norm 1283.101074, tps 1367.002712, length mean/std 2.000000/0.000000
+INFO:root:epoch 47, iter 5000, cost 1.166148, exp_cost 1.332655, grad norm 6.314447, param norm 1283.445312, tps 1367.389469, length mean/std 10.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 209081363 get requests, put_count=209081221 evicted_count=348000 eviction_rate=0.00166442 and unsatisfied allocation rate=0.00166919
+INFO:root:epoch 47, iter 5200, cost 1.167837, exp_cost 1.345264, grad norm 7.839113, param norm 1283.734131, tps 1367.781245, length mean/std 14.000000/0.000000
+INFO:root:epoch 47, iter 5400, cost 1.341284, exp_cost 1.324127, grad norm 3.240368, param norm 1283.933838, tps 1368.133809, length mean/std 4.000000/0.000000
+INFO:root:epoch 47, iter 5600, cost 1.205266, exp_cost 1.328348, grad norm 5.132415, param norm 1284.252686, tps 1368.495653, length mean/std 8.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 213652972 get requests, put_count=213653041 evicted_count=358000 eviction_rate=0.00167561 and unsatisfied allocation rate=0.00167929
+INFO:root:epoch 47, iter 5800, cost 1.359960, exp_cost 1.338511, grad norm 17.216215, param norm 1284.508301, tps 1368.901395, length mean/std 29.000000/0.000000
+INFO:root:epoch 47, iter 6000, cost 1.232414, exp_cost 1.338484, grad norm 8.652081, param norm 1284.716553, tps 1369.285565, length mean/std 15.000000/0.000000
+INFO:root:epoch 47, iter 6200, cost 1.428256, exp_cost 1.342859, grad norm 16.205879, param norm 1285.056641, tps 1369.680205, length mean/std 32.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 217470506 get requests, put_count=217470403 evicted_count=368000 eviction_rate=0.00169218 and unsatisfied allocation rate=0.00169658
+INFO:root:Epoch 47 Validation cost: 1.404305 time: 4833.121646
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 48, iter 200, cost 1.524202, exp_cost 1.347393, grad norm 22.705221, param norm 1276.471802, tps 1358.437866, length mean/std 45.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 221410232 get requests, put_count=221409854 evicted_count=378000 eviction_rate=0.00170724 and unsatisfied allocation rate=0.0017128
+INFO:root:epoch 48, iter 400, cost 1.046757, exp_cost 1.341306, grad norm 5.709736, param norm 1276.771851, tps 1358.835141, length mean/std 10.000000/0.000000
+INFO:root:epoch 48, iter 600, cost 1.353315, exp_cost 1.335452, grad norm 13.117817, param norm 1276.994629, tps 1359.246215, length mean/std 26.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 223624502 get requests, put_count=223624474 evicted_count=388000 eviction_rate=0.00173505 and unsatisfied allocation rate=0.001739
+INFO:root:epoch 48, iter 800, cost 1.460644, exp_cost 1.309815, grad norm 20.201836, param norm 1277.258179, tps 1359.606507, length mean/std 44.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 226324618 get requests, put_count=226324559 evicted_count=398000 eviction_rate=0.00175854 and unsatisfied allocation rate=0.00176257
+INFO:root:epoch 48, iter 1000, cost 1.201957, exp_cost 1.334192, grad norm 2.973388, param norm 1277.549072, tps 1359.974003, length mean/std 4.000000/0.000000
+INFO:root:epoch 48, iter 1200, cost 1.394191, exp_cost 1.337309, grad norm 13.921735, param norm 1277.892456, tps 1360.356189, length mean/std 28.000000/0.000000
+INFO:root:epoch 48, iter 1400, cost 1.341352, exp_cost 1.336816, grad norm 11.938994, param norm 1278.108643, tps 1360.740658, length mean/std 24.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 230693658 get requests, put_count=230693704 evicted_count=408000 eviction_rate=0.00176858 and unsatisfied allocation rate=0.00177208
+INFO:root:epoch 48, iter 1600, cost 1.077607, exp_cost 1.323501, grad norm 5.360449, param norm 1278.337158, tps 1361.105899, length mean/std 9.000000/0.000000
+INFO:root:epoch 48, iter 1800, cost 1.478042, exp_cost 1.335455, grad norm 18.022820, param norm 1278.641235, tps 1361.470877, length mean/std 37.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 233120675 get requests, put_count=233120691 evicted_count=418000 eviction_rate=0.00179306 and unsatisfied allocation rate=0.00179666
+INFO:root:epoch 48, iter 2000, cost 1.222425, exp_cost 1.331461, grad norm 9.108099, param norm 1279.001953, tps 1361.875605, length mean/std 16.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 235314682 get requests, put_count=235314162 evicted_count=428000 eviction_rate=0.00181885 and unsatisfied allocation rate=0.00182468
+INFO:root:epoch 48, iter 2200, cost 1.117824, exp_cost 1.338653, grad norm 6.170945, param norm 1279.329346, tps 1362.291864, length mean/std 11.000000/0.000000
+INFO:root:epoch 48, iter 2400, cost 1.107805, exp_cost 1.331792, grad norm 6.463545, param norm 1279.604248, tps 1362.644269, length mean/std 12.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 237683313 get requests, put_count=237683313 evicted_count=438000 eviction_rate=0.00184279 and unsatisfied allocation rate=0.00184638
+INFO:root:epoch 48, iter 2600, cost 1.426266, exp_cost 1.324117, grad norm 19.726725, param norm 1279.886353, tps 1363.011734, length mean/std 32.000000/0.000000
+INFO:root:epoch 48, iter 2800, cost 1.536603, exp_cost 1.351204, grad norm 21.813612, param norm 1280.104980, tps 1363.422615, length mean/std 38.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 240715985 get requests, put_count=240715753 evicted_count=448000 eviction_rate=0.00186112 and unsatisfied allocation rate=0.00186563
+INFO:root:epoch 48, iter 3000, cost 1.334618, exp_cost 1.353982, grad norm 12.555060, param norm 1280.318115, tps 1363.814868, length mean/std 23.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 242699938 get requests, put_count=242699342 evicted_count=458000 eviction_rate=0.00188711 and unsatisfied allocation rate=0.00189308
+INFO:root:epoch 48, iter 3200, cost 1.192761, exp_cost 1.348988, grad norm 10.223438, param norm 1280.610352, tps 1364.210040, length mean/std 18.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 244078442 get requests, put_count=244078434 evicted_count=468000 eviction_rate=0.00191742 and unsatisfied allocation rate=0.00192095
+INFO:root:epoch 48, iter 3400, cost 1.178281, exp_cost 1.335335, grad norm 7.164715, param norm 1280.871582, tps 1364.596006, length mean/std 11.000000/0.000000
+INFO:root:epoch 48, iter 3600, cost 1.154967, exp_cost 1.331123, grad norm 6.997287, param norm 1281.280640, tps 1364.955681, length mean/std 13.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 246874357 get requests, put_count=246874363 evicted_count=478000 eviction_rate=0.00193621 and unsatisfied allocation rate=0.00193964
+INFO:root:epoch 48, iter 3800, cost 1.282437, exp_cost 1.341786, grad norm 3.298540, param norm 1281.548828, tps 1365.328166, length mean/std 4.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 248461989 get requests, put_count=248462049 evicted_count=488000 eviction_rate=0.00196408 and unsatisfied allocation rate=0.00196728
+INFO:root:epoch 48, iter 4000, cost 1.400586, exp_cost 1.345216, grad norm 13.376420, param norm 1281.842407, tps 1365.691358, length mean/std 24.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 250839715 get requests, put_count=250839784 evicted_count=498000 eviction_rate=0.00198533 and unsatisfied allocation rate=0.00198846
+INFO:root:epoch 48, iter 4200, cost 1.468543, exp_cost 1.358250, grad norm 28.946394, param norm 1282.224854, tps 1366.112804, length mean/std 40.000000/0.000000
+INFO:root:epoch 48, iter 4400, cost 1.343366, exp_cost 1.324141, grad norm 13.989942, param norm 1282.469116, tps 1366.458076, length mean/std 24.000000/0.000000
+INFO:root:epoch 48, iter 4600, cost 1.215400, exp_cost 1.341657, grad norm 7.262084, param norm 1282.775391, tps 1366.842832, length mean/std 12.000000/0.000000
+INFO:root:epoch 48, iter 4800, cost 1.319000, exp_cost 1.345471, grad norm 14.710976, param norm 1283.029663, tps 1367.229199, length mean/std 25.000000/0.000000
+INFO:root:epoch 48, iter 5000, cost 1.337524, exp_cost 1.329952, grad norm 13.789303, param norm 1283.349365, tps 1367.606562, length mean/std 24.000000/0.000000
+INFO:root:epoch 48, iter 5200, cost 1.507946, exp_cost 1.341654, grad norm 2.604684, param norm 1283.679443, tps 1367.988909, length mean/std 3.000000/0.000000
+INFO:root:epoch 48, iter 5400, cost 1.408760, exp_cost 1.332407, grad norm 16.356213, param norm 1283.989014, tps 1368.343118, length mean/std 35.000000/0.000000
+INFO:root:epoch 48, iter 5600, cost 1.471212, exp_cost 1.336153, grad norm 21.032053, param norm 1284.271362, tps 1368.685272, length mean/std 38.000000/0.000000
+INFO:root:epoch 48, iter 5800, cost 1.313902, exp_cost 1.361317, grad norm 15.310596, param norm 1284.596436, tps 1369.061970, length mean/std 25.000000/0.000000
+INFO:root:epoch 48, iter 6000, cost 1.132964, exp_cost 1.332080, grad norm 5.023461, param norm 1284.891113, tps 1369.418318, length mean/std 8.000000/0.000000
+INFO:root:epoch 48, iter 6200, cost 1.516382, exp_cost 1.345402, grad norm 21.767738, param norm 1285.111084, tps 1369.804883, length mean/std 39.000000/0.000000
+INFO:root:Epoch 48 Validation cost: 1.407512 time: 4888.781279
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 49, iter 200, cost 1.133096, exp_cost 1.331049, grad norm 7.738258, param norm 1276.566895, tps 1359.250495, length mean/std 13.000000/0.000000
+INFO:root:epoch 49, iter 400, cost 1.351606, exp_cost 1.339088, grad norm 16.691328, param norm 1276.762695, tps 1359.604795, length mean/std 27.000000/0.000000
+INFO:root:epoch 49, iter 600, cost 1.066657, exp_cost 1.325773, grad norm 6.697581, param norm 1277.015015, tps 1359.947917, length mean/std 11.000000/0.000000
+INFO:root:epoch 49, iter 800, cost 1.396699, exp_cost 1.332569, grad norm 15.235300, param norm 1277.231567, tps 1360.300033, length mean/std 32.000000/0.000000
+INFO:root:epoch 49, iter 1000, cost 1.475231, exp_cost 1.344155, grad norm 20.231207, param norm 1277.551270, tps 1360.675688, length mean/std 33.000000/0.000000
+INFO:root:epoch 49, iter 1200, cost 1.500487, exp_cost 1.350188, grad norm 29.489759, param norm 1277.886353, tps 1361.051604, length mean/std 42.000000/0.000000
+INFO:root:epoch 49, iter 1400, cost 1.090211, exp_cost 1.321300, grad norm 4.997356, param norm 1278.171997, tps 1361.408544, length mean/std 9.000000/0.000000
+INFO:root:epoch 49, iter 1600, cost 1.477180, exp_cost 1.341019, grad norm 2.422106, param norm 1278.437744, tps 1361.805233, length mean/std 3.000000/0.000000
+INFO:root:epoch 49, iter 1800, cost 1.309999, exp_cost 1.346459, grad norm 16.162441, param norm 1278.723022, tps 1362.181705, length mean/std 25.000000/0.000000
+INFO:root:epoch 49, iter 2000, cost 2.981211, exp_cost 1.330076, grad norm 0.905713, param norm 1279.073242, tps 1362.541354, length mean/std 1.000000/0.000000
+INFO:root:epoch 49, iter 2200, cost 1.060486, exp_cost 1.348927, grad norm 5.112689, param norm 1279.344360, tps 1362.917945, length mean/std 9.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 33699324 get requests, put_count=33699404 evicted_count=3000 eviction_rate=8.90223e-05 and unsatisfied allocation rate=0.000114513
+INFO:root:epoch 49, iter 2400, cost 1.129349, exp_cost 1.338417, grad norm 4.004021, param norm 1279.551514, tps 1363.263270, length mean/std 6.000000/0.000000
+INFO:root:epoch 49, iter 2600, cost 1.392153, exp_cost 1.355511, grad norm 16.312128, param norm 1279.862549, tps 1363.640922, length mean/std 33.000000/0.000000
+INFO:root:epoch 49, iter 2800, cost 1.598359, exp_cost 1.344580, grad norm 2.773086, param norm 1280.163818, tps 1363.976267, length mean/std 3.000000/0.000000
+INFO:root:epoch 49, iter 3000, cost 1.423692, exp_cost 1.318888, grad norm 16.603067, param norm 1280.410156, tps 1364.344834, length mean/std 32.000000/0.000000
+INFO:root:epoch 49, iter 3200, cost 1.080680, exp_cost 1.321658, grad norm 3.819065, param norm 1280.783813, tps 1364.691537, length mean/std 6.000000/0.000000
+INFO:root:epoch 49, iter 3400, cost 1.209802, exp_cost 1.319902, grad norm 10.967152, param norm 1281.047119, tps 1365.038401, length mean/std 19.000000/0.000000
+INFO:root:epoch 49, iter 3600, cost 1.168188, exp_cost 1.344158, grad norm 4.324685, param norm 1281.360840, tps 1365.398370, length mean/std 6.000000/0.000000
+INFO:root:epoch 49, iter 3800, cost 1.346452, exp_cost 1.344306, grad norm 10.728949, param norm 1281.658691, tps 1365.768215, length mean/std 20.000000/0.000000
+INFO:root:epoch 49, iter 4000, cost 1.464834, exp_cost 1.339601, grad norm 17.290606, param norm 1281.954956, tps 1366.099515, length mean/std 35.000000/0.000000
+INFO:root:epoch 49, iter 4200, cost 1.303425, exp_cost 1.348613, grad norm 12.254341, param norm 1282.218506, tps 1366.462212, length mean/std 24.000000/0.000000
+INFO:root:epoch 49, iter 4400, cost 1.482432, exp_cost 1.357931, grad norm 17.863968, param norm 1282.518677, tps 1366.860329, length mean/std 35.000000/0.000000
+INFO:root:epoch 49, iter 4600, cost 1.163938, exp_cost 1.343632, grad norm 7.861130, param norm 1282.744263, tps 1367.229008, length mean/std 14.000000/0.000000
+INFO:root:epoch 49, iter 4800, cost 1.434738, exp_cost 1.345121, grad norm 17.885323, param norm 1283.019653, tps 1367.575163, length mean/std 34.000000/0.000000
+INFO:root:epoch 49, iter 5000, cost 1.224671, exp_cost 1.342688, grad norm 8.173329, param norm 1283.356323, tps 1367.927695, length mean/std 15.000000/0.000000
+INFO:root:epoch 49, iter 5200, cost 1.434669, exp_cost 1.352162, grad norm 18.409552, param norm 1283.679321, tps 1368.260232, length mean/std 32.000000/0.000000
+INFO:root:epoch 49, iter 5400, cost 1.442128, exp_cost 1.341804, grad norm 19.318764, param norm 1283.959351, tps 1368.583436, length mean/std 34.000000/0.000000
+INFO:root:epoch 49, iter 5600, cost 1.153328, exp_cost 1.344009, grad norm 5.588059, param norm 1284.267212, tps 1368.907651, length mean/std 9.000000/0.000000
+INFO:root:epoch 49, iter 5800, cost 1.359768, exp_cost 1.347842, grad norm 15.056735, param norm 1284.464966, tps 1369.276152, length mean/std 30.000000/0.000000
+INFO:root:epoch 49, iter 6000, cost 1.253008, exp_cost 1.338681, grad norm 10.549713, param norm 1284.810547, tps 1369.637057, length mean/std 19.000000/0.000000
+INFO:root:epoch 49, iter 6200, cost 1.287434, exp_cost 1.345730, grad norm 3.416167, param norm 1285.048706, tps 1369.967056, length mean/std 4.000000/0.000000
+INFO:root:Epoch 49 Validation cost: 1.408369 time: 4944.090634
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 50, iter 200, cost 1.365907, exp_cost 1.327042, grad norm 17.322824, param norm 1276.513062, tps 1360.142595, length mean/std 28.000000/0.000000
+INFO:root:epoch 50, iter 400, cost 1.828954, exp_cost 1.342578, grad norm 2.452223, param norm 1276.781738, tps 1360.510358, length mean/std 2.000000/0.000000
+INFO:root:epoch 50, iter 600, cost 1.234433, exp_cost 1.334984, grad norm 3.032216, param norm 1277.065918, tps 1360.860524, length mean/std 4.000000/0.000000
+INFO:root:epoch 50, iter 800, cost 1.284078, exp_cost 1.326460, grad norm 12.709896, param norm 1277.407104, tps 1361.186850, length mean/std 22.000000/0.000000
+INFO:root:epoch 50, iter 1000, cost 1.097455, exp_cost 1.351537, grad norm 4.433154, param norm 1277.650146, tps 1361.559621, length mean/std 7.000000/0.000000
+INFO:root:epoch 50, iter 1200, cost 1.064509, exp_cost 1.336090, grad norm 4.578641, param norm 1277.937500, tps 1361.883500, length mean/std 7.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 77064711 get requests, put_count=77064612 evicted_count=13000 eviction_rate=0.00016869 and unsatisfied allocation rate=0.000182159
+INFO:root:epoch 50, iter 1400, cost 1.109815, exp_cost 1.340999, grad norm 5.562967, param norm 1278.220093, tps 1362.244102, length mean/std 10.000000/0.000000
+INFO:root:epoch 50, iter 1600, cost 1.519784, exp_cost 1.326767, grad norm 23.174952, param norm 1278.518555, tps 1362.551562, length mean/std 47.000000/0.000000
+INFO:root:epoch 50, iter 1800, cost 1.524389, exp_cost 1.341846, grad norm 22.728968, param norm 1278.802490, tps 1362.892824, length mean/std 47.000000/0.000000
+INFO:root:epoch 50, iter 2000, cost 1.387008, exp_cost 1.331400, grad norm 19.757507, param norm 1279.072388, tps 1363.248415, length mean/std 34.000000/0.000000
+INFO:root:epoch 50, iter 2200, cost 1.080180, exp_cost 1.351449, grad norm 6.265222, param norm 1279.336548, tps 1363.632108, length mean/std 11.000000/0.000000
+INFO:root:epoch 50, iter 2400, cost 1.118435, exp_cost 1.355945, grad norm 7.456984, param norm 1279.547607, tps 1363.964827, length mean/std 13.000000/0.000000
+INFO:root:epoch 50, iter 2600, cost 1.439633, exp_cost 1.350064, grad norm 19.380953, param norm 1279.867188, tps 1364.295647, length mean/std 32.000000/0.000000
+INFO:root:epoch 50, iter 2800, cost 1.272054, exp_cost 1.337030, grad norm 11.488432, param norm 1280.192627, tps 1364.636121, length mean/std 20.000000/0.000000
+INFO:root:epoch 50, iter 3000, cost 1.180516, exp_cost 1.357520, grad norm 7.968498, param norm 1280.502563, tps 1364.970576, length mean/std 14.000000/0.000000
+INFO:root:epoch 50, iter 3200, cost 1.267757, exp_cost 1.340147, grad norm 4.543051, param norm 1280.774536, tps 1365.307191, length mean/std 6.000000/0.000000
+INFO:root:epoch 50, iter 3400, cost 1.297212, exp_cost 1.357266, grad norm 3.249130, param norm 1281.032104, tps 1365.667127, length mean/std 4.000000/0.000000
+INFO:root:epoch 50, iter 3600, cost 1.402109, exp_cost 1.340373, grad norm 20.203350, param norm 1281.310913, tps 1366.000489, length mean/std 32.000000/0.000000
+INFO:root:epoch 50, iter 3800, cost 1.334093, exp_cost 1.354534, grad norm 16.581985, param norm 1281.603516, tps 1366.330459, length mean/std 25.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 97787377 get requests, put_count=97787397 evicted_count=23000 eviction_rate=0.000235204 and unsatisfied allocation rate=0.000244602
+INFO:root:epoch 50, iter 4000, cost 1.378599, exp_cost 1.368757, grad norm 16.477539, param norm 1281.890747, tps 1366.688905, length mean/std 32.000000/0.000000
+INFO:root:epoch 50, iter 4200, cost 1.471983, exp_cost 1.338316, grad norm 25.973471, param norm 1282.145264, tps 1367.005745, length mean/std 42.000000/0.000000
+INFO:root:epoch 50, iter 4400, cost 1.194741, exp_cost 1.325546, grad norm 7.151561, param norm 1282.461304, tps 1367.338915, length mean/std 12.000000/0.000000
+INFO:root:epoch 50, iter 4600, cost 1.267539, exp_cost 1.342591, grad norm 4.754386, param norm 1282.859985, tps 1367.662516, length mean/std 6.000000/0.000000
+INFO:root:epoch 50, iter 4800, cost 1.167919, exp_cost 1.330346, grad norm 7.298913, param norm 1283.126465, tps 1367.985568, length mean/std 13.000000/0.000000
+INFO:root:epoch 50, iter 5000, cost 1.224215, exp_cost 1.340679, grad norm 10.253447, param norm 1283.352661, tps 1368.332767, length mean/std 20.000000/0.000000
+INFO:root:epoch 50, iter 5200, cost 1.468243, exp_cost 1.345833, grad norm 18.493103, param norm 1283.616089, tps 1368.650786, length mean/std 39.000000/0.000000
+INFO:root:epoch 50, iter 5400, cost 1.228050, exp_cost 1.335687, grad norm 10.210793, param norm 1283.901489, tps 1368.976646, length mean/std 17.000000/0.000000
+INFO:root:epoch 50, iter 5600, cost 1.321747, exp_cost 1.359222, grad norm 15.217547, param norm 1284.184692, tps 1369.320495, length mean/std 28.000000/0.000000
+INFO:root:epoch 50, iter 5800, cost 1.132614, exp_cost 1.337769, grad norm 8.118537, param norm 1284.456055, tps 1369.637084, length mean/std 16.000000/0.000000
+INFO:root:epoch 50, iter 6000, cost 1.143545, exp_cost 1.331826, grad norm 3.080081, param norm 1284.730225, tps 1369.941703, length mean/std 4.000000/0.000000
+INFO:root:epoch 50, iter 6200, cost 1.275405, exp_cost 1.347781, grad norm 4.134260, param norm 1284.997559, tps 1370.250256, length mean/std 5.000000/0.000000
+INFO:root:Epoch 50 Validation cost: 1.411444 time: 5003.309950
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 51, iter 200, cost 1.403320, exp_cost 1.336377, grad norm 15.077946, param norm 1276.496216, tps 1360.950503, length mean/std 28.000000/0.000000
+INFO:root:epoch 51, iter 400, cost 1.297051, exp_cost 1.354018, grad norm 13.284247, param norm 1276.775146, tps 1361.318815, length mean/std 22.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 120374805 get requests, put_count=120374636 evicted_count=33000 eviction_rate=0.000274144 and unsatisfied allocation rate=0.000283348
+INFO:root:epoch 51, iter 600, cost 1.205588, exp_cost 1.334690, grad norm 2.887802, param norm 1277.032471, tps 1361.604654, length mean/std 4.000000/0.000000
+INFO:root:epoch 51, iter 800, cost 1.556003, exp_cost 1.361790, grad norm 26.216726, param norm 1277.284790, tps 1361.961295, length mean/std 47.000000/0.000000
+INFO:root:epoch 51, iter 1000, cost 1.331799, exp_cost 1.337302, grad norm 13.829462, param norm 1277.635254, tps 1362.313522, length mean/std 25.000000/0.000000
+INFO:root:epoch 51, iter 1200, cost 1.158280, exp_cost 1.333138, grad norm 8.111221, param norm 1277.929565, tps 1362.620054, length mean/std 14.000000/0.000000
+INFO:root:epoch 51, iter 1400, cost 1.240772, exp_cost 1.334591, grad norm 3.762173, param norm 1278.241211, tps 1362.940401, length mean/std 5.000000/0.000000
+INFO:root:epoch 51, iter 1600, cost 1.065669, exp_cost 1.335903, grad norm 5.335986, param norm 1278.671753, tps 1363.287810, length mean/std 9.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 130966290 get requests, put_count=130966346 evicted_count=43000 eviction_rate=0.000328329 and unsatisfied allocation rate=0.000335071
+INFO:root:epoch 51, iter 1800, cost 1.481410, exp_cost 1.351740, grad norm 19.250820, param norm 1278.911499, tps 1363.652548, length mean/std 35.000000/0.000000
+INFO:root:epoch 51, iter 2000, cost 1.140060, exp_cost 1.338126, grad norm 7.167851, param norm 1279.188354, tps 1363.966513, length mean/std 12.000000/0.000000
+INFO:root:epoch 51, iter 2200, cost 1.133002, exp_cost 1.359180, grad norm 3.614225, param norm 1279.434937, tps 1364.313927, length mean/std 5.000000/0.000000
+slurmstepd: *** JOB 15727575 CANCELLED AT 2018-08-10T07:35:08 DUE TO TIME LIMIT on compute-2-172 ***

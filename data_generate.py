@@ -1,6 +1,7 @@
 import random
 from os.path import join as pjoin
 from data_simulate import *
+import datetime
 
 
 def tokenize(string):
@@ -61,6 +62,7 @@ def refill_var(batches, fx, fc, fp, batch_size, num_wit, start=0, end=-1, cur_le
     linep = fp.readline()
     line_id = 0
 
+    print("read_data :", datetime.datetime.now())
     while linex:
         if line_id >= start:
             x_tokens = tokenize(linex.strip())
@@ -82,16 +84,19 @@ def refill_var(batches, fx, fc, fp, batch_size, num_wit, start=0, end=-1, cur_le
         if line_id == end:
             break
 
+    print("shuffle1 :", datetime.datetime.now())
     if sort_and_shuffle:
         random.shuffle(line_pairs)
         line_pairs = sorted(line_pairs, key=lambda e:len(e[0]))
 
+    print("generate :", datetime.datetime.now())
     for batch_start in range(0, len(line_pairs), batch_size):
         c_batch = [ele[1] for ele in line_pairs[batch_start:batch_start + batch_size]]
         p_batch = [ele[2] for ele in line_pairs[batch_start:batch_start + batch_size]]
         x_batch = [ele[0] for ele in line_pairs[batch_start:batch_start + batch_size]]
         batches.append((x_batch, c_batch, p_batch))
 
+    print("shuffle2 :", datetime.datetime.now())
     if sort_and_shuffle:
         random.shuffle(batches)
     return
@@ -144,6 +149,7 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
 
         while True:
             if len(batches) == 0:
+                print(datetime.datetime.now())
                 if flag_generate:
                     refill(batches, fx, batch_size, cur_len=cur_len + 1,
                            max_seq_len=max_seq_len,
@@ -154,6 +160,7 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
                                cur_len=cur_len + 1, max_seq_len=max_seq_len,
                                sort_and_shuffle=sort_and_shuffle,
                                start=start, end=end)
+                print(datetime.datetime.now())
             if len(batches) == 0:
                 fx.close()
                 if not flag_generate:
@@ -224,6 +231,120 @@ def pair_iter(file_data, dev, num_wit, num_top=10, batch_size=128,
             target_tokens = np.array(y_padded).T
             yield (source_cands, source_probs, source_mask, target_tokens)
         return
+
+
+def load_data(batches, file_data, dev, num_wit, num_top=10, batch_size=128,
+              data_random="eeg", prior=1, prob_high=0.7,
+              prob_in=1.0, prob_back=0.0, flag_generate=True,
+              max_seq_len=300, cur_len=-2,
+              start=0, end=-1,
+              sort_and_shuffle=False):
+    if flag_generate:
+        if data_random == 'eeg':
+            load_eegs()
+        fx = open(pjoin(file_data, dev + '.ids'))
+    else:
+        filename = '%s.%d' % (data_random, num_top)
+        if data_random == 'random':
+            if prob_back == 0.0:
+                filename = '%s_%.2f_%.2f_%.2f' % (filename, prob_high, prior, prob_in)
+            else:
+                filename = '%s_%.2f_%.2f_%.2f_%.2f' % (filename, prob_high, prior, prob_in, prob_back)
+        fc = open(pjoin(file_data, '%s.%s.cand' % (dev, filename)))
+        fp = open(pjoin(file_data, '%s.%s.prob' % (dev, filename)))
+        if prob_back == 0.0:
+            fx = open(pjoin(file_data, dev + '.ids'))
+        else:
+            fx = open(pjoin(file_data, '%s.%s.ids' % (dev, filename)))
+    if flag_generate:
+        refill(batches, fx, batch_size, cur_len=cur_len + 1,
+               max_seq_len=max_seq_len,
+               sort_and_shuffle=sort_and_shuffle,
+               start=start, end=end)
+    else:
+        refill_var(batches, fx, fc, fp, batch_size, num_wit,
+                   cur_len=cur_len + 1, max_seq_len=max_seq_len,
+                   sort_and_shuffle=sort_and_shuffle,
+                   start=start, end=end)
+
+
+def iter_data(batch, num_wit, num_top=10,
+              data_random="eeg", prior=1, prob_high=0.7,
+              prob_in=1.0, prob_back=0.0, flag_generate=True,
+              flag_vector=True):
+    voc_size = len(char2id)
+    if flag_vector:
+        pad_head = np.zeros(voc_size)
+        pad_head[char2id['<sos>']] = 1.
+    else:
+        pad_head = [char2id['<sos>']] + [0] * (num_wit - 1)
+        pad_prob = [1.] + [0.] * (num_wit - 1)
+
+    if flag_generate:
+        x_tokens = batch
+        if prob_back > 0.:
+            x_tokens = list(map(lambda tokenlist:
+                                add_backspace(tokenlist, prob_back),
+                                x_tokens))
+        if flag_vector:
+            x_probs = list(map(lambda tokenlist:
+                               [pad_head] + list(map(lambda ele:
+                                                     simulate_one(ele,
+                                                                  num_wit,
+                                                                  top=num_top,
+                                                                  prob_high=prob_high,
+                                                                  prob_in=prob_in,
+                                                                  prior=prior,
+                                                                  flag_vec=True,
+                                                                  simul=data_random),
+                                                     tokenlist[:-1])),
+                               x_tokens))
+            x_cands = None
+        else:
+            res = list(map(lambda tokenlist:
+                           list(map(lambda ele:
+                                    simulate_one(ele, num_wit,
+                                                 top=num_top,
+                                                 prob_high=prob_high,
+                                                 prob_in=prob_in,
+                                                 prior=prior,
+                                                 flag_vec=False,
+                                                 simul=data_random),
+                                    tokenlist[:-1])),
+                           x_tokens))
+            x_cands = [[pad_head] + [e[0] for e in ele] for ele in res]
+            x_probs = [[pad_prob] + [e[1] for e in ele] for ele in res]
+
+    else:
+        x_tokens, x_cands, x_probs = batch
+        if flag_vector:
+            x_probs = list(map(lambda cands, probs:
+                               [pad_head] + list(map(lambda cand, prob:
+                                                     create_vector(cand, prob),
+                                                     cands[:-1], probs[:-1])),
+                               x_cands, x_probs))
+        else:
+            x_cands = [[pad_head] + ele[:-1] for ele in x_cands]
+            x_probs = [[pad_prob] + ele[:-1] for ele in x_probs]
+    if prob_back > 0:
+        y_tokens = generate_target(x_tokens)
+    else:
+        y_tokens = x_tokens
+    if flag_vector:
+        x_probs_padded = padded(x_probs, voc_size, 0.0)
+        source_probs = np.transpose(np.array(x_probs_padded), (1, 0, 2))
+        source_cands = None
+    else:
+        x_probs_padded = padded(x_probs, num_wit, 0.0)
+        x_cands_padded = padded(x_cands, num_wit)
+        source_probs = np.transpose(np.array(x_probs_padded), (1, 0, 2))
+        source_cands = np.transpose(np.array(x_cands_padded), (1, 0, 2))
+    y_padded = padded(y_tokens, 0)
+    source_mask = (np.sum(source_probs, -1) > 0).astype(np.int32)
+    target_tokens = np.array(y_padded).T
+    return (source_cands, source_probs, source_mask, target_tokens)
+
+
 
 
 # ========================================= test ==============================

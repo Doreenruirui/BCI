@@ -35,22 +35,26 @@ def decode():
     # candidates = [3, 8, 4, 23, 12, 17, 18, 22, 21, 11]
     candidates, cand_prob = count_frequency()
     #print candidates, [id2char[ele] for ele in candidates], [cand_prob[ele] for ele in candidates]
-    #return 
+    #return
+    print('candidates:', candidates[:10])
     folder_out = pjoin(folder_bci, folder_eval)
     if not exists(folder_out):
         os.makedirs(folder_out)
     f_mrr = open(pjoin(folder_bci, folder_eval, 'mrr'), 'w')
     f_recall = open(pjoin(folder_bci, folder_eval, 'recall'), 'w')
     f_perplex = open(pjoin(folder_bci, folder_eval, 'perplex'), 'w')
+    f_acc = open(pjoin(folder_bci, folder_eval, 'perplex'), 'w')
     line_id = 0
     for line in file(pjoin(folder_bci, folder_test, file_name)):
         line = map(int, line.strip().split(' '))
         cur_mrr = batch_mrr(np.asarray([candidates] * len(line)), line, 10)
         cur_recall = batch_recall_at_k(np.asarray([candidates] * len(line)), line ,10)
+        cur_acc = batch_recall_at_k(np.asarray([candidates] * len(line)), line ,1)
         cur_perplex = [cand_prob[ele] for ele in line]
-        f_mrr.write('\t'.join(map(str, cur_mrr)) + '\n')
-        f_recall.write('\t'.join(map(str,cur_recall)) + '\n')
-        f_perplex.write('\t'.join(map(str, cur_perplex)) + '\n')
+        f_mrr.write('\t'.join(list(map(str, cur_mrr))) + '\n')
+        f_recall.write('\t'.join(list(map(str,cur_recall))) + '\n')
+        f_perplex.write('\t'.join(list(map(str, cur_perplex))) + '\n')
+        f_acc.write('\t'.join(list(map(str, cur_acc))) + '\n')
         if line_id > 51200:
             break
         line_id += 1

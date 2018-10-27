@@ -1,0 +1,41 @@
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so locally
+INFO:root:Get NLC data in /gss_gpfs_scratch/dong.r/Dataset/BCI/Sublex/1/1/train/sub
+INFO:root:Vocabulary size: 30
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
+name: Tesla K20m
+major: 3 minor: 5 memoryClockRate (GHz) 0.7055
+pciBusID 0000:04:00.0
+Total memory: 4.63GiB
+Free memory: 4.56GiB
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y 
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K20m, pci bus id: 0000:04:00.0)
+INFO:root:Creating 3 layers of 512 units.
+INFO:root:Reading model parameters from /gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_eeg_fix_2/best.ckpt-1
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 2908 get requests, put_count=2423 evicted_count=1000 eviction_rate=0.412712 and unsatisfied allocation rate=0.545048
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:256] Raising pool_size_limit_ from 100 to 110
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 949 get requests, put_count=2965 evicted_count=2000 eviction_rate=0.674536 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 239 get requests, put_count=1267 evicted_count=1000 eviction_rate=0.789266 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 1437 get requests, put_count=2481 evicted_count=1000 eviction_rate=0.403063 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 5070 get requests, put_count=4125 evicted_count=1000 eviction_rate=0.242424 and unsatisfied allocation rate=0.39645
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:256] Raising pool_size_limit_ from 720 to 792
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 262 get requests, put_count=1402 evicted_count=1000 eviction_rate=0.713267 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 7019 get requests, put_count=12223 evicted_count=5000 eviction_rate=0.409065 and unsatisfied allocation rate=0
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 15236 get requests, put_count=15590 evicted_count=2000 eviction_rate=0.128287 and unsatisfied allocation rate=0.125886
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:256] Raising pool_size_limit_ from 2997 to 3296
+INFO:root:epoch 2, iter 200, cost 2.924865, exp_cost 2.853272, grad norm 9.395439, param norm 264.965454, tps 541.059489, length mean/std 27.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 2404 get requests, put_count=5934 evicted_count=3000 eviction_rate=0.505561 and unsatisfied allocation rate=0
+slurmstepd: *** JOB 15691093 CANCELLED AT 2018-08-03T15:17:48 *** on compute-2-132
+INFO:root:Epoch 6 Validation cost: 2.846870 time: 13238.787758
+INFO:root:Annealing learning rate by 0.950000
+INFO:root:epoch 7, iter 200, cost 2.665648, exp_cost 2.833617, grad norm 8.110715, param norm 440.853119, tps 1048.545900, length mean/std 16.000000/0.000000
+INFO:root:epoch 7, iter 400, cost 2.760885, exp_cost 2.829758, grad norm 11.390257, param norm 441.911835, tps 1048.672182, length mean/std 35.000000/0.000000
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 652830796 get requests, put_count=652831415 evicted_count=634000 eviction_rate=0.000971154 and unsatisfied allocation rate=0.000971789
+INFO:root:epoch 7, iter 600, cost 2.867892, exp_cost 2.836688, grad norm 13.029073, param norm 442.887543, tps 1048.802106, length mean/std 54.000000/0.000000
+INFO:root:epoch 7, iter 800, cost 2.852401, exp_cost 2.830835, grad norm 10.893018, param norm 443.758667, tps 1048.906565, length mean/std 35.000000/0.000000
+INFO:root:epoch 7, iter 1000, cost 2.808590, exp_cost 2.831228, grad norm 11.790694, param norm 444.568939, tps 1049.022572, length mean/std 39.000000/0.000000
+slurmstepd: *** JOB 15678850 CANCELLED AT 2018-08-03T15:32:46 DUE TO TIME LIMIT on compute-2-147 ***

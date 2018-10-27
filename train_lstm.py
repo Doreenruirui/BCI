@@ -6,10 +6,11 @@ import sys
 import time
 import numpy as np
 import tensorflow as tf
-
+import datetime
+import random
 import model_concat
 from flag import FLAGS
-from data_generate import pair_iter, id2char
+from data_generate import pair_iter, id2char, load_data, iter_data
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -37,18 +38,29 @@ def create_model(session, vocab_size_char):
     return model, num_epoch
 
 
-def validate(model, sess, cur_len):
+def validate(model, sess, batches):
     valid_costs, valid_lengths = [], []
-    for source_tokens, source_probs, source_mask, target_tokens in \
-            pair_iter(FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
-                      cur_len=cur_len, num_top=FLAGS.num_top,
-                      max_seq_len=FLAGS.max_seq_len,
-                      data_random=FLAGS.random,
-                      batch_size=FLAGS.batch_size,
-                      prior=FLAGS.prior, prob_high=FLAGS.prob_high,
-                      prob_in=FLAGS.prob_in, prob_back=FLAGS.prob_back,
-                      flag_generate=FLAGS.flag_generate,
-                      flag_vector=FLAGS.flag_vector):
+    # for source_tokens, source_probs, source_mask, target_tokens in \
+    #         pair_iter(FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
+    #                   cur_len=cur_len, num_top=FLAGS.num_top,
+    #                   max_seq_len=FLAGS.max_seq_len,
+    #                   data_random=FLAGS.random,
+    #                   batch_size=FLAGS.batch_size,
+    #                   prior=FLAGS.prior, prob_high=FLAGS.prob_high,
+    #                   prob_in=FLAGS.prob_in, prob_back=FLAGS.prob_back,
+    #                   flag_generate=FLAGS.flag_generate,
+    #                   flag_vector=FLAGS.flag_vector):
+    for batch in batches:
+        source_tokens, source_probs, source_mask, target_tokens = iter_data(
+            batch, FLAGS.num_wit,
+            num_top=FLAGS.num_top,
+            data_random=FLAGS.random,
+            prior=FLAGS.prior,
+            prob_high=FLAGS.prob_high,
+            prob_in=FLAGS.prob_in,
+            flag_generate=FLAGS.flag_generate,
+            prob_back=FLAGS.prob_back,
+            flag_vector=FLAGS.flag_vector)
         cost = model.test(sess, source_tokens, source_probs, source_mask, target_tokens, FLAGS.flag_sum)
         valid_costs.append(cost * source_mask.shape[1])
         valid_lengths.append(np.sum(source_mask))
@@ -83,6 +95,15 @@ def train():
         total_iters = 0
         start_time = time.time()
         cur_len = -2
+        test_batches = []
+        load_data(test_batches, FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
+                  cur_len=cur_len, num_top=FLAGS.num_top,
+                  max_seq_len=FLAGS.max_seq_len,
+                  data_random=FLAGS.random,
+                  batch_size=FLAGS.batch_size,
+                  prior=FLAGS.prior, prob_high=FLAGS.prob_high,
+                  prob_in=FLAGS.prob_in, prob_back=FLAGS.prob_back,
+                  flag_generate=FLAGS.flag_generate)
 
         while (FLAGS.epochs == 0 or epoch < FLAGS.epochs):
             epoch += 1
@@ -90,31 +111,49 @@ def train():
 
             ## Train
             epoch_tic = time.time()
-            if FLAGS.flag_varlen:
-                cur_len = epoch - 1
 
             print('epoch', epoch, cur_len)
-            for source_tokens, source_probs, source_mask, target_tokens in pair_iter(FLAGS.data_dir, 'train',
-                                                                       FLAGS.num_wit,
-                                                                       cur_len=cur_len,
-                                                                       num_top=FLAGS.num_top,
-                                                                       max_seq_len=FLAGS.max_seq_len,
-                                                                       batch_size=FLAGS.batch_size,
-                                                                       data_random=FLAGS.random,
-                                                                       prior=FLAGS.prior,
-                                                                       prob_high=FLAGS.prob_high,
-                                                                       prob_in=FLAGS.prob_in,
-                                                                       flag_generate=FLAGS.flag_generate,
-                                                                       prob_back=FLAGS.prob_back,
-                                                                       sort_and_shuffle=True,
-                                                                                     flag_vector=FLAGS.flag_vector):
-                # Get a batch and make a step.
+            batches = []
+            load_data(batches, FLAGS.data_dir, 'train', FLAGS.num_wit,
+                      cur_len=cur_len, num_top=FLAGS.num_top, max_seq_len=FLAGS.max_seq_len,
+                      batch_size=FLAGS.batch_size, data_random=FLAGS.random,
+                      prior=FLAGS.prior, prob_high=FLAGS.prob_high, prob_in=FLAGS.prob_in,
+                      flag_generate=FLAGS.flag_generate, prob_back=FLAGS.prob_back,
+                      sort_and_shuffle=True)
+
+            for batch in batches:
+                print('batch', datetime.datetime.now())
+                source_tokens, source_probs, source_mask, target_tokens = iter_data(
+                    batch, FLAGS.num_wit,
+                    num_top=FLAGS.num_top,
+                    data_random=FLAGS.random,
+                    prior=FLAGS.prior,
+                    prob_high=FLAGS.prob_high,
+                    prob_in=FLAGS.prob_in,
+                    flag_generate=FLAGS.flag_generate,
+                    prob_back=FLAGS.prob_back,
+                    flag_vector=FLAGS.flag_vector)
+
+            # for source_tokens, source_probs, source_mask, target_tokens in pair_iter(FLAGS.data_dir, 'train',
+            #                                                            FLAGS.num_wit,
+            #                                                            cur_len=cur_len,
+            #                                                            num_top=FLAGS.num_top,
+            #                                                            max_seq_len=FLAGS.max_seq_len,
+            #                                                            batch_size=FLAGS.batch_size,
+            #                                                            data_random=FLAGS.random,
+            #                                                            prior=FLAGS.prior,
+            #                                                            prob_high=FLAGS.prob_high,
+            #                                                            prob_in=FLAGS.prob_in,
+            #                                                            flag_generate=FLAGS.flag_generate,
+            #                                                            prob_back=FLAGS.prob_back,
+            #                                                            sort_and_shuffle=True,
+            #                                                                          flag_vector=FLAGS.flag_vector):
+            #     # Get a batch and make a step.
                 tic = time.time()
                 grad_norm, cost, param_norm = model.train(sess, source_tokens, source_probs, source_mask,
                                                           target_tokens, FLAGS.keep_prob,
                                                           FLAGS.flag_sum)
                 toc = time.time()
-                iter_time = toc - tic
                 total_iters += np.sum(source_mask)
                 tps = total_iters / (time.time() - start_time)
                 current_step += 1
@@ -139,12 +178,12 @@ def train():
                     logging.info('epoch %d, iter %d, cost %f, exp_cost %f, grad norm %f, param norm %f, tps %f, length mean/std %f/%f' %
                                  (epoch, current_step, cost, exp_cost / exp_length, grad_norm, param_norm, tps, mean_length, std_length))
             epoch_toc = time.time()
-
+            random.shuffle(batches)
             ## Checkpoint
             checkpoint_path = os.path.join(FLAGS.train_dir, "best.ckpt")
 
             ## Validate
-            valid_cost = validate(model, sess, cur_len)
+            valid_cost = validate(model, sess, test_batches)
 
             logging.info("Epoch %d Validation cost: %f time: %f" % (epoch, valid_cost, epoch_toc - epoch_tic))
 

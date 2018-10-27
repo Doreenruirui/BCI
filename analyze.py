@@ -94,6 +94,7 @@ def eval_length(filename, metric, lenlabel):
 
 filename = sys.argv[1]
 flag = int(sys.argv[2])
+post_fix=sys.argv[3]
 if flag == 1:
     overall_perplex_neural(filename)
 elif flag == 2:
@@ -101,7 +102,10 @@ elif flag == 2:
 elif flag==3:
     overall_perplex_baseline(filename)
 elif flag == 0:
-    overall_recall(filename)
+    print(filename + '/mrr.' + post_fix)
+    overall_recall(filename + '/mrr.' + post_fix)
+    overall_recall(filename + '/recall.' + post_fix)
+    overall_recall(filename  + '/acc.' + post_fix)
 #eval_length(filename, "MRR", "Seq2Seq")
 
 

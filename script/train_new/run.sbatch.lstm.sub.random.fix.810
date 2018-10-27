@@ -3,16 +3,17 @@
 #SBATCH --output=/home/dong.r/BCI/script/train_new/out.lstm.sub.random.fix.810
 #SBATCH --error=/home/dong.r/BCI/script/train_new/err.lstm.sub.random.fix.810
 #SBATCH --exclusive
-#SBATCH --partition=par-gpu-2
+#SBATCH --partition=gpu
 #SBATCH -N 1
 
-work=/home/dong.r/BCI
-cd $work
-source ~/.bash_profile
-python train.py \
-    --data_dir="/gss_gpfs_scratch/dong.r/Dataset/BCI/Sublex/1/1/train/sub" \
+#work=/home/dong.r/BCI
+#cd $work
+#source ~/.bash_profile
+#source activate tensorflow
+python -m pdb train_lstm.py \
+    --data_dir="/home/rui/Dataset/BCI/Sublex/1/1/train/sub" \
     --dev="test" \
-    --train_dir="/gss_gpfs_scratch/dong.r/Model/BCI/Sublex/1/1/new/lstm_sub_random_fix_810" \
+    --train_dir="/home/rui//Model/BCI/Sublex/1/1/lstm_sub_random_fix_810_new" \
     --size=512 \
     --num_layers=3 \
     --batch_size=64 \
@@ -20,13 +21,15 @@ python train.py \
     --learning_rate=0.0003 \
     --learning_rate_decay_factor=0.95 \
     --optimizer="adam" \
-    --flag_bidirect=False \
     --flag_generate=False \
     --random="random" \
     --prob_high=0.8 \
     --prob_in=1.0 \
     --prior=3 \
+    --prob_back=0.0 \
     --num_wit=1 \
     --num_top=5 \
     --model="lstm" \
-    --keep_prob=0.9 
+    --keep_prob=0.9 \
+    --flag_sum=1 
+#source deactivate tensorflow

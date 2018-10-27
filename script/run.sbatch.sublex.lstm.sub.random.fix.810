@@ -1,0 +1,22 @@
+python train_lstm.py \
+    --data_dir="/home/rui/Dataset/BCI/NYT/1/1/sub2" \
+    --dev="test" \
+    --train_dir="/home/rui/Model/BCI/NYT/1/1/lstm_sub2_random_fix_810_new" \
+    --size=512 \
+    --num_layers=3 \
+    --batch_size=64 \
+    --max_seq_len=300 \
+    --learning_rate=0.0003 \
+    --learning_rate_decay_factor=0.95 \
+    --optimizer="adam" \
+    --flag_generate=False \
+    --random="random" \
+    --prob_high=0.8 \
+    --prob_in=1.0 \
+    --prior=3 \
+    --prob_back=0.0 \
+    --num_wit=1 \
+    --num_top=5 \
+    --model="lstm" \
+    --keep_prob=0.9 \
+    --flag_sum=1 
