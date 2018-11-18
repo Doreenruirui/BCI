@@ -102,10 +102,10 @@ elif flag == 2:
 elif flag==3:
     overall_perplex_baseline(filename)
 elif flag == 0:
-    print(filename + '/mrr.' + post_fix)
-    overall_recall(filename + '/mrr.' + post_fix)
-    overall_recall(filename + '/recall.' + post_fix)
-    overall_recall(filename  + '/acc.' + post_fix)
+    print(filename + '/mrr' + post_fix)
+    overall_recall(filename + '/mrr' + post_fix)
+    overall_recall(filename + '/recall' + post_fix)
+    overall_recall(filename  + '/acc' + post_fix)
 #eval_length(filename, "MRR", "Seq2Seq")
 
 

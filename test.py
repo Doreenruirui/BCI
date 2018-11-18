@@ -51,3 +51,41 @@
 #         items[cid] = rep
 #     f_out.write(''.join(items) + '\n')
 
+# def get_bin(prob_vec):
+#     prob_vec = list(map(float, prob_vec.split('_')))
+#     num_wit = len(prob_vec)
+#     bin = [[] for _ in range(num_wit)]
+#     bin[0].append(0)
+#     bin_no = 0
+#     for i in range(num_wit):
+#         cur_prob = prob_vec[i]
+#         if i == 0:
+#             print(cur_prob - 0.5)
+#             num_bin = int(np.ceil((cur_prob - 0.5) / 0.025))
+#         else:
+#             num_bin = int(cur_prob / 0.025)
+#         print(num_bin)
+#         bin[i] += [ele + bin_no + 1 for ele in range(num_bin)]
+#
+#         bin_no += num_bin
+#     return bin
+#
+# num_group = np.zeros(5)
+# total = 0
+# nwrong = 0
+# for sen, cand, prob in line_pairs:
+#     for i in range(1, len(sen)):
+#         if sen[i - 1] == cand[i][0]:
+#             num_group[0] += 1
+#         elif sen[i - 1] == cand[i][1]:
+#             num_group[1] += 1
+#         elif sen[i - 1] == cand[i][2]:
+#             num_group[2] += 1
+#         else:
+#             num_group[3] += 1
+#         if len(np.unique(cand[i])) < num_wit:
+#             nwrong += 1
+#     total += len(sen) - 1
+# print(num_group, total, num_group / total, nwrong)
+
+--dev="test" --size=512 --num_layers=3 --batch_size=128 --max_seq_len=300 --learning_rate=0.0003 --learning_rate_decay_factor=0.95 --optimizer="adam" --flag_generate=False --keep_prob=0.9 --data_dir="/home/rui/Dataset/BCI/NYT/1/1/1/0.0/sub" --train_dir="/home/rui/Model/BCI/NYT/1/1/1/lstm_fix_prior_3_1_prob_0.7_0.2" --prior_vec='3_1' --prob_vec='0.7_0.2' --num_wit=2

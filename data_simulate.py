@@ -10,6 +10,23 @@ eeg = None
 id2char = ['<pad>', '<sos>', '<eos>', ' '] + list(string.ascii_lowercase) + ['<backspace>']
 char2id = {k: v for v, k in enumerate(id2char)}
 
+def initialize(prior, prob):
+    global prior_vec, prob_vec
+    prior_vec = prior
+    prob_vec = prob
+
+def generate_sentence(sentence):
+    global prior_vec, prob_vec
+    res = list(map(lambda ele: generate_dirichlet_vector(ele,
+                                                         prior=prior_vec,
+                                                         prob_vec=prob_vec),
+                   sentence[:-1]))
+    num_wit = len(prior_vec)
+    pad_head = [char2id['<sos>']] + [0] * (num_wit - 1)
+    pad_prob = [1.] + [0.] * (num_wit - 1)
+    cands = pad_head + [ele[0] for ele in res]
+    probs = pad_prob + [ele[1] for ele in res]
+    return sentence, cands, probs
 
 def create_vector(cand, prob):
     a = np.zeros(len(char2id))
@@ -62,9 +79,18 @@ def generate_eeg(ch, index, num_wit=3):
         return index[:num_wit], sample[1 :num_wit + 1]
 
 
+# def generate_candidate(ch):
+#     index = np.arange(len(id2char) - 1).tolist()
+#     index = index[3:]
+#     index.remove(ch)
+#     shuffle(index)
+#     return index
+
 def generate_candidate(ch):
-    index = np.arange(len(id2char)).tolist()
+    index = np.arange(30).tolist()
     index = index[3:]
+    if ch not in index:
+        raise 'char %d not in list' % ch
     index.remove(ch)
     shuffle(index)
     return index
@@ -76,6 +102,7 @@ def dirichlet_distribution(num_wit, prior):
     prob = np.random.dirichlet(prior_vec, size=1)[0, :]
     prob = np.sort(prob)[::-1]
     return prob
+
 
 
 def generate_dirichlet(ch, index, num_wit, prior=1., prob_high=0.7, prob_in=0.78):
@@ -90,6 +117,26 @@ def generate_dirichlet(ch, index, num_wit, prior=1., prob_high=0.7, prob_in=0.78
             return index[:ins_id + 1] + [ch] + index[ins_id + 1: num_wit - 1], prob
     else:
         return index[:num_wit], prob
+
+def generate_dirichlet_vector(ch, prior=[3, 1], prob_vec=[0.8, 0.1]):
+    index = np.arange(30).tolist()
+    index = index[3:]
+    if ch not in index:
+        raise 'char %d not in list' % ch
+    index.remove(ch)
+    shuffle(index)
+    num_wit = len(prior)
+    prob = np.random.dirichlet(prior, size=1)[0, :]
+    prob = np.sort(prob)[::-1]
+    for i in range(num_wit):
+        if i == 0:
+            cur_prob = prob_vec[i]
+        else:
+            cur_prob = prob_vec[i] / (1 - sum(prob_vec[:i]))
+        flag_top = np.random.binomial(1, cur_prob)
+        if flag_top:
+            return index[:i] + [ch] + index[i:num_wit - 1], prob
+    return index[:num_wit], prob
 
 
 def simulate_one(ch, num_wit, top=10, flag_vec=True, simul='eeg',

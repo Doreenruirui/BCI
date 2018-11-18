@@ -12,8 +12,7 @@ def remove_nonascii(text):
 
 
 def char_tokenize(sent):
-    return [char2id[ele] for ele in sent.strip() if ele in char2id]
-
+    return [char2id[ele] for ele in sent if ele in char2id]
 
 def vocabulary(path_data, file_data, max_vocabulary_size):
     dict_words = {}
@@ -50,7 +49,7 @@ def tokenize(path_data, file_data):
     with open(pjoin(path_data, file_data + '.ids'), 'w') as f_out:
         with open(pjoin(path_data, file_data + '.line')) as f_in:
             for line in f_in:
-                new_line = ' '.join(line.strip().lower().split())
+                new_line = line.strip().lower()
                 if len(new_line) > 1:
                     cur_token = char_tokenize(new_line)
                     f_out.write(' '.join(map(str, cur_token)) + '\n')
