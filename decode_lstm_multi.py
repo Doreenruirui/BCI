@@ -27,10 +27,9 @@ def create_model(session):
     global model, word2id
     vocab_size_char = len(char2id)
     model = model_concat.Model(FLAGS.size, FLAGS.num_layers,
-                               FLAGS.max_gradient_norm, FLAGS.learning_rate,
-                               FLAGS.learning_rate_decay_factor, FLAGS.num_wit,
-                               forward_only=True, optimizer=FLAGS.optimizer,
-                               num_pred=FLAGS.num_cand)
+                        FLAGS.max_gradient_norm, FLAGS.learning_rate,
+                        FLAGS.learning_rate_decay_factor, FLAGS.num_wit, forward_only=True,
+                        optimizer=FLAGS.optimizer, num_pred=FLAGS.num_cand)
     model.build_lstm(vocab_size_char)
     ckpt = tf.train.get_checkpoint_state(FLAGS.train_dir)
     if ckpt:
@@ -98,13 +97,13 @@ def decode():
                   batch_size=FLAGS.batch_size,
                   prior_vec=FLAGS.prior_vec,
                   prob_vec=FLAGS.prob_vec,
-                  flag_generate=FLAGS.flag_generate,
-                  sort_and_shuffle=True)
+                  flag_generate=FLAGS.flag_generate)
+                  #, sort_and_shuffle=True)
         for batch in batches:
             source_tokens, source_probs, source_mask, target_tokens = iter_data(batch, num_wit=FLAGS.num_wit)
             mrr, recall, perplex, acc, predict = decode_batch(sess, source_tokens, source_probs, source_mask, target_tokens)
             lid += 1
-            print(lid)
+            #print(lid)
             f_mrr.write(mrr)
             f_recall.write(recall)
             f_perplex.write(perplex)

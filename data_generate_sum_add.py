@@ -109,7 +109,8 @@ def process_line(paras):
         if rank in bin:
             cur_bin = bin[rank]
             new_cand = [ele for ele in cand]
-            new_cand[rank] = new_cand[cur_bin]
+            if rank < nwit:
+                new_cand[rank] = new_cand[cur_bin]
             new_cand[cur_bin] = tok
             new_cand = new_cand[:nwit]
         else:
@@ -132,14 +133,12 @@ def refill_var(batches, fx, fc, fp, fr, dict_bin, batch_size, num_wit, start=0, 
     linep = fp.readline()
     liner = fr.readline()
     line_id = 0
-    # pad_head = [char2id['<sos>']] + [0] * (num_wit - 1)
-    # pad_prob = [1.] + [0.] * (num_wit - 1)
     pool = Pool(processes=50, initializer=initialize_fix(dict_bin, num_wit, max_seq_len))
     print("read_data :", datetime.datetime.now())
     while linex and linep and linec and liner:
         if line_id >= start:
             lines.append((linex, linec, linep, liner))
-            if (line_id + 1) % 1000 == 0:
+            if (line_id + 1) % 100 == 0:
                 res = pool.map(process_line, lines)
                 line_pairs += res
                 lines = []
@@ -154,23 +153,6 @@ def refill_var(batches, fx, fc, fp, fr, dict_bin, batch_size, num_wit, start=0, 
         res = pool.map(process_line, lines)
         line_pairs += res
     pool.close()
-    # num_group = np.zeros(5)
-    # total = 0
-    # nwrong = 0
-    # for sen, cand, prob in line_pairs:
-    #     for i in range(1, len(sen)):
-    #         if sen[i - 1] == cand[i][0]:
-    #             num_group[0] += 1
-    #         elif sen[i - 1] == cand[i][1]:
-    #             num_group[1] += 1
-    #         # elif sen[i - 1] == cand[i][2]:
-    #         #     num_group[2] += 1
-    #         else:
-    #             num_group[3] += 1
-    #         if len(np.unique(cand[i])) < num_wit:
-    #             nwrong += 1
-    #     total += len(sen) - 1
-    # print(num_group, total, num_group/total, nwrong)
 
     print("shuffle1 :", datetime.datetime.now())
     if sort_and_shuffle:
@@ -187,7 +169,6 @@ def refill_var(batches, fx, fc, fp, fr, dict_bin, batch_size, num_wit, start=0, 
     print("shuffle2 :", datetime.datetime.now())
     if sort_and_shuffle:
         random.shuffle(batches)
-    return
 
 
 def padded(tokens, num_wit, pad_v=char2id['<pad>']):

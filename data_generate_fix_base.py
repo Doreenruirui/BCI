@@ -11,10 +11,6 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', type=str, default='tmp', help='folder of data.')
     parser.add_argument('--dev', type=str, default='train', help='devlopment dataset.')
-    parser.add_argument('--prior', type=str, default='3.0', help='prior for the highest element in Dirichlet Distribution')
-    parser.add_argument('--prob_back', type=float, default=0.0, help='probability of backspace in the corpus')
-    parser.add_argument('--prob', type=str, default='0.5', help='probability that the correct input is in the candidates')
-    parser.add_argument('--task', type=str, default='base', help='base/cand/prob')
 
     args = parser.parse_args()
     return args
@@ -101,83 +97,9 @@ def get_noisy(data_dir, dev, prior, prob_high):
     f_prob.close()
     f_rank.close()
 
-def get_bin(prob_vec):
-    prob_vec = list(map(float, prob_vec.split('_')))
-    num_wit = len(prob_vec)
-    bin = [[] for _ in range(num_wit)]
-    bin[0].append(0)
-    bin_no = 0
-    for i in range(num_wit):
-        cur_prob = prob_vec[i]
-        if i == 0:
-            num_bin = int(np.around((cur_prob - 0.5) / 0.025))
-        else:
-            num_bin = int(np.around(cur_prob / 0.025))
-        bin[i] += [ele + bin_no + 1 for ele in range(num_bin)]
-        bin_no += num_bin
-    dict_bin = {}
-    for i in range(num_wit):
-        for ele in bin[i]:
-            dict_bin[ele] = i
-    print(dict_bin)
-    return dict_bin
-
-def process_line(paras):
-    global bin, nwit
-    linex, linec, liner = paras
-    sen = list(map(int, linex.strip('\n').split(' ')))
-    newc = linec.strip().split('\t')
-    newr = liner.strip().split('\t')
-    cands = list(map(lambda ele: [int(s) for s in ele.split()], newc))
-    ranks = list(map(int, newr))
-    res_cand = []
-    for tok, rank, cand in zip(sen, ranks, cands):
-        if rank in bin:
-            cur_bin = bin[rank]
-            new_cand = [ele for ele in cand]
-            if rank < nwit:
-                new_cand[rank] = new_cand[cur_bin]
-            new_cand[cur_bin] = tok
-            new_cand = new_cand[:nwit]
-        else:
-            new_cand = cand[:nwit]
-        res_cand.append(new_cand)
-    return '\t'.join([' '.join(list(map(str, ele))) for ele in res_cand])
-
-def generate_new(FLAGS):
-    dict_bin = get_bin(FLAGS.prob)
-    num_wit = len(FLAGS.prob.split('_'))
-    pool = Pool(processes=50, initializer=initialize_fix(dict_bin, num_wit))
-    fx = open(pjoin(FLAGS.data_dir, '0.0', FLAGS.dev + '.ids'))
-    fc = open(pjoin(FLAGS.data_dir, '0.5', '%s.cand' % FLAGS.dev))
-    fr = open(pjoin(FLAGS.data_dir, '0.5', '%s.rank' % FLAGS.dev))
-    fout_c = open(pjoin(FLAGS.data_dir, '0.0',
-                        '%s_prior_%s_prob_%s.cand' % (FLAGS.dev, FLAGS.prior, FLAGS.prob)), 'w')
-    lines = []
-    linex, linec, liner = fx.readline(), fc.readline(), fr.readline()
-    while linex and linec and liner:
-        lines.append((linex, linec, liner))
-        if len(lines) == 10000:
-            res = pool.map(process_line, lines)
-            print(len(res))
-            fout_c.write('\n'.join(res) + '\n')
-            lines = []
-            #print(len(lines))
-        linex, linec, liner = fx.readline(), fc.readline(), fr.readline()
-    print(len(lines))
-    if len(lines) > 0:
-        res = pool.map(process_line, lines)
-        fout_c.write('\n'.join(res) + '\n')
-    pool.close()
-    fx.close()
-    fr.close()
-    fc.close()
-
-
 def main():
     FLAGS = get_args()
-    #get_noisy(FLAGS.data_dir, FLAGS.dev, 3, 0.5)
-    generate_new(FLAGS)
+    get_noisy(FLAGS.data_dir, FLAGS.dev, 3, 0.5)
 
 
 if __name__ == "__main__":

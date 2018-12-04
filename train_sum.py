@@ -10,7 +10,7 @@ import datetime
 import random
 import model_sum as model_concat
 from flag import FLAGS
-from data_generate_sum_add import id2char, load_data, iter_data, get_bin
+from data_generate_sum_new import id2char, iter_data, get_bin, pair_iter
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -37,11 +37,13 @@ def create_model(session, vocab_size_char):
     return model, num_epoch
 
 
-def validate(model, sess, batches):
+def validate(model, sess, dict_bin):
     valid_costs, valid_lengths = [], []
-    for batch in batches:
-        source_tokens, source_probs, source_mask, target_tokens = iter_data(
-            batch, FLAGS.num_wit)
+    for source_tokens, source_probs, source_mask, target_tokens in pair_iter(FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
+                                                                             dict_bin, max_seq_len=FLAGS.max_seq_len,
+                                                                             batch_size=FLAGS.batch_size,
+                                                                             flag_generate=FLAGS.flag_generate,
+                                                                             sort_and_shuffle=True):
         cost = model.test(sess, source_tokens, source_probs, source_mask, target_tokens)
         valid_costs.append(cost * source_mask.shape[1])
         valid_lengths.append(np.sum(source_mask))
@@ -75,16 +77,6 @@ def train():
         exp_norm = None
         total_iters = 0
         start_time = time.time()
-        logging.info('Loading Test Data ...')
-        test_batches = []
-        load_data(test_batches, FLAGS.data_dir, FLAGS.dev, FLAGS.num_wit,
-                  dict_bin,
-                  max_seq_len=FLAGS.max_seq_len,
-                  batch_size=FLAGS.batch_size,
-                  prior_vec=FLAGS.prior_vec,
-                  prob_vec=FLAGS.prob_vec,
-                  flag_generate=FLAGS.flag_generate,
-                  sort_and_shuffle=True)
 
         while FLAGS.epochs == 0 or epoch < FLAGS.epochs:
             epoch += 1
@@ -94,59 +86,46 @@ def train():
             epoch_tic = time.time()
 
             print('epoch', epoch)
-            for i in range(10):
-                start = i *  112000
-                end = start +  112000
-                batches = []
-                logging.info('Loading Training Data %d ...' % i)
-                load_data(batches, FLAGS.data_dir, 'train', FLAGS.num_wit,
-                          dict_bin,
-                          max_seq_len=FLAGS.max_seq_len,
-                          batch_size=FLAGS.batch_size,
-                          prior_vec=FLAGS.prior_vec,
-                          prob_vec=FLAGS.prob_vec,
-                          flag_generate=FLAGS.flag_generate,
-                          sort_and_shuffle=True,
-                          start=start,
-                          end=end)
-                for batch in batches:
-                    print('batch', datetime.datetime.now())
-                    source_tokens, source_probs, source_mask, target_tokens = iter_data(
-                        batch, FLAGS.num_wit)
-                    print(cost)
-                    grad_norm, cost, param_norm = model.train(sess, source_tokens, source_probs, source_mask,
-                                                              target_tokens, FLAGS.keep_prob)
 
-                    total_iters += np.sum(source_mask)
-                    tps = total_iters / (time.time() - start_time)
-                    current_step += 1
-                    print('iter', current_step)
-                    lengths = np.sum(source_mask, axis=0)
-                    mean_length = np.mean(lengths)
-                    std_length = np.std(lengths)
+            for source_tokens, source_probs, source_mask, target_tokens in pair_iter(FLAGS.data_dir, 'train', FLAGS.num_wit,
+                                                                                     dict_bin, max_seq_len=FLAGS.max_seq_len,
+                                                                                     batch_size=FLAGS.batch_size,
+                                                                                     flag_generate=FLAGS.flag_generate,
+                                                                                     sort_and_shuffle=True):
+                print('batch', datetime.datetime.now())
+                print(cost)
+                grad_norm, cost, param_norm = model.train(sess, source_tokens, source_probs, source_mask,
+                                                          target_tokens, FLAGS.keep_prob)
 
-                    if not exp_cost:
-                        exp_cost = cost
-                        exp_length = mean_length
-                        exp_norm = grad_norm
-                    else:
-                        exp_cost = 0.99*exp_cost + 0.01*cost
-                        exp_length = 0.99*exp_length + 0.01*mean_length
-                        exp_norm = 0.99*exp_norm + 0.01*grad_norm
-                        exp_norm = 0.99*exp_norm + 0.01*grad_norm
+                total_iters += np.sum(source_mask)
+                tps = total_iters / (time.time() - start_time)
+                current_step += 1
+                print('iter', current_step)
+                lengths = np.sum(source_mask, axis=0)
+                mean_length = np.mean(lengths)
+                std_length = np.std(lengths)
 
-                    cost = cost / mean_length
+                if not exp_cost:
+                    exp_cost = cost
+                    exp_length = mean_length
+                    exp_norm = grad_norm
+                else:
+                    exp_cost = 0.99*exp_cost + 0.01*cost
+                    exp_length = 0.99*exp_length + 0.01*mean_length
+                    exp_norm = 0.99*exp_norm + 0.01*grad_norm
+                    exp_norm = 0.99*exp_norm + 0.01*grad_norm
 
-                    if current_step % FLAGS.print_every == 0:
-                        logging.info('epoch %d, iter %d, cost %f, exp_cost %f, grad norm %f, param norm %f, tps %f, length mean/std %f/%f' %
-                                     (epoch, current_step, cost, exp_cost / exp_length, grad_norm, param_norm, tps, mean_length, std_length))
+                cost = cost / mean_length
+
+                if current_step % FLAGS.print_every == 0:
+                    logging.info('epoch %d, iter %d, cost %f, exp_cost %f, grad norm %f, param norm %f, tps %f, length mean/std %f/%f' %
+                                 (epoch, current_step, cost, exp_cost / exp_length, grad_norm, param_norm, tps, mean_length, std_length))
             epoch_toc = time.time()
-            # random.shuffle(batches)
             ## Checkpoint
             checkpoint_path = os.path.join(FLAGS.train_dir, "best.ckpt")
 
             ## Validate
-            valid_cost = validate(model, sess, test_batches)
+            valid_cost = validate(model, sess, dict_bin)
 
             logging.info("Epoch %d Validation cost: %f time: %f" % (epoch, valid_cost, epoch_toc - epoch_tic))
 

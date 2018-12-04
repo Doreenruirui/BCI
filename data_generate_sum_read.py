@@ -56,8 +56,10 @@ def refill_var(batches, fx, fc, fp, batch_size, num_wit,  max_seq_len=300, sort_
         sen = list(map(int, linex.strip('\n').split(' ')))
         newc = linec.strip().split('\t')
         newp = linep.strip().split('\t')
-        cands =  [[char2id['<sos>']] + [0] * (num_wit - 1)]  + list(map(lambda ele: [int(s) for s in ele.split()[:num_wit]], newc[:-1]))
-        probs = [[1.] + [0.] * (num_wit - 1)]  + list(map(lambda ele: [float(s) for s in ele.split()[:num_wit]], newp[:-1]))
+        cands =  [[char2id['<sos>']] + [0] * (num_wit - 1)]  + list(map(lambda ele: [int(s) for s in ele.split(' ')[:num_wit]], newc[:-1]))
+        #print(linep)
+        probs = [[1.] + [0.] * (num_wit - 1)]  + list(map(lambda ele: [float(s) for s in ele.split(' ')[:num_wit]], newp[:-1]))
+       
         probs = list(map(lambda ele: [e/sum(ele) for e in ele], probs))
         line_pairs.append((sen[:max_seq_len], cands[:max_seq_len], probs[:max_seq_len]))
         if len(line_pairs) == end:
@@ -138,6 +140,7 @@ def load_data(batches, file_data, dev, batch_size=128,
     if not flag_generate:
         fc = open(pjoin(file_data, '0.0', '%s_prior_%s_prob_%s.cand' % (dev, prior_vec, prob_vec)))
         fp = open(pjoin(file_data, '0.5', '%s.prob' % dev))
+    print (pjoin(file_data, '0.0', '%s_prior_%s_prob_%s.cand' % (dev, prior_vec, prob_vec)))
     if flag_generate:
         refill(batches, fx, batch_size, num_wit,
                max_seq_len=max_seq_len, sort_and_shuffle=sort_and_shuffle)
